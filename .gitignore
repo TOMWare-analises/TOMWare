@@ -1,0 +1,10 @@
+.vs/
+*.obj
+tomware.out*
+TOMWare/x32/Debug
+TOMWare/x64/Debug/
+tmp/*
+x64/Debug/
+yaratomware/libyara/Debug
+yaratomware/yaraCdef/Debug
+TOMWare/Debug

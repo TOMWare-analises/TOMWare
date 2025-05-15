@@ -119,8 +119,8 @@ VOID SkewMask_ImageLoad(IMG img, VOID*)
     PatchApi(img, "Sleep", AFUNPTR(Hook_Sleep), (AFUNPTR*)&pSleep);
     PatchApi(img, "SleepEx", AFUNPTR(Hook_SleepEx), (AFUNPTR*)&pSleepEx);
     PatchApi(img, "QueryPerformanceCounter", AFUNPTR(Hook_QPC), (AFUNPTR*)&pQPC);
-    //PatchApi(img, "GetTickCount", AFUNPTR(Hook_GTC), (AFUNPTR*)&pGTC);
-    //PatchApi(img, "GetTickCount64", AFUNPTR(Hook_GTC64), (AFUNPTR*)&pGTC64);
+    PatchApi(img, "GetTickCount", AFUNPTR(Hook_GTC), (AFUNPTR*)&pGTC);
+    PatchApi(img, "GetTickCount64", AFUNPTR(Hook_GTC64), (AFUNPTR*)&pGTC64);
     PatchApi(img, "GetSystemTimePreciseAsFileTime", AFUNPTR(Hook_GSTPFT), (AFUNPTR*)&pGSTPFT);
     PatchApi(img, "QueryInterruptTimePrecise", AFUNPTR(Hook_QITP), (AFUNPTR*)&pQITP);
 }

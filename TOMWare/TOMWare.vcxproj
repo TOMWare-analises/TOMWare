@@ -185,7 +185,6 @@
     <ClCompile Include="TOMWare.cpp" />
     <ClCompile Include="Instrumentation.cpp" />
     <ClCompile Include="InstrumentationUtils.cpp" />
-    <ClCompile Include="RegistryKeys.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -195,8 +194,6 @@
     <ClInclude Include="InstrumentationStrategy.h" />
     <ClInclude Include="InstrumentationUtils.h" />
     <ClInclude Include="NtStructures.h" />
-    <ClInclude Include="RegistryErrors.h" />
-    <ClInclude Include="RegistryKeys.h" />
     <ClInclude Include="SkewMask.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>

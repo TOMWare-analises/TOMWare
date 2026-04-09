@@ -1,2 +1,2 @@
 # TOMWare
-TOMWare (Transparency and Overhead Measurement for Malware)
+TOMWare.M (Transparency and Overhead Measurement for Malware)

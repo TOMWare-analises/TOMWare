@@ -1,0 +1,55 @@
+{
+  "tactic": "TA0005",
+  "tactic_name": "Defense Evasion",
+  "heuristic_mapping": [
+    {
+      "heuristic": "Verificacao de overhead",
+      "tomware_module": "SkewMask",
+      "knob": "-do",
+      "mitre_techniques": ["T1622"],
+      "notes": "GetTickCount, QPC, RtlQueryPerformanceCounter, Sleep, NtDelayExecution"
+    },
+    {
+      "heuristic": "Anti-debug",
+      "tomware_module": "AntiDebugMask",
+      "knob": "-dd",
+      "mitre_techniques": ["T1622"],
+      "notes": "IsDebuggerPresent, CheckRemoteDebuggerPresent, NtQueryInformationProcess"
+    },
+    {
+      "heuristic": "Detecao de VM",
+      "tomware_module": null,
+      "knob": null,
+      "mitre_techniques": ["T1497"],
+      "notes": "Fora do escopo atual (EnumSystemFirmwareTables, etc.)"
+    },
+    {
+      "heuristic": "Varredura memoria PIN",
+      "tomware_module": "InstMemcmpMask",
+      "knob": "-dm",
+      "mitre_techniques": ["T1622"],
+      "notes": "memcmp/wmemcmp e assinaturas configuraveis (-sf)"
+    },
+    {
+      "heuristic": "Variaveis ambiente PIN",
+      "tomware_module": "SanitizePinEnvVars",
+      "knob": "-de",
+      "mitre_techniques": ["T1622"],
+      "notes": "PIN_* no bloco de ambiente"
+    },
+    {
+      "heuristic": "Enumeracao processo pin.exe",
+      "tomware_module": "ProcessEnumMask",
+      "knob": "-dp",
+      "mitre_techniques": ["T1622"],
+      "notes": "Process32*, Module32*, GetModuleHandle"
+    }
+  ],
+  "outcome_labels": {
+    "complete": "Execucao atingiu tempo minimo ou exit 0",
+    "partial": "Executou mas abaixo do tempo minimo",
+    "timeout": "Limite de tempo atingido (pode indicar execucao longa)",
+    "error": "Falha ao iniciar Pin ou amostra ausente",
+    "early_exit": "Terminou muito rapido (< 2s), provavel deteccao/abort"
+  }
+}

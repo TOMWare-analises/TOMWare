@@ -1,0 +1,7 @@
+{
+    "Scenario":  "pin_tomware_da",
+    "Outcome":  "complete",
+    "Seconds":  93.553,
+    "ExitCode":  null,
+    "Command":  "C:\\TOMWare\\pin\\pin.exe -follow_execv 1 -t C:\\TOMWare\\x64\\Release\\TOMWare.dll -da -q -sf config/signatures.txt -- C:\\TOMWare\\malwares\\infected\\430b487c0bc9b53382537422209acbd1c6ae63773cacf0c9f7d61f23e7fa8485.exe"
+}

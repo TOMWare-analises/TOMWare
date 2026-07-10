@@ -1,0 +1,16 @@
+7ff924b58500   T[0]  C:\Windows\System32\KERNEL32.DLL:VirtualAlloc
+7ff923e01950   T[0]  C:\Windows\System32\KERNELBASE.dll:VirtualAlloc
+7ff924b58500   T[0]  C:\Windows\System32\KERNEL32.DLL:VirtualAlloc
+7ff923e01950   T[0]  C:\Windows\System32\KERNELBASE.dll:VirtualAlloc
+7ff924b604f0   T[0]  C:\Windows\System32\KERNEL32.DLL:LoadLibraryA
+7ff923e18780   T[0]  C:\Windows\System32\KERNELBASE.dll:LoadLibraryA
+7ff924b604f0   T[0]  C:\Windows\System32\KERNEL32.DLL:LoadLibraryA
+7ff923e18780   T[0]  C:\Windows\System32\KERNELBASE.dll:LoadLibraryA
+7ff924b604f0   T[0]  C:\Windows\System32\KERNEL32.DLL:LoadLibraryA
+7ff923e18780   T[0]  C:\Windows\System32\KERNELBASE.dll:LoadLibraryA
+7ff924b5e020   T[0]  C:\Windows\System32\KERNEL32.DLL:GetLocalTime
+7ff923db3ca0   T[0]  C:\Windows\System32\KERNELBASE.dll:GetLocalTime
+7ff924b5fe40   T[0]  C:\Windows\System32\KERNEL32.DLL:GetCommandLineA
+7ff923e1b320   T[0]  C:\Windows\System32\KERNELBASE.dll:GetCommandLineA
+7ff924b604f0   T[0]  C:\Windows\System32\KERNEL32.DLL:LoadLibraryA
+7ff923e18780   T[0]  C:\Windows\System32\KERNELBASE.dll:LoadLibraryA

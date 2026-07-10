@@ -39,6 +39,7 @@ VOID TestOverhead() {
 int main()
 {
     SetConsoleOutputCP(CP_UTF8);
+    setvbuf(stdout, NULL, _IONBF, 0); // saida sem buffer: captura confiavel sob redirecionamento/Pin
 
     TestOverhead();
 

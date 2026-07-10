@@ -17,4 +17,6 @@ private:
     
 };
 
+void InstMemcmpMask_LoadSignatures(const char* path);
+
 #endif

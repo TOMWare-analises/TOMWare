@@ -1,16 +1,27 @@
-﻿/**********************************************************************
- *  InstMemcmpMask.cpp – contramedida para varreduras de assinaturas  *
- *  (versão optimizada: verifica a assinatura antes de chamar memcmp) *
- *********************************************************************/
+﻿/********************************************************************************
+ *  InstMemcmpMask.cpp – contramedida para varreduras de assinaturas na memória *
+ ********************************************************************************/
 #include "InstMemcmpMask.h"
-#include <cctype>     // std::tolower
-#include <cstring>    // std::memcmp / wmemcmp
+#include "TomwareLog.h"
 
- /*--------------------------------------------------------------------
-  *  Redefinição local de _memicmp (algumas CRTs não exportam)         */
+#include <cctype>
+#include <cstring>
+#include <fstream>
+#include <sstream>
+#include <vector>
+
+struct MemcmpSignature
+{
+    std::string ansi;
+    std::wstring wide;
+    size_t len;
+};
+
+static std::vector<MemcmpSignature> g_signatures;
+
 #ifndef _MEMICMP_DEFINED
 #define _MEMICMP_DEFINED
-static int __cdecl _memicmp(const void* a, const void* b, size_t n)
+static int __cdecl LocalMemicmp(const void* a, const void* b, size_t n)
 {
     const unsigned char* p1 = static_cast<const unsigned char*>(a);
     const unsigned char* p2 = static_cast<const unsigned char*>(b);
@@ -18,131 +29,194 @@ static int __cdecl _memicmp(const void* a, const void* b, size_t n)
     {
         int c1 = std::tolower(p1[i]);
         int c2 = std::tolower(p2[i]);
-        if (c1 != c2) return c1 - c2;
+        if (c1 != c2)
+            return c1 - c2;
     }
     return 0;
 }
 #endif
 
-/*--------------------------------------------------------------------
- *  Assinaturas sensíveis                                             */
-constexpr const char  P0[] = "PIN_";
-constexpr const char  P1[] = "pin.exe";
-constexpr const char  P2[] = "pinvm.dll";
-constexpr const char  P3[] = "pinipc.dll";
-
-constexpr const wchar_t W0[] = L"PIN_";
-constexpr const wchar_t W1[] = L"pin.exe";
-constexpr const wchar_t W2[] = L"pinvm.dll";
-constexpr const wchar_t W3[] = L"pinipc.dll";
-
-/*--------------------------------------------------------------------
- *  Wrappers optimizados                                              */
-#define WRAP(name) static auto name
-
- /*--- memcmp ANSI ---------------------------------------------------*/
-WRAP(wMemcmpA)(const void* a, const void* b, size_t n, AFUNPTR orig)->int
+static std::wstring AnsiToWide(const std::string& text)
 {
-    /* shortcut para tamanhos de interesse */
-    switch (n)
-    {
-    case 4:  if (memcmp(b, P0, 4) == 0) return 1;  break;
-    case 7:  if (memcmp(b, P1, 7) == 0) return 1;  break;
-    case 9:  if (memcmp(b, P2, 9) == 0) return 1;  break;
-    case 10: if (memcmp(b, P3, 10) == 0) return 1;  break;
-    }
-    using fn = int(__cdecl*)(const void*, const void*, size_t);
-    return reinterpret_cast<fn>(orig)(a, b, n);         /* caminho normal */
+    if (text.empty())
+        return std::wstring();
+
+    const int required = WindowsAPI::MultiByteToWideChar(
+        CP_UTF8, 0, text.c_str(), static_cast<int>(text.size()), nullptr, 0);
+    if (required <= 0)
+        return std::wstring();
+
+    std::vector<wchar_t> buffer(static_cast<size_t>(required) + 1, L'\0');
+    WindowsAPI::MultiByteToWideChar(
+        CP_UTF8, 0, text.c_str(), static_cast<int>(text.size()), &buffer[0], required);
+    return std::wstring(&buffer[0]);
 }
 
-/*--- memicmp ANSI (case‑insensitive) -------------------------------*/
-WRAP(wMemcmpI)(const void* a, const void* b, size_t n, AFUNPTR orig)->int
+static void AddSignature(const std::string& pattern)
 {
-    auto ci = (int(__cdecl*)(const void*, const void*, size_t))_memicmp;
-    switch (n)
+    if (pattern.empty())
+        return;
+
+    for (const auto& existing : g_signatures)
     {
-    case 4:  if (ci(b, P0, 4) == 0) return 1;  break;
-    case 7:  if (ci(b, P1, 7) == 0) return 1;  break;
-    case 9:  if (ci(b, P2, 9) == 0) return 1;  break;
-    case 10: if (ci(b, P3, 10) == 0) return 1;  break;
+        if (existing.ansi == pattern)
+            return;
     }
+
+    MemcmpSignature sig;
+    sig.ansi = pattern;
+    sig.wide = AnsiToWide(pattern);
+    sig.len = pattern.size();
+    g_signatures.push_back(sig);
+}
+
+static void LoadDefaultSignatures()
+{
+    g_signatures.clear();
+    AddSignature("PIN_");
+    AddSignature("pin.exe");
+    AddSignature("pinvm.dll");
+    AddSignature("pinipc.dll");
+}
+
+static bool ShouldMaskAnsiNeedle(const void* needle, size_t len, bool caseInsensitive)
+{
+    for (const auto& sig : g_signatures)
+    {
+        if (len != sig.len)
+            continue;
+
+        if (caseInsensitive)
+        {
+            if (LocalMemicmp(needle, sig.ansi.c_str(), len) == 0)
+                return true;
+        }
+        else if (std::memcmp(needle, sig.ansi.c_str(), len) == 0)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+static bool ShouldMaskWideNeedle(const wchar_t* needle, size_t len)
+{
+    for (const auto& sig : g_signatures)
+    {
+        if (len != sig.len || sig.wide.empty())
+            continue;
+        if (std::wmemcmp(needle, sig.wide.c_str(), len) == 0)
+            return true;
+    }
+    return false;
+}
+
+void InstMemcmpMask_LoadSignatures(const char* path)
+{
+    LoadDefaultSignatures();
+
+    if (!path || !*path)
+        return;
+
+    std::ifstream input(path);
+    if (!input.is_open())
+    {
+        TomwareLogInfo("[InstMemcmpMask] Arquivo de assinaturas nao encontrado: " + std::string(path));
+        return;
+    }
+
+    size_t added = 0;
+    std::string line;
+    while (std::getline(input, line))
+    {
+        const size_t comment = line.find('#');
+        if (comment != std::string::npos)
+            line.erase(comment);
+
+        line.erase(0, line.find_first_not_of(" \t\r\n"));
+        const size_t last = line.find_last_not_of(" \t\r\n");
+        if (last == std::string::npos)
+            continue;
+        line.erase(last + 1);
+
+        const size_t before = g_signatures.size();
+        AddSignature(line);
+        if (g_signatures.size() > before)
+            ++added;
+    }
+
+    TomwareLogInfo("[InstMemcmpMask] Assinaturas carregadas: "
+        + std::to_string(g_signatures.size()) + " (+" + std::to_string(added) + " de " + std::string(path) + ")");
+}
+
+#define WRAP(name) static auto name
+
+WRAP(wMemcmpA)(const void* a, const void* b, size_t n, AFUNPTR orig)->int
+{
+    if (ShouldMaskAnsiNeedle(b, n, false))
+        return 1;
     using fn = int(__cdecl*)(const void*, const void*, size_t);
     return reinterpret_cast<fn>(orig)(a, b, n);
 }
 
-/*--- memcmp_s (CRT segura) -----------------------------------------*/
+WRAP(wMemcmpI)(const void* a, const void* b, size_t n, AFUNPTR orig)->int
+{
+    if (ShouldMaskAnsiNeedle(b, n, true))
+        return 1;
+    using fn = int(__cdecl*)(const void*, const void*, size_t);
+    return reinterpret_cast<fn>(orig)(a, b, n);
+}
+
 WRAP(wMemcmpS)(const void* a, size_t as, const void* b, size_t bs,
     int* out, AFUNPTR orig)->errno_t
 {
-    if ((bs == 4 && memcmp(b, P0, 4) == 0)
-        || (bs == 7 && memcmp(b, P1, 7) == 0)
-        || (bs == 9 && memcmp(b, P2, 9) == 0)
-        || (bs == 10 && memcmp(b, P3, 10) == 0))
+    if (ShouldMaskAnsiNeedle(b, bs, false))
     {
-        if (out) *out = 1;           /* força “diferente” */
+        if (out)
+            *out = 1;
         return 0;
     }
-    using fn = errno_t(__cdecl*)(const void*, size_t,
-        const void*, size_t, int*);
+    using fn = errno_t(__cdecl*)(const void*, size_t, const void*, size_t, int*);
     return reinterpret_cast<fn>(orig)(a, as, b, bs, out);
 }
 
-/*--- wmemcmp UTF‑16 -------------------------------------------------*/
 WRAP(wWmemcmp)(const wchar_t* a, const wchar_t* b, size_t n, AFUNPTR orig)->int
 {
-    switch (n)
-    {
-    case 4:  if (wmemcmp(b, W0, 4) == 0) return 1;  break;
-    case 7:  if (wmemcmp(b, W1, 7) == 0) return 1;  break;
-    case 9:  if (wmemcmp(b, W2, 9) == 0) return 1;  break;
-    case 10: if (wmemcmp(b, W3, 10) == 0) return 1;  break;
-    }
+    if (ShouldMaskWideNeedle(b, n))
+        return 1;
     using fn = int(__cdecl*)(const wchar_t*, const wchar_t*, size_t);
     return reinterpret_cast<fn>(orig)(a, b, n);
 }
 
-/*--- wmemcmp_s UTF‑16 segura ---------------------------------------*/
 WRAP(wWmemcmpS)(const wchar_t* a, size_t as, const wchar_t* b, size_t bs,
     int* out, AFUNPTR orig)->errno_t
 {
-    if ((bs == 4 && wmemcmp(b, W0, 4) == 0)
-        || (bs == 7 && wmemcmp(b, W1, 7) == 0)
-        || (bs == 9 && wmemcmp(b, W2, 9) == 0)
-        || (bs == 10 && wmemcmp(b, W3, 10) == 0))
+    if (ShouldMaskWideNeedle(b, bs))
     {
-        if (out) *out = 1;
+        if (out)
+            *out = 1;
         return 0;
     }
-    using fn = errno_t(__cdecl*)(const wchar_t*, size_t,
-        const wchar_t*, size_t, int*);
+    using fn = errno_t(__cdecl*)(const wchar_t*, size_t, const wchar_t*, size_t, int*);
     return reinterpret_cast<fn>(orig)(a, as, b, bs, out);
 }
 
-/*--- RtlCompareMemory / RtlEqualMemory ------------------------------*/
 WRAP(wRtlCmpMem)(const void* a, const void* b, SIZE_T n, AFUNPTR orig)->SIZE_T
 {
-    if ((n == 4 && memcmp(b, P0, 4) == 0)
-        || (n == 7 && memcmp(b, P1, 7) == 0)
-        || (n == 9 && memcmp(b, P2, 9) == 0)
-        || (n == 10 && memcmp(b, P3, 10) == 0))
-        return 0;                                   /* “diferente” */
+    if (ShouldMaskAnsiNeedle(b, static_cast<size_t>(n), false))
+        return 0;
     using fn = SIZE_T(NTAPI*)(const void*, const void*, SIZE_T);
     return reinterpret_cast<fn>(orig)(a, b, n);
 }
 
 WRAP(wRtlEqMem)(const void* a, const void* b, SIZE_T n, AFUNPTR orig)->WindowsAPI::BOOLEAN
 {
-    if ((n == 4 && memcmp(b, P0, 4) == 0)
-        || (n == 7 && memcmp(b, P1, 7) == 0)
-        || (n == 9 && memcmp(b, P2, 9) == 0)
-        || (n == 10 && memcmp(b, P3, 10) == 0))
+    if (ShouldMaskAnsiNeedle(b, static_cast<size_t>(n), false))
         return FALSE;
     using fn = WindowsAPI::BOOLEAN(NTAPI*)(const void*, const void*, SIZE_T);
     return reinterpret_cast<fn>(orig)(a, b, n);
 }
 
-/*--------------------------------------------------------------------
- *  Tabela de ganchos                                                 */
 struct Hook { const char* name; AFUNPTR wrap; int argc; };
 static const Hook gTable[] = {
     { "memcmp",            (AFUNPTR)wMemcmpA,   3 },
@@ -160,37 +234,38 @@ static const Hook gTable[] = {
     { nullptr, nullptr, 0 }
 };
 
-/*--------------------------------------------------------------------
- *  InstrumentFunction                                                */
 VOID InstMemcmpMask::InstrumentFunction(RTN rtn, VOID*)
 {
-    if (!RTN_Valid(rtn)) return;
+    if (!RTN_Valid(rtn))
+        return;
 
     const std::string& name = RTN_Name(rtn);
     for (const Hook* h = gTable; h->name; ++h)
-        if (name == h->name)
+    {
+        if (name != h->name)
+            continue;
+
+        AFUNPTR orig = RTN_Funptr(rtn);
+        if (h->argc == 3)
         {
-            AFUNPTR orig = RTN_Funptr(rtn);
-            if (h->argc == 3)
-            {
-                RTN_ReplaceSignature(rtn, h->wrap,
-                    IARG_FUNCARG_ENTRYPOINT_VALUE, 0,
-                    IARG_FUNCARG_ENTRYPOINT_VALUE, 1,
-                    IARG_FUNCARG_ENTRYPOINT_VALUE, 2,
-                    IARG_PTR, orig,
-                    IARG_END);
-            }
-            else /* argc == 5 */
-            {
-                RTN_ReplaceSignature(rtn, h->wrap,
-                    IARG_FUNCARG_ENTRYPOINT_VALUE, 0,
-                    IARG_FUNCARG_ENTRYPOINT_VALUE, 1,
-                    IARG_FUNCARG_ENTRYPOINT_VALUE, 2,
-                    IARG_FUNCARG_ENTRYPOINT_VALUE, 3,
-                    IARG_FUNCARG_ENTRYPOINT_VALUE, 4,
-                    IARG_PTR, orig,
-                    IARG_END);
-            }
-            return;            /* já “hookado” */
+            RTN_ReplaceSignature(rtn, h->wrap,
+                IARG_FUNCARG_ENTRYPOINT_VALUE, 0,
+                IARG_FUNCARG_ENTRYPOINT_VALUE, 1,
+                IARG_FUNCARG_ENTRYPOINT_VALUE, 2,
+                IARG_PTR, orig,
+                IARG_END);
         }
+        else
+        {
+            RTN_ReplaceSignature(rtn, h->wrap,
+                IARG_FUNCARG_ENTRYPOINT_VALUE, 0,
+                IARG_FUNCARG_ENTRYPOINT_VALUE, 1,
+                IARG_FUNCARG_ENTRYPOINT_VALUE, 2,
+                IARG_FUNCARG_ENTRYPOINT_VALUE, 3,
+                IARG_FUNCARG_ENTRYPOINT_VALUE, 4,
+                IARG_PTR, orig,
+                IARG_END);
+        }
+        return;
+    }
 }

@@ -89,19 +89,12 @@ typedef unsigned __int64 ULONG_PTR, * PULONG_PTR;
 #else
 typedef uint32_t ULONG_PTR;
 
-typedef _W64 int INT_PTR, * PINT_PTR;
-typedef _W64 unsigned int UINT_PTR, * PUINT_PTR;
-
-typedef _W64 long LONG_PTR, * PLONG_PTR;
-typedef _W64 unsigned long ULONG_PTR, * PULONG_PTR;
-
 #define __int3264   __int32
 #endif
 
 typedef ULONG_PTR DWORD_PTR, * PDWORD_PTR;
 
 typedef ULONG_PTR SIZE_T, * PSIZE_T;
-typedef LONG_PTR SSIZE_T, * PSSIZE_T;
 
 
 typedef struct _UNICODE_STRING {

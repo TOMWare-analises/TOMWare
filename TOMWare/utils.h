@@ -1,9 +1,7 @@
 #pragma once
 #ifndef UTILS_H
 #define UTILS_H
-
 #include "pin.H"
-
 namespace WindowsAPI
 {
 #include <Windows.h>
@@ -23,9 +21,6 @@ namespace WindowsAPI
 #include "NtStructures.h"
 
 bool IsPointer(ADDRINT value);
-std::string GetNumericValue(ADDRINT ea, UINT32 size);
-std::string GetNumericHexValue(ADDRINT ea, UINT32 size);
-std::string GetNumericValueFromRef(VOID* ea, UINT32 size);
 bool IsStringPointer(UINT64 addr);
 bool IsValidWideString(const std::wstring& str);
 bool IsValidString(const std::string& str);
@@ -42,6 +37,5 @@ std::string ExtractModuleName(const std::string& fullPath);
 std::string toUpperCase(const std::string& str);
 VOID PrintTrace(std::deque<std::string>& rtnTrace);
 void GetParentProcessName();
-DWORD GetProcessIdByName(std::string processName);
 std::string getFileName(const std::string& filePath);
 #endif // UTILS_H

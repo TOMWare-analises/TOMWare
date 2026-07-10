@@ -1,8 +1,33 @@
 .vs/
 tomware.out*
-TOMWare/x32/Debug
-TOMWare/x64/Debug/
 tmp/*
-x64/Debug/
+pin.log
+*.log
+
+# Build outputs (pintool)
+TOMWare/x32/Debug/
+TOMWare/x64/
+x64/
+Win32/Debug/
 Debug/*.obj
 TOMWare/Debug
+
+# PoC project build artifacts
+Resultados/Apps-Teste-src/**/x64/
+Resultados/Apps-Teste-src/**/Win32/
+Resultados/Apps-Teste-src/**/Debug/
+Resultados/Apps-Teste-src/**/Release/
+Resultados/Apps-Teste-src/**/*.obj
+Resultados/Apps-Teste-src/**/*.pdb
+Resultados/Apps-Teste-src/**/*.iobj
+Resultados/Apps-Teste-src/**/*.ipdb
+Resultados/Apps-Teste-src/**/*.tlog/
+Resultados/Apps-Teste-src/**/TestGetE.*/
+
+malwares/
+
+# Local documentation (never commit)
+docs/
+
+# Local evidence and drafts (not part of upstream)
+dist/

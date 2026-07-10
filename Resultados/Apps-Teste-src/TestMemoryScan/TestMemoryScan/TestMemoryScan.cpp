@@ -85,9 +85,10 @@ void ScanMemoryForPinStrings()
 int wmain()
 {
     SetConsoleOutputCP(CP_UTF8);
+    setvbuf(stdout, NULL, _IONBF, 0); // saida sem buffer: captura confiavel sob redirecionamento/Pin
 
-    testGetTickCountConsistency(1000, &ScanMemoryForPinStrings, L"tick_test_log-MemoryScan.txt");
+    ScanMemoryForPinStrings();
+    //testGetTickCountConsistency(1000, &ScanMemoryForPinStrings, L"tick_test_log-MemoryScan.txt");
 
-    system("pause");
     return 0;
 }

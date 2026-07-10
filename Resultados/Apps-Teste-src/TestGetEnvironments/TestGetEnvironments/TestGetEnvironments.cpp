@@ -11,7 +11,8 @@ void GetEnvString() {
     LPWCH envBlock = GetEnvironmentStringsW();
     if (envBlock == nullptr)
     {
-        std::wcerr << L"Falha em GetEnvironmentStringsW. Erro = " << GetLastError() << std::endl;
+        // Saida narrow (printf): wcout/wcerr nao chega ao stdout sob Pin.
+        fprintf(stderr, "Falha em GetEnvironmentStringsW. Erro = %lu\n", GetLastError());
         return;
     }
 
@@ -25,28 +26,25 @@ void GetEnvString() {
         std::wstring envVar(current);
 
         // Exibe a variável encontrada
-        if ((envVar.find(L"PIN_APP_LD_LIBRARY_PATH") != std::string::npos) || (envVar.find(L"PIN_VM_LD_LIBRARY_PATH") != std::string::npos) || (envVar.find(L"PIN_CRT_TZDATA") != std::string::npos)) {
-            std::wcout << L"PIN Detectado com a variavel " << envVar << std::endl;
+        if ((envVar.find(L"PIN_APP_LD_LIBRARY_PATH") != std::wstring::npos) || (envVar.find(L"PIN_VM_LD_LIBRARY_PATH") != std::wstring::npos) || (envVar.find(L"PIN_CRT_TZDATA") != std::wstring::npos)) {
+            printf("PIN Detectado com a variavel %ls\n", envVar.c_str());
             detected = true;
         }
-
-        //std::wcout << L"Variavel " << envVar << std::endl;
 
         // Avança para a próxima string (pula até o próximo '\0')
         current += envVar.size() + 1;
     }
 
     if (!detected) {
-        std::wcout << L"Nenhuma variável do PIN detectada." << std::endl;
+        printf("Nenhuma variavel do PIN detectada.\n");
     }
 
     // Libera o bloco alocado pela API
     if (!FreeEnvironmentStringsW(envBlock))
     {
-        std::wcerr << L"Falha em FreeEnvironmentStringsW. Erro = "
-            << GetLastError() << std::endl;
+        fprintf(stderr, "Falha em FreeEnvironmentStringsW. Erro = %lu\n", GetLastError());
     }
-    std::wcout << L"----------------------------------------------------------" << std::endl;
+    printf("----------------------------------------------------------\n");
 
 }
 
@@ -87,7 +85,5 @@ int wmain()
 {
     //testGetTickCountConsistency(1000, &testGetPinEnvs, L"tick_test_log-GetEnvironments.txt");
     testGetPinEnvs();
-
-    system("pause");
     return 0;
 }

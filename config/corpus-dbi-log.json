@@ -1,0 +1,131 @@
+{
+  "version": 1,
+  "description": "Manifesto do DBI-Log-Corpus (14 amostras) para benchmark TOMWare Fase 4",
+  "source": "https://github.com/dbilog/dbilog",
+  "samples": [
+    {
+      "sha256": "0e3e95ee6649238171fb409c143c8a944bc54332f0ce85b94c651b5d0bf95343",
+      "family": "Trojan",
+      "heuristics": ["Persistencia", "Atraso deliberado", "Verificacao de overhead", "Anti-debug", "Detecao de VM", "Comunicacao de rede", "Injecao de codigo"],
+      "tomware_knobs": ["-de", "-dm", "-do", "-dd", "-dp"]
+    },
+    {
+      "sha256": "166ffce34fd49a69076a31cc5c7eb23584b47c153f744936e240f871144990be",
+      "family": "Backdoor",
+      "heuristics": ["Atraso deliberado", "Verificacao de overhead", "Anti-debug", "Comunicacao de rede", "Injecao de codigo"],
+      "tomware_knobs": ["-de", "-dm", "-do", "-dd", "-dp"]
+    },
+    {
+      "sha256": "1693df9d970e011cf1c827fceaf49a3724f4478bc0ed7dc50f2d90ea417b6d38",
+      "family": "Trojan",
+      "heuristics": ["Atraso deliberado", "Verificacao de overhead", "Anti-debug", "Detecao de VM", "Comunicacao de rede", "Injecao de codigo"],
+      "tomware_knobs": ["-de", "-dm", "-do", "-dd", "-dp"]
+    },
+    {
+      "sha256": "17c7986320e427a1106f3bbed1e122bcb0d9d38611d159c120df11d9689f4ec4",
+      "family": "Trojan",
+      "heuristics": ["Atraso deliberado", "Verificacao de overhead", "Anti-debug", "Detecao de VM", "Comunicacao de rede", "Injecao de codigo"],
+      "tomware_knobs": ["-de", "-dm", "-do", "-dd", "-dp"]
+    },
+    {
+      "sha256": "1db3df87facac7ad4bf2fc7f9c49392f6f1cd69ce3d5db0d7b1a23074ad0dd69",
+      "family": "Backdoor",
+      "heuristics": ["Atraso deliberado", "Verificacao de overhead", "Anti-debug", "Comunicacao de rede", "Injecao de codigo"],
+      "tomware_knobs": ["-de", "-dm", "-do", "-dd", "-dp"]
+    },
+    {
+      "sha256": "574482778792874721df6f4461490efbc7bbc6dfb833184f20e77ecd61e68270",
+      "family": "Trojan",
+      "heuristics": ["Atraso deliberado", "Verificacao de overhead", "Anti-debug", "Detecao de VM", "Comunicacao de rede", "Injecao de codigo"],
+      "tomware_knobs": ["-de", "-dm", "-do", "-dd", "-dp"]
+    },
+    {
+      "sha256": "66ebbc7d5f4e3c2b392af7f624ad328c8b4dc2e198f7bf585506b132607e9fbd",
+      "family": "Trojan",
+      "heuristics": ["Atraso deliberado", "Verificacao de overhead", "Anti-debug", "Detecao de VM", "Comunicacao de rede", "Injecao de codigo"],
+      "tomware_knobs": ["-de", "-dm", "-do", "-dd", "-dp"]
+    },
+    {
+      "sha256": "6e89b763cd4dd79f0c3082f09813efbd3dac4374a95455fe86ed27c363309a45",
+      "family": "Backdoor",
+      "heuristics": ["Atraso deliberado", "Verificacao de overhead", "Anti-debug", "Comunicacao de rede", "Injecao de codigo"],
+      "tomware_knobs": ["-de", "-dm", "-do", "-dd", "-dp"]
+    },
+    {
+      "sha256": "7de3df7d279686adf7a3f9a3160dbbd35be0024cd3de2a22cae911efb61fef8c",
+      "family": "Backdoor",
+      "heuristics": ["Atraso deliberado", "Verificacao de overhead", "Anti-debug", "Comunicacao de rede", "Injecao de codigo"],
+      "tomware_knobs": ["-de", "-dm", "-do", "-dd", "-dp"]
+    },
+    {
+      "sha256": "a0aeb837cb5e762fc0b7d657c71d343e765cccb5780cd315756f682418b3cdfe",
+      "family": "Trojan",
+      "heuristics": ["Atraso deliberado", "Verificacao de overhead", "Anti-debug", "Detecao de VM", "Comunicacao de rede", "Injecao de codigo"],
+      "tomware_knobs": ["-de", "-dm", "-do", "-dd", "-dp"]
+    },
+    {
+      "sha256": "a50581cd1845d7072037b1f42e30139b6a48cdb0b28edd3368d3bb31a31007bc",
+      "family": "Backdoor",
+      "heuristics": ["Verificacao de overhead", "Anti-debug", "Comunicacao de rede", "Injecao de codigo"],
+      "tomware_knobs": ["-de", "-dm", "-do", "-dd", "-dp"]
+    },
+    {
+      "sha256": "b640c53e2c02f08aa8ca3db62c628abcaa1694ffec33a59d69d88f5e2d1552aa",
+      "family": "Backdoor",
+      "heuristics": ["Atraso deliberado", "Verificacao de overhead", "Anti-debug", "Comunicacao de rede", "Injecao de codigo"],
+      "tomware_knobs": ["-de", "-dm", "-do", "-dd", "-dp"]
+    },
+    {
+      "sha256": "db32e48a61c59884c1ce4c28f12feee426d361982e2491fbaaf7cb4e75a501dd",
+      "family": "Backdoor",
+      "heuristics": ["Anti-debug", "Verificacao de overhead", "Injecao de codigo", "Persistencia"],
+      "tomware_knobs": ["-de", "-dm", "-do", "-dd", "-dp"]
+    },
+    {
+      "sha256": "49aa74387680de248f21af321c6721c305a29a071279b5526627921daa812e42",
+      "family": "Trojan",
+      "heuristics": ["Anti-debug", "Detecao de VM", "Verificacao de overhead", "Comunicacao de rede", "Injecao de codigo"],
+      "tomware_knobs": ["-de", "-dm", "-do", "-dd", "-dp"]
+    }
+  ],
+  "poc_tests": [
+    {
+      "id": "env",
+      "name": "TestGetEnvironments",
+      "path": "Resultados/Apps-Teste/TestGetEnvironments.exe",
+      "knobs": ["-de"],
+      "success_pattern": "Nenhuma variável do PIN detectada"
+    },
+    {
+      "id": "memscan",
+      "name": "TestMemoryScan",
+      "path": "Resultados/Apps-Teste/TestMemoryScan.exe",
+      "knobs": ["-dm"],
+      "success_pattern": "sem Alerta de PIN_"
+    },
+    {
+      "id": "overhead",
+      "name": "TestOverhead",
+      "path": "Resultados/Apps-Teste/TestOverhead.exe",
+      "baseline_knobs": ["-go"],
+      "knobs": ["-do", "-go"],
+      "timeout_seconds": 180,
+      "success_pattern": "OK - nenhuma anomalia"
+    },
+    {
+      "id": "antidebug",
+      "name": "TestAntiDebug",
+      "path": "Resultados/Apps-Teste/TestAntiDebug.exe",
+      "baseline_knobs": ["-gdb"],
+      "knobs": ["-dd"],
+      "success_pattern": "nenhum indicador basico de debug"
+    },
+    {
+      "id": "processenum",
+      "name": "TestProcessEnum",
+      "path": "Resultados/Apps-Teste/TestProcessEnum.exe",
+      "knobs": ["-dp"],
+      "success_pattern": "Nenhum pin.exe na enumeracao"
+    }
+  ]
+}

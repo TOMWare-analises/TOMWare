@@ -1,0 +1,7 @@
+# Assinaturas adicionais para InstMemcmpMask (-dm).
+# Uma assinatura por linha. Linhas vazias e comentarios (#) sao ignorados.
+# As assinaturas padrao (PIN_, pin.exe, pinvm.dll, pinipc.dll) sao sempre carregadas.
+
+pintool
+PIN_StartProgram
+PIN_VM

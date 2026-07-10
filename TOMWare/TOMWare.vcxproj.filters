@@ -33,7 +33,7 @@
     <ClCompile Include="InstrumentationUtils.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
-    <ClCompile Include="InstEnvReset.cpp">
+    <ClCompile Include="SanitizePinEnvVars.cpp">
       <Filter>Arquivos de Origem\Strategies</Filter>
     </ClCompile>
     <ClCompile Include="InstMemcmpMask.cpp">
@@ -59,7 +59,7 @@
     <ClInclude Include="InstrumentationUtils.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
-    <ClInclude Include="InstEnvReset.h">
+    <ClInclude Include="SanitizePinEnvVars.h">
       <Filter>Arquivos de Cabeçalho\Strategies</Filter>
     </ClInclude>
     <ClInclude Include="InstMemcmpMask.h">
@@ -68,5 +68,8 @@
     <ClInclude Include="SkewMask.h">
       <Filter>Arquivos de Cabeçalho\Strategies</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

@@ -1,0 +1,7 @@
+{
+    "Scenario":  "pin_baseline",
+    "Outcome":  "complete",
+    "Seconds":  17.489,
+    "ExitCode":  null,
+    "Command":  "C:\\TOMWare\\pin\\pin.exe -follow_execv 1 -t C:\\TOMWare\\x64\\Release\\TOMWare.dll -- C:\\TOMWare\\malwares\\infected\\430b487c0bc9b53382537422209acbd1c6ae63773cacf0c9f7d61f23e7fa8485.exe"
+}

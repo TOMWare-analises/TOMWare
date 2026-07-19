@@ -11,7 +11,7 @@ function Get-TomwareManifest {
     if (-not (Test-Path $ManifestPath)) {
         throw "Manifesto nao encontrado: $ManifestPath"
     }
-    return Get-Content $ManifestPath -Raw | ConvertFrom-Json
+    return Get-Content $ManifestPath -Raw -Encoding UTF8 | ConvertFrom-Json
 }
 
 function Resolve-SamplePath {
@@ -62,7 +62,8 @@ function Invoke-TomwarePinRun {
         [string[]]$Knobs = @(),
         [switch]$FollowChild,
         [int]$TimeoutSeconds = 0,
-        [string]$Scenario
+        [string]$Scenario,
+        [string]$ProgressLabel = ""
     )
 
     if (-not (Test-Path $PinExe)) { throw "pin.exe nao encontrado: $PinExe" }
@@ -87,16 +88,31 @@ function Invoke-TomwarePinRun {
         try {
             $proc = Start-Process -FilePath $PinExe -ArgumentList $pinArgs `
                 -PassThru -NoNewWindow -RedirectStandardOutput $outFile -RedirectStandardError $errFile
-            if (-not $proc.WaitForExit($TimeoutSeconds * 1000)) {
-                $proc.Kill()
-                $timedOut = $true
-                $exitCode = -2
+
+            $lastProgressAt = 0
+            while (-not $proc.WaitForExit(1000)) {
+                $elapsedSeconds = [int][Math]::Floor($sw.Elapsed.TotalSeconds)
+                if ($TimeoutSeconds -gt 0 -and $elapsedSeconds -ge $TimeoutSeconds) {
+                    $proc.Kill()
+                    $timedOut = $true
+                    $exitCode = -2
+                    Write-Host ("    timeout: {0}s atingidos em {1}" -f $TimeoutSeconds, $(if ($ProgressLabel) { $ProgressLabel } else { $Scenario })) -ForegroundColor Yellow
+                    break
+                }
+
+                if ($TimeoutSeconds -ge 60 -and ($elapsedSeconds -eq 5 -or ($elapsedSeconds - $lastProgressAt) -ge 30)) {
+                    $label = if ($ProgressLabel) { $ProgressLabel } else { $Scenario }
+                    Write-Host ("    aguardando {0}: {1}s / {2}s" -f $label, $elapsedSeconds, $TimeoutSeconds) -ForegroundColor DarkGray
+                    $lastProgressAt = $elapsedSeconds
+                }
             }
-            else {
+
+            if (-not $timedOut) {
                 $exitCode = $proc.ExitCode
             }
-            if (Test-Path $outFile) { $stdout = Get-Content $outFile -Raw -ErrorAction SilentlyContinue }
-            if (Test-Path $errFile) { $stderr = Get-Content $errFile -Raw -ErrorAction SilentlyContinue }
+
+            if (Test-Path $outFile) { $stdout = Get-Content $outFile -Raw -Encoding UTF8 -ErrorAction SilentlyContinue }
+            if (Test-Path $errFile) { $stderr = Get-Content $errFile -Raw -Encoding UTF8 -ErrorAction SilentlyContinue }
         }
         finally {
             Remove-Item $outFile, $errFile -Force -ErrorAction SilentlyContinue

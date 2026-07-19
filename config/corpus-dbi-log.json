@@ -94,14 +94,14 @@
       "name": "TestGetEnvironments",
       "path": "Resultados/Apps-Teste/TestGetEnvironments.exe",
       "knobs": ["-de"],
-      "success_pattern": "Nenhuma variável do PIN detectada"
+      "success_pattern": "OK - nenhuma anomalia"
     },
     {
       "id": "memscan",
       "name": "TestMemoryScan",
       "path": "Resultados/Apps-Teste/TestMemoryScan.exe",
       "knobs": ["-dm"],
-      "success_pattern": "sem Alerta de PIN_"
+      "success_pattern": "Resumo de ocorr"
     },
     {
       "id": "overhead",
@@ -118,14 +118,14 @@
       "path": "Resultados/Apps-Teste/TestAntiDebug.exe",
       "baseline_knobs": ["-gdb"],
       "knobs": ["-dd"],
-      "success_pattern": "nenhum indicador basico de debug"
+      "success_pattern": "OK - nenhuma anomalia"
     },
     {
       "id": "processenum",
       "name": "TestProcessEnum",
       "path": "Resultados/Apps-Teste/TestProcessEnum.exe",
       "knobs": ["-dp"],
-      "success_pattern": "Nenhum pin.exe na enumeracao"
+      "success_pattern": "OK - nenhuma anomalia"
     }
   ]
 }

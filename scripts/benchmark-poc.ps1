@@ -86,27 +86,25 @@ foreach ($test in $manifest.poc_tests) {
 
     switch ($test.id) {
         "env" {
-            # O veredito "positivo" do PoC usa acento (wcout trava sob Pin e
-            # trunca). Usamos a linha de deteccao, que e ASCII puro: baseline
-            # deve detectar ("PIN Detectado"); stealth nao deve detectar.
-            $passBaseline = $baseline.Stdout -match "PIN Detectado"
-            $passStealth = $stealth.Stdout -notmatch "PIN Detectado"
+            # Padrao SBSeg 2025: Resumo + Alerta (baseline) / OK (stealth)
+            $passBaseline = $baseline.Stdout -match "Alerta:"
+            $passStealth = ($stealth.Stdout -notmatch "Alerta:") -and ($stealth.Stdout -match "OK - nenhuma anomalia")
         }
         "memscan" {
-            $passBaseline = $baseline.Stdout -match "Alerta"
-            $passStealth = $stealth.Stdout -notmatch "Alerta"
+            $passBaseline = $baseline.Stdout -match "Alerta:"
+            $passStealth = $stealth.Stdout -notmatch "Alerta:"
         }
         "overhead" {
-            $passBaseline = $baseline.Stdout -match "DBI"
-            $passStealth = $stealth.Stdout -match "OK"
+            $passBaseline = $baseline.Stdout -match "\*+\s*Overhead anomalo|\*\*\* Overhead"
+            $passStealth = $stealth.Stdout -match "OK - nenhuma anomalia"
         }
         "antidebug" {
-            $passBaseline = $baseline.Stdout -match "ambiente de debug detectado|Debug port detectado|Debug object detectado|BeingDebugged ativo|heap de debug"
-            $passStealth = $stealth.Stdout -match "nenhum indicador basico de debug"
+            $passBaseline = $baseline.Stdout -match "Alerta:"
+            $passStealth = ($stealth.Stdout -notmatch "Alerta:") -and ($stealth.Stdout -match "OK - nenhuma anomalia")
         }
         "processenum" {
-            $passBaseline = $baseline.Stdout -match "Processo Pin detectado|Modulo Pin detectado"
-            $passStealth = $stealth.Stdout -match "Nenhum pin.exe na enumeracao"
+            $passBaseline = $baseline.Stdout -match "Alerta:"
+            $passStealth = ($stealth.Stdout -notmatch "Alerta:") -and ($stealth.Stdout -match "OK - nenhuma anomalia")
         }
         default {
             $passBaseline = $baseline.Stdout -notmatch [regex]::Escape($test.success_pattern)

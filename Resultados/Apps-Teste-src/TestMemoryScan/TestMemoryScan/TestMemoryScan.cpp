@@ -1,46 +1,26 @@
 #include <windows.h>
 #include <iostream>
 #include <string>
+#include <cctype>
 #include "Measurement.h"
+#include "..\..\TomwareLoop.h"
 
 struct SigInfo {
     const char* pat;
     size_t len;
-    size_t count;      // contador
+    size_t count;
+    size_t alertThreshold;
 };
 
-
-void PrintAsciiString(const char* p, const MEMORY_BASIC_INFORMATION& mbi)
+static void ScanMemoryForPinStrings(SigInfo* sigs, size_t nSigs, bool verbose)
 {
-    const BYTE* regionEnd = static_cast<const BYTE*>(mbi.BaseAddress) + mbi.RegionSize;
-    char buf[260] = { 0 };         // corta em 259 chars
-    size_t i = 0;
-
-    while (p < reinterpret_cast<const char*>(regionEnd) && *p && i < sizeof(buf) - 1)
-    {
-        buf[i++] = std::isprint(static_cast<unsigned char>(*p)) ? *p : '.';
-        ++p;
-    }
-    printf("  \"%s\"\n", buf);
-}
-
-void ScanMemoryForPinStrings()
-{
-    SYSTEM_INFO si;  GetSystemInfo(&si);
+    SYSTEM_INFO si;
+    GetSystemInfo(&si);
     BYTE* addr = static_cast<BYTE*>(si.lpMinimumApplicationAddress);
-
-    SigInfo sigs[] = {
-        { "PIN_",   4, 0 }, // inclui nomes de funções (ex. PIN_StartProgram) e nomes de variáveis (ex. PIN_CRT_TZDATA), evita falsos positivos como "COPING"
-        { "pin.exe", 7, 0 },
-        { "pinvm.dll", 9, 0 },
-        { "pinipc.dll", 10, 0 }
-    };
-
-    printf("\nOcorrências:\n");
 
     MEMORY_BASIC_INFORMATION mbi;
     while (addr < static_cast<BYTE*>(si.lpMaximumApplicationAddress)) {
-        if (VirtualQuery(addr, &mbi, sizeof(mbi)) == 0) // estrategia pode ser interceptar dados que contenham os nomes presente numa lista e embaralhar na resposta a função Virtualquery
+        if (VirtualQuery(addr, &mbi, sizeof(mbi)) == 0)
             break;
 
         if (mbi.State == MEM_COMMIT &&
@@ -49,46 +29,85 @@ void ScanMemoryForPinStrings()
             const BYTE* base = static_cast<const BYTE*>(mbi.BaseAddress);
             const SIZE_T regionLen = mbi.RegionSize;
 
-            for (SigInfo& s : sigs) {
-                if (regionLen < s.len) continue;
-                const SIZE_T maxOff = regionLen - s.len;
+            for (size_t s = 0; s < nSigs; ++s) {
+                if (regionLen < sigs[s].len) continue;
+                const SIZE_T maxOff = regionLen - sigs[s].len;
 
                 for (SIZE_T i = 0; i <= maxOff; ++i) {
-                    if (memcmp(base + i, s.pat, s.len) == 0) {
-                        ++s.count;
-                        //printf("Possível resíduo \"%s\" em %p\n", s.pat, base + i);
-                        PrintAsciiString(reinterpret_cast<const char*>(base + i), mbi);
+                    if (memcmp(base + i, sigs[s].pat, sigs[s].len) == 0) {
+                        ++sigs[s].count;
+                        if (verbose) {
+                            const BYTE* regionEnd = base + regionLen;
+                            const char* p = reinterpret_cast<const char*>(base + i);
+                            char buf[260] = { 0 };
+                            size_t k = 0;
+                            while (p < reinterpret_cast<const char*>(regionEnd) && *p && k < sizeof(buf) - 1) {
+                                buf[k++] = std::isprint(static_cast<unsigned char>(*p)) ? *p : '.';
+                                ++p;
+                            }
+                            printf("  \"%s\"\n", buf);
+                        }
                     }
                 }
             }
         }
         addr += mbi.RegionSize;
     }
+}
 
-    // --------------------- relatório final ---------------------
-    printf("\nResumo de ocorrências:\n");
-    printf("  PIN_    : %zu\n", sigs[0].count);
-    printf("  pin.exe : %zu\n", sigs[1].count);
-    printf("  pinvm.dll : %zu\n", sigs[2].count);
-    printf("  pinipc.dll : %zu\n", sigs[3].count);
+static void PrintResumo(const SigInfo* sigs, size_t nSigs)
+{
+    printf("Ocorr\xC3\xAAncias:\n\n");
+    printf("Resumo de ocorr\xC3\xAAncias:\n");
+    printf("PIN_     : %zu\n", sigs[0].count);
+    printf("pin.exe  : %zu\n", sigs[1].count);
+    printf("pinvm.dll : %zu\n", sigs[2].count);
+    printf("pinipc.dll : %zu\n", sigs[3].count);
 
-    if (sigs[0].count > 4)
-        printf("Alerta: mais de 4 ocorrências de \"PIN_\" encontradas!\n");
-    if (sigs[1].count > 3)
-        printf("Alerta: mais de 2 ocorrências de \"pin.exe\" encontradas!\n");
-    if (sigs[2].count > 3)
-        printf("Alerta: mais de 2 ocorrências de \"pinvm.dll\" encontradas!\n");
-    if (sigs[3].count > 3)
-        printf("Alerta: mais de 2 ocorrências de \"pinipc.dll\" encontradas!\n");
+    for (size_t i = 0; i < nSigs; ++i) {
+        if (sigs[i].count > sigs[i].alertThreshold) {
+            printf("Alerta: mais de %zu ocorr\xC3\xAAncias de \"%s\" encontradas!\n",
+                sigs[i].alertThreshold, sigs[i].pat);
+        }
+    }
+    fflush(stdout);
 }
 
 int wmain()
 {
     SetConsoleOutputCP(CP_UTF8);
-    setvbuf(stdout, NULL, _IONBF, 0); // saida sem buffer: captura confiavel sob redirecionamento/Pin
+    setvbuf(stdout, NULL, _IONBF, 0);
 
-    ScanMemoryForPinStrings();
-    //testGetTickCountConsistency(1000, &ScanMemoryForPinStrings, L"tick_test_log-MemoryScan.txt");
+    TomwarePrintLoopHeader("TestMemoryScan");
+    const ULONGLONG t0 = TomwareNowMs();
 
+    const size_t nSigs = 4;
+    SigInfo firstPass[] = {
+        { "PIN_",      4,  0, 4 },
+        { "pin.exe",   7,  0, 2 },
+        { "pinvm.dll", 9,  0, 2 },
+        { "pinipc.dll", 10, 0, 2 }
+    };
+
+    // 1a iteracao: evidencia completa (padrao do artigo) — imprime Resumo cedo
+    // para nao perder contagens se o restante do loop sofrer timeout sob Pin.
+    const bool verboseFirst = (TOMWARE_LOOP_COUNT == 1);
+    ScanMemoryForPinStrings(firstPass, nSigs, verboseFirst);
+    PrintResumo(firstPass, nSigs);
+
+    // Iteracoes restantes: varreduras reais, sem reimprimir o Resumo.
+    // Isso preserva o experimento Loop_X_1000; o Resumo antecipado serve apenas
+    // para nao perder a evidencia caso a execucao seja interrompida por timeout.
+    for (int iter = 1; iter < TOMWARE_LOOP_COUNT; ++iter) {
+        SigInfo pass[] = {
+            { "PIN_",      4,  0, 4 },
+            { "pin.exe",   7,  0, 2 },
+            { "pinvm.dll", 9,  0, 2 },
+            { "pinipc.dll", 10, 0, 2 }
+        };
+        ScanMemoryForPinStrings(pass, nSigs, false);
+    }
+
+    TomwarePrintLoopFooter(t0);
     return 0;
 }

@@ -1,0 +1,46 @@
+%% TOMWare.M — arquitetura atual (SBSeg 2026 SF)
+%% Estilo alinhado ao diagrama Contradef (alvo → Pin → Main → Instrumentation → módulos → saídas)
+%% Render: https://mermaid.live
+
+flowchart TD
+  target["Target Process PE x64<br/>malware or test app"]
+  pinRt["Intel Pin Runtime"]
+
+  subgraph tomware ["TOMWare.M Pintool"]
+    mainTw["Main TOMWare.cpp<br/>PIN_Init"]
+    core["Instrumentation Core<br/>Instrumentation.cpp"]
+    knobs["Knobs<br/>-de -dm -do -dd -dp -da<br/>-sf -q -go -gdb -me"]
+
+    subgraph cm ["Countermeasures"]
+      deMod["SanitizePinEnvVars -de<br/>PEB env PIN_ sanitization"]
+      dmMod["InstMemcmpMask -dm<br/>memcmp family + signatures"]
+      doMod["SkewMask -do<br/>Sleep QPC temporal skew"]
+      ddMod["AntiDebug -dd<br/>PEB BeingDebugged NtGlobalFlag"]
+      dpMod["ProcessEnum -dp<br/>Process32 Module32 GetModuleHandle"]
+    end
+
+    subgraph demos ["Demo only not in -da"]
+      gdbDemo["-gdb simulate PEB debug"]
+      goDemo["-go artificial overhead"]
+    end
+
+    sigs[("Signatures -sf<br/>PIN_ pin.exe pinvm.dll pinipc.dll")]
+  end
+
+  logTw["TomwareLog"]
+  logEnv["tomware-envvars.log"]
+
+  target --> pinRt
+  pinRt --> mainTw
+  mainTw --> core
+  core --> knobs
+  knobs --> deMod
+  knobs --> dmMod
+  knobs --> doMod
+  knobs --> ddMod
+  knobs --> dpMod
+  knobs -.-> gdbDemo
+  knobs -.-> goDemo
+  dmMod --> sigs
+  deMod --> logEnv
+  core --> logTw

@@ -1,89 +1,117 @@
-// Exemplo: enumerando variáveis de ambiente com GetEnvironmentStringsW
-// Compilação (MSVC): cl /EHsc /W4 env_example.cpp
-
+// TestGetEnvironments.cpp — padrao de saida alinhado ao artigo SBSeg 2025
 #include <windows.h>
 #include <iostream>
 #include <string>
+#include <cstdio>
 #include "Measurement.h"
+#include "..\..\TomwareLoop.h"
 
-void GetEnvString() {
-    // Obtém o bloco de strings de ambiente (Unicode)
+struct EnvSig {
+    const wchar_t* name;
+    size_t count;
+    size_t alertThreshold;
+};
+
+static void GetEnvString(EnvSig* sigs, size_t nSigs, bool verbose)
+{
     LPWCH envBlock = GetEnvironmentStringsW();
     if (envBlock == nullptr)
     {
-        // Saida narrow (printf): wcout/wcerr nao chega ao stdout sob Pin.
         fprintf(stderr, "Falha em GetEnvironmentStringsW. Erro = %lu\n", GetLastError());
         return;
     }
 
-    BOOL detected = false;
-
-    // Cada variável termina em '\0'; o bloco termina em '\0''\0'
     LPWCH current = envBlock;
     while (*current)
     {
-        // Constrói um std::wstring a partir da string wide-char atual
         std::wstring envVar(current);
 
-        // Exibe a variável encontrada
-        if ((envVar.find(L"PIN_APP_LD_LIBRARY_PATH") != std::wstring::npos) || (envVar.find(L"PIN_VM_LD_LIBRARY_PATH") != std::wstring::npos) || (envVar.find(L"PIN_CRT_TZDATA") != std::wstring::npos)) {
-            printf("PIN Detectado com a variavel %ls\n", envVar.c_str());
-            detected = true;
+        for (size_t i = 0; i < nSigs; ++i) {
+            if (envVar.find(sigs[i].name) != std::wstring::npos) {
+                ++sigs[i].count;
+                if (verbose)
+                    printf("  \"%ls\"\n", envVar.c_str());
+            }
         }
 
-        // Avança para a próxima string (pula até o próximo '\0')
         current += envVar.size() + 1;
     }
 
-    if (!detected) {
-        printf("Nenhuma variavel do PIN detectada.\n");
-    }
-
-    // Libera o bloco alocado pela API
     if (!FreeEnvironmentStringsW(envBlock))
     {
         fprintf(stderr, "Falha em FreeEnvironmentStringsW. Erro = %lu\n", GetLastError());
     }
-    printf("----------------------------------------------------------\n");
-
 }
 
-void Dupenv() {
-    char* pValue;
-    size_t len;
+static void Dupenv(bool verbose)
+{
+    char* pValue = nullptr;
+    size_t len = 0;
     errno_t err = _dupenv_s(&pValue, &len, "PIN_CRT_TZDATA");
     if (!err && pValue) {
-        printf("PIN_CRT_TZDATA = %s\n", pValue);
+        if (verbose)
+            printf("  \"PIN_CRT_TZDATA=%s\" (_dupenv_s)\n", pValue);
+        free(pValue);
     }
-    free(pValue);
 }
 
-
-void PrintAsciiString(const char* p, const MEMORY_BASIC_INFORMATION& mbi)
+static void PrintResumo(const EnvSig* sigs, size_t nSigs)
 {
-    const BYTE* regionEnd = static_cast<const BYTE*>(mbi.BaseAddress) + mbi.RegionSize;
-    char buf[260] = { 0 };         // corta em 259 chars
-    size_t i = 0;
+    printf("Ocorr\xC3\xAAncias:\n\n");
+    printf("Resumo de ocorr\xC3\xAAncias:\n");
+    printf("PIN_APP_LD_LIBRARY_PATH : %zu\n", sigs[0].count);
+    printf("PIN_VM_LD_LIBRARY_PATH  : %zu\n", sigs[1].count);
+    printf("PIN_CRT_TZDATA          : %zu\n", sigs[2].count);
 
-    while (p < reinterpret_cast<const char*>(regionEnd) && *p && i < sizeof(buf) - 1)
-    {
-        buf[i++] = std::isprint(static_cast<unsigned char>(*p)) ? *p : '.';
-        ++p;
+    bool anyAlert = false;
+    for (size_t i = 0; i < nSigs; ++i) {
+        if (sigs[i].count > sigs[i].alertThreshold) {
+            printf("Alerta: mais de %zu ocorr\xC3\xAAncias de \"%ls\" encontradas!\n",
+                sigs[i].alertThreshold, sigs[i].name);
+            anyAlert = true;
+        }
     }
-    printf("  \"%s\"\n", buf);
-}
 
-void testGetPinEnvs() {
-    // ***** Método 1 *****
-    GetEnvString();
+    if (!anyAlert)
+        printf("OK - nenhuma anomalia\n");
 
-    // ***** Método 2 *****
-    Dupenv();
+    printf("-------------------------------\n");
 }
 
 int wmain()
 {
-    //testGetTickCountConsistency(1000, &testGetPinEnvs, L"tick_test_log-GetEnvironments.txt");
-    testGetPinEnvs();
+    SetConsoleOutputCP(CP_UTF8);
+    setvbuf(stdout, NULL, _IONBF, 0);
+
+    TomwarePrintLoopHeader("TestGetEnvironments");
+    const ULONGLONG t0 = TomwareNowMs();
+
+    EnvSig totals[] = {
+        { L"PIN_APP_LD_LIBRARY_PATH", 0, 0 },
+        { L"PIN_VM_LD_LIBRARY_PATH",  0, 0 },
+        { L"PIN_CRT_TZDATA",          0, 0 }
+    };
+    const size_t nSigs = sizeof(totals) / sizeof(totals[0]);
+
+    for (int iter = 0; iter < TOMWARE_LOOP_COUNT; ++iter) {
+        EnvSig pass[] = {
+            { L"PIN_APP_LD_LIBRARY_PATH", 0, 0 },
+            { L"PIN_VM_LD_LIBRARY_PATH",  0, 0 },
+            { L"PIN_CRT_TZDATA",          0, 0 }
+        };
+        const bool verbose = (TOMWARE_LOOP_COUNT == 1);
+        GetEnvString(pass, nSigs, verbose);
+        Dupenv(verbose);
+        for (size_t i = 0; i < nSigs; ++i)
+            totals[i].count += pass[i].count;
+    }
+
+    if (TOMWARE_LOOP_COUNT > 1) {
+        for (size_t i = 0; i < nSigs; ++i)
+            totals[i].count = totals[i].count / static_cast<size_t>(TOMWARE_LOOP_COUNT);
+    }
+
+    PrintResumo(totals, nSigs);
+    TomwarePrintLoopFooter(t0);
     return 0;
 }

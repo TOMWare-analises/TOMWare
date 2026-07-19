@@ -1,274 +1,452 @@
-# TOMWare
+# **TOMWare.M — Mitigação de Técnicas de Anti-Instrumentação em Ambientes DBI**
 
-**Transparency and Overhead Measurement for Malware** — pintool Intel Pin com contramedidas contra técnicas de anti-instrumentação em DBI (Dynamic Binary Instrumentation).
+**TOMWare.M** (*Transparency and Overhead Measurement for Malware*) é uma ferramenta modular de Instrumentação Binária Dinâmica (DBI), desenvolvida sobre o **Intel Pin**, voltada à mitigação de técnicas de anti-instrumentação em executáveis Windows x64.
 
-Malware ciente de contexto detecta a presença do Pin por variáveis de ambiente, varredura de memória, medição de overhead, anti-debug e enumeração de processos. A TOMWare mascara esses vetores para permitir análise dinâmica com maior transparência e estabilidade.
-
----
-
-## Sumário
-
-- [Início rápido](#início-rápido)
-- [Contramedidas](#contramedidas)
-- [Estrutura do repositório](#estrutura-do-repositório)
-- [Dependências e compilação](#dependências-e-compilação)
-- [Execução](#execução)
-- [Scripts de avaliação](#scripts-de-avaliação)
-- [Aplicações de teste (PoC)](#aplicações-de-teste-poc)
-- [Selos SBSeg](#selos-sbseg)
-- [Dicas e erros comuns](#dicas-e-erros-comuns)
+Repositório: [https://github.com/TOMWare-analises/TOMWare](https://github.com/TOMWare-analises/TOMWare)
 
 ---
 
-## Início rápido
+## Abstract
 
-Pré-requisitos: Windows 10/11, Visual Studio 2019 ou 2022 (toolset **v142**), Intel Pin 3.28 x64 (incluído em `pin/`).
+TOMWare.M is a modular DBI pintool built on Intel Pin to mitigate anti-instrumentation techniques. It implements five selectively activatable countermeasures targeting debugging indicators, process enumeration, environment variables, memory signatures, and execution-time discrepancies. The five modules were validated through controlled test applications; execution times were recorded before and after activation. Results indicate that the countermeasures reduce the corresponding instrumentation indicators in the evaluated scenarios, while temporal impact varies according to the intercepted mechanism and its activation frequency.
 
-```powershell
-# 1. Compilar (na raiz do repositório)
-& "${env:ProgramFiles}\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe" `
-    TOMWare.sln /p:Configuration=Release /p:Platform=x64
-
-# 2. Teste mínimo — variáveis de ambiente do Pin
-.\pin\pin.exe -t .\x64\Release\TOMWare.dll -de -q -- .\Resultados\Apps-Teste\TestGetEnvironments.exe
-
-# 3. Todas as contramedidas em amostra real (recomendado)
-.\scripts\run-sample.ps1 -Sample C:\Samples\alvo.exe -DefendAll -Quiet -FollowChild
-```
-
-> Use **`Release | x64`** para execuções prolongadas. Mantenha `Debug` apenas para depuração no Visual Studio.
+**Resumo.** A TOMWare.M implementa cinco contramedidas ativáveis de forma seletiva (`-dd`, `-dp`, `-de`, `-dm`, `-do`), validáveis por aplicações de teste controladas e exercitáveis sobre amostras reais sob Pin. Fornece uma plataforma experimental para investigar a relação entre **transparência** e **impacto temporal** em ambientes DBI.
 
 ---
 
-## Contramedidas
+## Table of Contents
 
-| Knob | Módulo | O que mitiga |
-|------|--------|--------------|
-| `-de` | **SanitizePinEnvVars** | Variáveis e artefatos de ambiente do Pin (`PIN_*`, etc.) |
-| `-dm` | **InstMemcmpMask** | Varreduras de memória via `memcmp` e padrões configuráveis (`-sf`) |
-| `-do` | **SkewMask** | Detecção por medição de overhead/timing (`GetTickCount`, QPC, …) |
-| `-dd` | **AntiDebugMask** | APIs anti-debug e flags no PEB (`IsDebuggerPresent`, `NtQueryInformationProcess`, …) |
-| `-dp` | **ProcessEnumMask** | Oculta `pin.exe` e módulos Pin em enumeração de processos/módulos |
-| `-da` | *(todas acima)* | Ativa `-de`, `-dm`, `-do`, `-dd` e `-dp` (**não** inclui `-go`) |
-
-| Knob auxiliar | Descrição |
-|---------------|-----------|
-| `-sf PATH` | Assinaturas extras para `-dm` (padrão: `config/signatures.txt`) |
-| `-q` | Modo silencioso — suprime logs informativos das contramedidas |
-| `-me N` | Limite de exceções antes de abortar (`0` = ilimitado; padrão continua execução) |
-| `-go` | Gerador **artificial** de overhead — somente PoCs (`TestOverhead.exe`); use com `-do` |
-| `-gdb` | Simula indicadores anti-debug no PEB — somente demonstrações com `-dd` |
-
-**Recomendações**
-
-- Amostras reais: `-da -q` (com `-follow_execv 1` quando houver processos filhos).
-- PoC de overhead: `-do -go`.
-- Baseline vs contramedida: `scripts\run-baseline-dm-one.cmd`.
+* [1. Estrutura deste README](#1-estrutura-deste-readme)
+  * [1.1 Organização](#11-organização)
+  * [1.2 Artefatos distribuídos](#12-artefatos-distribuídos)
+  * [1.3 Estrutura do repositório](#13-estrutura-do-repositório)
+* [2. Selos considerados](#2-selos-considerados)
+* [3. Informações básicas](#3-informações-básicas)
+  * [3.1 Introdução à execução e experimentos](#31-introdução-à-execução-e-experimentos)
+  * [3.2 Principais funcionalidades](#32-principais-funcionalidades)
+  * [3.3 Arquitetura](#33-arquitetura)
+  * [3.4 Como a execução é estruturada](#34-como-a-execução-é-estruturada)
+  * [3.5 Ambiente recomendado](#35-ambiente-recomendado)
+* [4. Dependências](#4-dependências)
+* [5. Segurança](#5-segurança)
+* [6. Instalação](#6-instalação)
+* [7. Teste mínimo](#7-teste-mínimo)
+* [8. Experimentos](#8-experimentos)
+* [9. Licença](#9-licença)
 
 ---
 
-## Estrutura do repositório
+# 1. Estrutura deste README
+
+## 1.1 Organização
+
+Este README está organizado nas seguintes seções principais:
+
+1. **Estrutura deste README** — visão geral do documento e do repositório.
+2. **Selos considerados** — critérios de artefato (disponível / funcional / reproduzível).
+3. **Informações básicas** — introdução, módulos, arquitetura e ambiente.
+4. **Dependências** — requisitos de host, compilação e VM.
+5. **Segurança** — isolamento obrigatório ao executar amostras reais.
+6. **Instalação** — compilação (opcional) e sintaxe básica da pintool.
+7. **Teste mínimo** — validação rápida com apps de teste (sem malware).
+8. **Experimentos** — baseline vs contramedida, corpus e medição temporal.
+9. **Licença** — termos de uso.
+
+## 1.2 Artefatos distribuídos
+
+* Código-fonte da pintool **TOMWare** (`TOMWare/`).
+* Binários de teste pré-compilados (`Resultados/Apps-Teste/`), incluindo variantes `Loop_X_1000/`.
+* Fontes das aplicações de teste (`Resultados/Apps-Teste-src/`).
+* Intel Pin 3.28 MSVC x64 (`pin/`), quando incluído na distribuição.
+* Assinaturas para mascaramento de memória (`config/signatures.txt`).
+* Scripts de execução e benchmark (`scripts/`).
+* Diagrama de arquitetura atual (`imgs/tomware-architecture-current.png`).
+* Capturas e resultados de experimento (`Resultados/`, conforme versão publicada).
+
+> O objetivo dos artefatos é permitir: (1) explorar o código; (2) verificar a funcionalidade (teste mínimo); (3) reproduzir os experimentos do artigo (apps de teste + amostras reais sob Pin); (4) avaliar o impacto temporal das contramedidas.
+
+## 1.3 Estrutura do repositório
 
 ```text
 TOMWare/                              ← raiz do repositório (este README)
 ├── TOMWare/                          ← código-fonte da pintool (.cpp/.h)
 ├── pin/                              ← Intel Pin 3.28 (x64, MSVC)
-├── config/                           ← assinaturas (-sf), corpus DBI-Log, mapeamento TA0005
+├── config/                           ← assinaturas (-sf), corpus, mapeamentos
 ├── scripts/                          ← execução e benchmark
-├── imgs/                             ← capturas de tela deste README
+│   ├── run-sample.ps1
+│   ├── run-baseline-dm-one.ps1/.cmd  ← baseline vs uma contramedida (mesmo print)
+│   ├── benchmark-poc.ps1
+│   ├── benchmark-corpus.ps1
+│   ├── benchmark-infected.ps1
+│   └── lib/TomwareBenchmark.ps1
+├── imgs/                             ← figuras do README / arquitetura
 ├── Resultados/
-│   ├── Apps-Teste/                   ← executáveis das PoCs (pré-compilados)
-│   ├── Apps-Teste-src/               ← código-fonte das PoCs (+ TestAntiDebug, TestProcessEnum)
-│   ├── Capturas-Tela/                ← capturas dos experimentos do artigo
-│   └── Resultados/                   ← resultados publicados (artigo original)
+│   ├── Apps-Teste/                   ← executáveis das apps de teste
+│   │   └── Loop_X_1000/              ← mesmas apps com 1000 iterações
+│   ├── Apps-Teste-src/               ← fontes das apps de teste
+│   ├── Capturas-Tela/                ← capturas dos experimentos
+│   └── Avaliacao/                    ← saídas de benchmark (quando geradas)
 ├── TOMWare.sln
+├── LICENSE
 └── README.md
 ```
 
+> **Importante:** ao baixar o `.zip` do GitHub, a pasta pode chamar-se `TOMWare-main`. Ajuste os caminhos dos exemplos conforme o local de extração.
+
 ---
 
-## Dependências e compilação
+# 2. Selos considerados
 
-| Componente | Versão / nota |
+Selos alinhados ao Salão de Ferramentas (SBSeg):
+
+| Selo | Critério | Como este repositório atende |
+|------|----------|------------------------------|
+| **Disponível (D)** | Código e artefatos públicos | Fontes, apps de teste, scripts e README |
+| **Funcional (F)** | Ferramenta executável conforme instruções | Teste mínimo (§7) com apps em `Resultados/Apps-Teste/` |
+| **Reproduzível** | Protocolo experimental documentado | §8 — baseline vs contramedida; VM + snapshot |
+
+Trabalho de base: SBSeg 2025 (TOMWare). Extensão atual (**TOMWare.M**, SBSeg 2026 SF): módulos **AntiDebug** (`-dd`) e **ProcessEnum** (`-dp`), scripts de comparação e avaliação em corpus.
+
+---
+
+# 3. Informações básicas
+
+## 3.1 Introdução à execução e experimentos
+
+Malware ciente de contexto pode detectar o Intel Pin por: indicadores de depuração, enumeração de processos (`pin.exe`), variáveis de ambiente `PIN_*`, assinaturas em memória e discrepâncias de tempo (overhead). A TOMWare.M mascara essas superfícies para permitir análise dinâmica com maior transparência.
+
+Os experimentos deste repositório têm dois objetivos:
+
+1. **Validar funcionalidade** — demonstrar que cada módulo reduz o indicador correspondente na aplicação de teste (oráculo controlado).
+2. **Avaliar impacto** — registrar tempos de execução sob Pin **sem** e **com** a contramedida (campo `Result` / medição de parede), inclusive sobre amostras reais.
+
+> **Ambiente isolado:** experimentos com malware devem ocorrer **somente em VM**, restaurada a partir de snapshot limpo após cada amostra.
+
+> **Binários benignos:** apps de teste e ferramentas legítimas podem rodar no host, sem desativar antivírus, para validar a instalação.
+
+## 3.2 Principais funcionalidades
+
+| Knob | Módulo (artigo) | Arquivo / papel |
+|------|-----------------|-----------------|
+| `-dd` | **AntiDebug** | `AntiDebugMask.cpp` — normaliza indicadores de depuração no PEB (`BeingDebugged`, `NtGlobalFlag`), cobrindo verificações que leem esses campos (ex.: `IsDebuggerPresent`) |
+| `-dp` | **ProcessEnum** | `ProcessEnumMask.cpp` — filtra `pin.exe` / módulos Pin em `Process32*`, `Module32*` e `GetModuleHandle*` |
+| `-de` | **SanitizePinEnvVars** | `SanitizePinEnvVars.cpp` — sanitiza o bloco de ambiente do PEB (prefixos `PIN_*`) |
+| `-dm` | **InstMemcmpMask** | estratégias em `Instrumentation.cpp` + assinaturas — força “não igual” em `memcmp`/familiares quando o padrão é Pin |
+| `-do` | **SkewMask** | `SkewMask.cpp` — calibra/compensa desvios em `Sleep`/`SleepEx` e consultas temporais (QPC e correlatas) |
+| `-da` | *(todas acima)* | Ativa `-de -dm -do -dd -dp` (**não** inclui `-go`) |
+
+**Knobs auxiliares**
+
+| Knob | Descrição |
+|------|-----------|
+| `-sf PATH` | Assinaturas extras para `-dm` (padrão: `config/signatures.txt`) |
+| `-q` | Modo silencioso (suprime logs informativos) |
+| `-me N` | Limite de exceções antes de abortar (`0` = ilimitado) |
+| `-go` | Overhead **artificial** — apenas demos com `TestOverhead.exe` (fora de `-da`) |
+| `-gdb` | Simula indicadores de debug no PEB — demo de baseline para `-dd` |
+
+> Os módulos são **complementares** e ativáveis de forma seletiva, sem recompilar. Suporte atual: **PE nativo 64-bit** (e builds x86 conforme configuração); sem suporte direto a .NET/Java/scripts.
+
+## 3.3 Arquitetura
+
+<p align="center">
+  <img src="imgs/tomware-architecture-current.png" alt="Arquitetura TOMWare.M" width="90%">
+</p>
+
+| Componente | Função | Onde |
+|------------|--------|------|
+| **Main** | `PIN_Init` → inicia a instrumentação | `TOMWare/TOMWare.cpp` |
+| **Instrumentation Core** | Knobs, `IMG` hooks, estratégias, exception handler | `TOMWare/Instrumentation.cpp` |
+| **AntiDebug** (`-dd`) | Sanitização de indicadores de depuração no PEB | `TOMWare/AntiDebugMask.cpp` |
+| **ProcessEnum** (`-dp`) | Filtro na enumeração de processos/módulos | `TOMWare/ProcessEnumMask.cpp` |
+| **SanitizePinEnvVars** (`-de`) | Sanitização do bloco de ambiente | `TOMWare/SanitizePinEnvVars.cpp` |
+| **InstMemcmpMask** (`-dm`) | Mascaramento de assinaturas via comparações | estratégias + `-sf` |
+| **SkewMask** (`-do`) | Compensação de desvios temporais | `TOMWare/SkewMask.cpp` |
+| **Signatures** | Padrões Pin (`PIN_`, `pin.exe`, …) | `config/signatures.txt` |
+| **Apps de teste** | Oráculos funcionais por superfície | `Resultados/Apps-Teste/` |
+
+Diagrama editável (Mermaid): `imgs/tomware-architecture-current.mmd`.
+
+## 3.4 Como a execução é estruturada
+
+Cada execução de experimento segue **duas etapas**:
+
+| Etapa | Alvo | Objetivo |
+|-------|------|----------|
+| **[1] App de teste** | `TestAntiDebug.exe`, `TestProcessEnum.exe`, … | Evidência funcional no console (caixa `Resumo` / alertas) |
+| **[2] Amostra real** | `malwares\infected\<SHA256>.exe` | Exercitar a amostra sob Pin ± contramedida; tempo no campo `Result` |
+
+Protocolo de comparação (como no artigo):
+
+1. **Nativo** (referência comportamental, sem Pin).
+2. **Pin + TOMWare sem a contramedida** (baseline — indicador aparece).
+3. **Pin + TOMWare com a contramedida** (indicador mascarado).
+
+Script recomendado para o print lado a lado:
+
+```powershell
+.\scripts\run-baseline-dm-one.cmd <SHA256> <de|dm|do|dd|dp|da>
+```
+
+> **Nota (ProcessEnum / tempos):** a eficácia de `-dp` é evidenciada pela caixa do app de teste (`pin.exe : N → 0`). Se a amostra real atingir `outcome=timeout`, o wall-clock **não** deve ser tratado como métrica de eficácia do módulo de enumeração.
+
+## 3.5 Ambiente recomendado
+
+| Camada | Especificação sugerida |
+|--------|------------------------|
+| **Host** | CPU com VT-x/AMD-V; RAM ≥ 16 GB; SSD |
+| **Hipervisor** | VMware Workstation / VirtualBox 7.x |
+| **VM (guest)** | Windows 10/11 x64; ≥ 4 vCPU; 6–8 GB RAM; rede Host-only ou desligada durante malware |
+| **Snapshot** | Restaurar snapshot limpo **após cada amostra** |
+
+> Para apenas validar a instalação, use o teste mínimo (§7) no host com as apps de teste — **sem** malware.
+
+---
+
+# 4. Dependências
+
+## 4.1 Execução
+
+* **Intel Pin** 3.28 (x64, MSVC): [download oficial](https://software.intel.com/sites/landingpage/pintool/downloads/pin-3.28-98749-g6643ecee5-msvc-windows.zip) — pasta `pin/` do repositório (quando fornecida) ou instalação local.
+* **TOMWare.dll** — `x64\Release\TOMWare.dll` após compilação.
+
+## 4.2 Compilação (host Windows)
+
+| Ferramenta | Versão / nota |
 |------------|---------------|
-| Visual Studio | 2019 ou 2022 — workload *Desktop development with C++* |
-| Toolset | **v142** (obrigatório para compatibilidade com Pin) |
-| Windows SDK | 10.0.19041 ou superior |
-| Intel Pin | 3.28 x64 MSVC — pasta `pin/` |
+| Visual Studio 2019 ou 2022 | Workload *Desktop development with C++* |
+| Toolset | **v142** (obrigatório, inclusive no VS 2022) |
+| Windows 10 SDK | ≥ 10.0.19041 |
+| Intel Pin | 3.28 x64 **MSVC** (não Clang) |
 
-> Use a distribuição **MSVC** do Pin. A TOMWare **não** foi projetada para o toolchain Clang do Pin.
+## 4.3 VM
 
-### Visual Studio
+| Ferramenta | Uso |
+|------------|-----|
+| VMware / VirtualBox | Isolamento e snapshots |
+| 7-Zip (opcional) | Extração de amostras protegidas |
+
+---
+
+# 5. Segurança
+
+A TOMWare.M **não contém código malicioso** — é uma pintool C/C++ que mascara vestígios do Pin. **O risco vem das amostras reais** usadas nos experimentos.
+
+## 5.1 Vetores de risco
+
+| Vetor | Descrição |
+|-------|-----------|
+| Execução de amostra | Escape da VM pode infectar o host |
+| Rede | Download de payloads / exfiltração |
+| Pastas compartilhadas / clipboard | Canal de fuga para o host |
+
+## 5.2 Medidas obrigatórias
+
+1. Não execute amostras reais no host.
+2. VM dedicada, rede desligada ou Host-only durante a execução.
+3. Snapshot limpo; restaurar após cada amostra.
+4. Desative pastas compartilhadas/clipboard enquanto o malware roda; habilite só para copiar logs **antes** de restaurar.
+5. Apps de teste em `Resultados/Apps-Teste/` são benignas e podem rodar no host.
+
+## 5.3 Aviso legal
+
+As amostras e instruções destinam-se a **fins acadêmicos**. Os autores não se responsabilizam por danos decorrentes de uso inadequado ou fora de ambiente controlado.
+
+---
+
+# 6. Instalação
+
+## 6.1 Compilação (opcional, se `TOMWare.dll` ainda não existir)
+
+### 6.1.1 Obter o código
+
+```powershell
+git clone https://github.com/TOMWare-analises/TOMWare.git
+cd TOMWare
+```
+
+### 6.1.2 Dependências
+
+1. Visual Studio com toolset **v142**.
+2. Windows SDK ≥ 10.0.19041.
+3. Pin 3.28 MSVC extraído em `pin\` (conteúdo direto: `pin.exe`, `intel64\`, etc.).
+
+### 6.1.3 Compilar
 
 1. Abra `TOMWare.sln`.
-2. Se o VS pedir atualização de toolset, escolha **Não** — mantenha **v142**.
-3. Selecione **`Release | x64`** (ou `Debug` para depuração).
-4. Compile (**Ctrl+Shift+B**).
+2. Se o VS pedir upgrade de toolset → **Não** (mantenha v142).
+3. Configuração **`Release | x64`**.
+4. Build (**Ctrl+Shift+B**).
 
-**Saída esperada:** `x64\Release\TOMWare.dll` (recomendado) ou `x64\Debug\TOMWare.dll`.
+Saída esperada:
+
+```text
+x64\Release\TOMWare.dll
+```
 
 <details>
-<summary>Capturas de tela — instalação e compilação no VS 2022</summary>
+<summary>Capturas — compilação no VS 2022</summary>
 
-<p align="center">
-  <img src="imgs/01.png" alt="Workload C++ no VS 2022" width="75%">
-</p>
-<p align="center">
-  <img src="imgs/02.png" alt="Seleção do toolset v142" width="75%">
-</p>
-<p align="center">
-  <img src="imgs/04.png" alt="Solução aberta no VS" width="75%">
-</p>
-<p align="center">
-  <img src="imgs/05.png" alt="Projetos da solução" width="75%">
-</p>
-<p align="center">
-  <img src="imgs/10.png" alt="Configuração Release x64" width="75%">
-</p>
-<p align="center">
-  <img src="imgs/12.png" alt="Build bem-sucedido" width="75%">
-</p>
-<p align="center">
-  <img src="imgs/13.png" alt="Binário TOMWare.dll gerado" width="75%">
-</p>
+<p align="center"><img src="imgs/01.png" alt="Workload C++" width="75%"></p>
+<p align="center"><img src="imgs/02.png" alt="Toolset v142" width="75%"></p>
+<p align="center"><img src="imgs/04.png" alt="Solução aberta" width="75%"></p>
+<p align="center"><img src="imgs/10.png" alt="Release x64" width="75%"></p>
+<p align="center"><img src="imgs/12.png" alt="Build OK" width="75%"></p>
+<p align="center"><img src="imgs/13.png" alt="TOMWare.dll" width="75%"></p>
 
 </details>
 
-### Linha de comando (MSBuild)
+**MSBuild (linha de comando):**
 
 ```powershell
 & "${env:ProgramFiles}\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe" `
     TOMWare.sln /p:Configuration=Release /p:Platform=x64
 ```
 
-Ajuste o caminho do MSBuild conforme sua edição do Visual Studio (Community, Professional, Enterprise).
+## 6.2 Execução
+
+### 6.2.1 Sintaxe básica
+
+```powershell
+.\pin\pin.exe -t .\x64\Release\TOMWare.dll [KNOBS] -- <alvo.exe>
+```
+
+Exemplos:
+
+```powershell
+# AntiDebug
+.\pin\pin.exe -t .\x64\Release\TOMWare.dll -dd -q -- .\Resultados\Apps-Teste\TestAntiDebug.exe
+
+# ProcessEnum
+.\pin\pin.exe -t .\x64\Release\TOMWare.dll -dp -q -- .\Resultados\Apps-Teste\TestProcessEnum.exe
+
+# Todas as contramedidas + follow child (amostra real)
+.\scripts\run-sample.ps1 -Sample C:\TOMWare\malwares\infected\<SHA256>.exe -DefendAll -Quiet -FollowChild
+```
 
 ---
 
-## Execução
+# 7. Teste mínimo
 
-### Sintaxe geral
+Valida a instalação **sem malware**, usando apps de teste no host.
 
-```powershell
-.\pin\pin.exe -t .\x64\Release\TOMWare.dll [KNOBS] -- <caminho-do-alvo.exe>
-```
+## 7.1 Pré-requisitos
 
-Exemplo com Pin em outro diretório:
+* Windows 10/11 x64
+* `pin\` e `x64\Release\TOMWare.dll`
+* `Resultados\Apps-Teste\TestGetEnvironments.exe` (ou outro app da tabela)
 
-```powershell
-<PATH_PIN>\pin.exe -t <PATH_TOMWARE>\TOMWare.dll -da -q -follow_execv 1 -- C:\Samples\alvo.exe
-```
-
-### Cenários de experimento
-
-Metodologia: **(1)** baseline sem Pin → **(2)** Pin sem contramedida (detecta) → **(3)** Pin com contramedida (não identifica).
+## 7.2 Passo a passo
 
 ```powershell
-# (1) Sem Pin
+cd C:\caminho\para\TOMWare
+
+# (1) Sem Pin — referência
 .\Resultados\Apps-Teste\TestGetEnvironments.exe
 
-# (2) Pin sem contramedida
-.\pin\pin.exe -t .\x64\Release\TOMWare.dll -- .\Resultados\Apps-Teste\TestGetEnvironments.exe
+# (2) Pin sem contramedida — deve alertar / detectar vestígios
+.\pin\pin.exe -t .\x64\Release\TOMWare.dll -q -- .\Resultados\Apps-Teste\TestGetEnvironments.exe
 
-# (3) Pin com contramedida
-.\pin\pin.exe -t .\x64\Release\TOMWare.dll -dm -q -- .\Resultados\Apps-Teste\TestGetEnvironments.exe
+# (3) Pin com contramedida — indicador mascarado
+.\pin\pin.exe -t .\x64\Release\TOMWare.dll -de -q -- .\Resultados\Apps-Teste\TestGetEnvironments.exe
+```
 
-# Medição de tempo
+| App de teste | Knob |
+|--------------|------|
+| `TestGetEnvironments.exe` | `-de` |
+| `TestMemoryScan.exe` | `-dm` |
+| `TestOverhead.exe` | `-do` (+ `-go` em demo) |
+| `TestAntiDebug.exe` | `-dd` |
+| `TestProcessEnum.exe` | `-dp` |
+
+Via wrapper:
+
+```powershell
+.\scripts\run-sample.ps1 -Sample .\Resultados\Apps-Teste\TestProcessEnum.exe -ProcessEnumDefend -Quiet
+.\scripts\run-sample.ps1 -Sample .\Resultados\Apps-Teste\TestAntiDebug.exe -DebugDefend -Quiet
+```
+
+---
+
+# 8. Experimentos
+
+## 8.1 Preparar a VM
+
+1. Criar VM Windows 10/11 x64 (snapshot limpo).
+2. Copiar o repositório (ou artefatos) para `C:\TOMWare`.
+3. Compilar ou copiar `x64\Release\TOMWare.dll`.
+4. Colocar amostras como `C:\TOMWare\malwares\infected\<SHA256>.exe`.
+5. Desligar rede / Host-only; desativar AV se o protocolo do artigo exigir.
+
+## 8.2 Reproduzir comparação baseline vs contramedida
+
+```powershell
+# Preferir linha única (evitar "^" no CMD — evita prompt "Mais?")
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\TOMWare\scripts\run-baseline-dm-one.ps1" `
+  -Sha256 "36685efcf34c7a7a6f6dd2e48199e4700b5ab8fe3945a50297703dd8daced74f" `
+  -Countermeasure dd
+
+# Outros módulos
+.\scripts\run-baseline-dm-one.cmd a0aeb837 dp
+.\scripts\run-baseline-dm-one.cmd 17c79863 dm
+.\scripts\run-baseline-dm-one.cmd 36685efc da -Loop1000
+```
+
+O script imprime, no mesmo console:
+
+* caminho da amostra (hash);
+* comando Pin do app de teste;
+* caixa de evidência (baseline vs `-xx`);
+* linha `Result` da amostra real.
+
+## 8.3 Corpus / benchmark
+
+```powershell
+.\scripts\benchmark-poc.ps1
+.\scripts\benchmark-corpus.ps1 -SamplesDir C:\TOMWare\malwares\infected -FollowChild -TimeoutSeconds 120
+```
+
+Saídas típicas: `Resultados\Avaliacao\`, `Resultados\baseline-<cm>-<hash8>.log`.
+
+## 8.4 Medição de tempo (apps em loop)
+
+```powershell
 Measure-Command {
-    .\pin\pin.exe -t .\x64\Release\TOMWare.dll -dm -q -- .\Resultados\Apps-Teste\TestGetEnvironments.exe
+  .\pin\pin.exe -t .\x64\Release\TOMWare.dll -dm -q -- `
+    .\Resultados\Apps-Teste\Loop_X_1000\TestMemoryScan.exe
 }
 ```
 
-<details>
-<summary>Captura de tela — execução de teste</summary>
+## 8.5 Interpretação rápida dos resultados
 
-<p align="center">
-  <img src="imgs/14.png" alt="Execução de teste com TOMWare" width="75%">
-</p>
-
-</details>
-
----
-
-## Scripts de avaliação
-
-| Script | Uso |
-|--------|-----|
-| `scripts/run-sample.ps1` | Wrapper padronizado para uma amostra (knobs, `-FollowChild`, timeout) |
-| `scripts/run-baseline-dm-one.cmd` | Baseline vs uma contramedida na mesma tela |
-| `scripts/benchmark-poc.ps1` | Valida PoCs sintéticas após compilar |
-| `scripts/benchmark-corpus.ps1` | Corpus real (`<SHA256>.exe` em `-SamplesDir`) |
-| `scripts/benchmark-infected.ps1` | Benchmark em ambiente infectado / VM |
-
-```powershell
-# PoCs
-.\scripts\benchmark-poc.ps1
-
-# Corpus (amostras nomeadas <SHA256>.exe)
-.\scripts\benchmark-corpus.ps1 -SamplesDir C:\Samples\MalwareBazaar -FollowChild -TimeoutSeconds 120
-
-# Baseline vs contramedida (SHA256 = prefixo ou hash completo)
-.\scripts\run-baseline-dm-one.cmd 36685efc dm
-.\scripts\run-baseline-dm-one.cmd 36685efc da show   # apenas exibe comandos, sem executar
-```
-
-Resultados de benchmark: `Resultados/Avaliacao/`. Logs do baseline: `Resultados/baseline-<cm>-<hash8>.log`.
+| Observação | Interpretação |
+|------------|---------------|
+| Baseline: alerta / contagem > 0; com knob: `OK` / zeros | Contramedida **funcional** na superfície testada |
+| `Result … outcome=complete` | Tempo da amostra pode entrar na comparação quantitativa |
+| `Result … outcome=timeout` | Amostra não terminou no limite — **não** use como tempo válido de eficácia (comum em `-dp`) |
 
 ---
 
-## Aplicações de teste (PoC)
+# 9. Licença
 
-| Executável | Contramedida | Cenário |
-|------------|--------------|---------|
-| `TestGetEnvironments.exe` | `-de` | Variáveis de ambiente do Pin |
-| `TestMemoryScan.exe` | `-dm` | Varredura de memória (`memcmp`) |
-| `TestOverhead.exe` | `-do` (+ `-go` em demo) | Medição de overhead |
-| `TestAntiDebug.exe` | `-dd` | APIs anti-debug (compilar de `Apps-Teste-src/`) |
-| `TestProcessEnum.exe` | `-dp` | Enumeração de processos/módulos Pin |
+Este projeto é distribuído para fins acadêmicos e de pesquisa. Consulte o arquivo [`LICENSE`](LICENSE) na raiz do repositório.
 
-```powershell
-.\scripts\run-sample.ps1 -Sample .\Resultados\Apps-Teste\TestGetEnvironments.exe -EnvsDefend -Quiet
-.\scripts\run-sample.ps1 -Sample .\Resultados\Apps-Teste\TestMemoryScan.exe -MemoryDefend -Quiet
-.\scripts\run-sample.ps1 -Sample .\Resultados\Apps-Teste\TestOverhead.exe -OverheadDefend -SimulateOverhead
-.\scripts\run-sample.ps1 -Sample .\Resultados\Apps-Teste\TestAntiDebug.exe -DebugDefend -Quiet
-.\scripts\run-sample.ps1 -Sample .\Resultados\Apps-Teste\TestProcessEnum.exe -ProcessEnumDefend -Quiet
-.\scripts\run-sample.ps1 -Sample .\Resultados\Apps-Teste\TestGetEnvironments.exe -DefendAll -Quiet
-```
+**Intel Pin** possui licença própria (veja `pin/licensing/`).
 
-Versões em loop (1000 repetições): `Resultados/Apps-Teste/Loop_X_1000/`.
-
----
-
-## Selos SBSeg
-
-Trabalho original: *Mitigando Técnicas de Anti-Instrumentação em DBI: Contramedidas baseadas em Overhead e Transparência* (SBSeg 2025).
-
-Selos considerados na avaliação:
-
-- **Selo D — Artefatos Disponíveis:** código-fonte e amostras de teste no repositório.
-- **Selo F — Artefatos Funcionais:** ferramenta executável conforme instruções deste README.
-
-A versão atual estende o trabalho original com contramedidas `-dd`/`-dp`, scripts de benchmark e avaliação em corpus real para submissão SBSeg 2026 (Salão de Ferramentas).
-
----
-
-## Dicas e erros comuns
-
-| Problema | Solução |
-|----------|---------|
-| VS sugere atualizar toolset | Mantenha **v142** |
-| Caminhos com espaços | Use aspas: `"C:\Program Files\...\pin.exe"` |
-| Arquitetura mista (x86/x64) | Alinhe Pin, `TOMWare.dll` e alvo na mesma arquitetura |
-| Packers geram muitas exceções | Padrão `-me 0` continua execução; use `-me N` para abortar após N exceções |
-| `-da` vs `-go` | `-da` = contramedidas reais; `-go` só em PoCs de overhead |
-| `TOMWare.dll` não encontrada | Compile em `Release \| x64` antes de executar os scripts |
-| Push GitHub retorna 403 | Use token (PAT) da conta com permissão de escrita no repositório |
-
----
-
-## Referência
+**Citação sugerida (TOMWare.M / SBSeg 2026 SF):**
 
 ```text
-TOMWare — Transparency and Overhead Measurement for Malware
+TOMWare.M: Uma Ferramenta para Mitigação de Técnicas de Anti-Instrumentação
+em Ambientes DBI — Salão de Ferramentas, SBSeg 2026.
+https://github.com/TOMWare-analises/TOMWare
+```
+
+---
+
+## Referência rápida
+
+```text
+TOMWare.M — Transparency and Overhead Measurement for Malware
 Intel Pin 3.28 · Windows x64 · MSVC v142
+Knobs: -dd -dp -de -dm -do | -da | -sf -q -go -gdb -me
 ```

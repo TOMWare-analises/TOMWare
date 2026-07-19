@@ -105,7 +105,7 @@ Selos alinhados ao Salão de Ferramentas (SBSeg):
 | **Funcional (F)** | Ferramenta executável conforme instruções | Teste mínimo (§7) com apps em `Resultados/Apps-Teste/` |
 | **Reproduzível** | Protocolo experimental documentado | §8 — baseline vs contramedida; VM + snapshot |
 
-Trabalho de base: SBSeg 2025 (TOMWare). Extensão atual (**TOMWare.M**, SBSeg 2026 SF): módulos **AntiDebug** (`-dd`) e **ProcessEnum** (`-dp`), scripts de comparação e avaliação em corpus.
+Trabalho de base: SBSeg 2025 (TOMWare). Extensão atual (**TOMWare.M**, SBSeg 2026 SF): módulos **AntiDebug** (`-dd`) e **ProcessEnum** (`-dp`).
 
 ---
 
@@ -117,8 +117,8 @@ Malware ciente de contexto pode detectar o Intel Pin por: indicadores de depura�
 
 Os experimentos deste repositório têm dois objetivos:
 
-1. **Validar funcionalidade** — demonstrar que cada módulo reduz o indicador correspondente na aplicação de teste (oráculo controlado).
-2. **Avaliar impacto** — registrar tempos de execução sob Pin **sem** e **com** a contramedida (campo `Result` / medição de parede), inclusive sobre amostras reais.
+1. **Validar funcionalidade** - demonstrar que cada módulo reduz o indicador correspondente na aplicação de teste (oráculo controlado).
+2. **Avaliar impacto** - registrar tempos de execução sob Pin **sem** e **com** a contramedida (campo `Result` / medição de parede), inclusive sobre amostras reais.
 
 > **Ambiente isolado:** experimentos com malware devem ocorrer **somente em VM**, restaurada a partir de snapshot limpo após cada amostra.
 
@@ -126,46 +126,76 @@ Os experimentos deste repositório têm dois objetivos:
 
 ## 3.2 Principais funcionalidades
 
-| Knob | Módulo (artigo) | Arquivo / papel |
-|------|-----------------|-----------------|
-| `-dd` | **AntiDebug** | `AntiDebugMask.cpp` — normaliza indicadores de depuração no PEB (`BeingDebugged`, `NtGlobalFlag`), cobrindo verificações que leem esses campos (ex.: `IsDebuggerPresent`) |
-| `-dp` | **ProcessEnum** | `ProcessEnumMask.cpp` — filtra `pin.exe` / módulos Pin em `Process32*`, `Module32*` e `GetModuleHandle*` |
-| `-de` | **SanitizePinEnvVars** | `SanitizePinEnvVars.cpp` — sanitiza o bloco de ambiente do PEB (prefixos `PIN_*`) |
-| `-dm` | **InstMemcmpMask** | estratégias em `Instrumentation.cpp` + assinaturas — força “não igual” em `memcmp`/familiares quando o padrão é Pin |
-| `-do` | **SkewMask** | `SkewMask.cpp` — calibra/compensa desvios em `Sleep`/`SleepEx` e consultas temporais (QPC e correlatas) |
-| `-da` | *(todas acima)* | Ativa `-de -dm -do -dd -dp` (**não** inclui `-go`) |
+A arquitetura distingue **módulos** (empacotadores ativados pelos parâmetros da linha de comando) e **contramedidas** (mecanismos que mascaram a superfície de detecção). Os nomes são **distintos**: o módulo é o empacotador; a contramedida é o mecanismo acionado.
+
+```text
+Parâmetros (-da -dd -de -dm -do -dp)
+        │
+        ▼
+ Instrumentation ──► Módulos (empacotadores) ──► Contramedidas
+                           AntiDeb                    AntiDebug
+                           ProcessE                   ProcessEnum
+                           SanitizePin                SanitizePinEnvVars
+                           InstMem                    InstMemcmpMask
+                           SkewM                      SkewMask
+```
+
+| Parâmetro | Módulo (empacotador) | Contramedida acionada | Mecanismo (implementação) |
+|-----------|----------------------|------------------------|---------------------------|
+| `-dd` | **AntiDeb** | **AntiDebug** | PEB: `BeingDebugged`, `NtGlobalFlag` (`AntiDebugMask.cpp`) |
+| `-dp` | **ProcessE** | **ProcessEnum** | Filtro em `Process32*` / `Module32*` / `GetModuleHandle*` |
+| `-de` | **SanitizePin** | **SanitizePinEnvVars** | Sanitização do bloco de ambiente no PEB (`PIN_*`) |
+| `-dm` | **InstMem** | **InstMemcmpMask** | Wrappers `memcmp*` + **Signatures** (`-sf`) |
+| `-do` | **SkewM** | **SkewMask** | Hooks temporais + **Calibrate Mask** (Sleep/QPC…) |
+| `-da` | *(todos os módulos)* | as cinco contramedidas | Equivale a `-de -dm -do -dd -dp` (**não** inclui `-go`) |
 
 **Knobs auxiliares**
 
 | Knob | Descrição |
 |------|-----------|
-| `-sf PATH` | Assinaturas extras para `-dm` (padrão: `config/signatures.txt`) |
+| `-sf PATH` | Assinaturas extras para o módulo **InstMem** / contramedida **InstMemcmpMask** (padrão: `config/signatures.txt`) |
 | `-q` | Modo silencioso (suprime logs informativos) |
 | `-me N` | Limite de exceções antes de abortar (`0` = ilimitado) |
-| `-go` | Overhead **artificial** — apenas demos com `TestOverhead.exe` (fora de `-da`) |
-| `-gdb` | Simula indicadores de debug no PEB — demo de baseline para `-dd` |
+| `-go` | Overhead **artificial** - apenas demos com `TestOverhead.exe` (fora de `-da`) |
+| `-gdb` | Simula indicadores de debug no PEB - demo de baseline para o módulo **AntiDeb** |
 
-> Os módulos são **complementares** e ativáveis de forma seletiva, sem recompilar. Suporte atual: **PE nativo 64-bit** (e builds x86 conforme configuração); sem suporte direto a .NET/Java/scripts.
+> Os **módulos** são complementares e ativáveis de forma seletiva via **parâmetros**, sem recompilar. Suporte atual: **PE nativo 64-bit** (e builds x86 conforme configuração); sem suporte direto a .NET/Java/scripts.
 
 ## 3.3 Arquitetura
 
 <p align="center">
-  <img src="imgs/tomware-architecture-current.png" alt="Arquitetura TOMWare.M" width="90%">
+  <img src="imgs/tomware-architecture-current.png" alt="Arquitetura TOMWare.M — Módulos e Contramedidas" width="90%">
 </p>
+
+**Leitura do diagrama**
+
+1. **TOMWare.M (Main)** → **Instrumentation** — entrada da pintool e registro dos callbacks do Pin.
+2. **Parâmetros** (`-da`, `-dd`, `-de`, `-dm`, `-do`, `-dp`, …) selecionam quais **Módulos** (empacotadores) entram em cena.
+3. Cada **módulo** aciona a **contramedida** correspondente:
+   - **AntiDeb** → **AntiDebug**
+   - **ProcessE** → **ProcessEnum**
+   - **SanitizePin** → **SanitizePinEnvVars**
+   - **InstMem** → **InstMemcmpMask**
+   - **SkewM** → **SkewMask**
+4. As contramedidas atuam sobre a superfície correspondente:
+   - **AntiDebug** / **SanitizePinEnvVars** — sobretudo via **PEB** (efeito também observado por APIs que leem esses campos, ex. `IsDebuggerPresent` / `GetEnvironmentVariableW`).
+   - **ProcessEnum** / **InstMemcmpMask** / **SkewMask** - via **interceptação** de APIs (`Process32*`, `memcmp*`, `Sleep`/QPC…).
+5. **Signatures** alimentam principalmente a contramedida **InstMemcmpMask** (módulo **InstMem**, knobs `-dm` / `-sf`).
+6. **Calibrate Mask** corresponde à calibração temporal da contramedida **SkewMask** (módulo **SkewM**, `-do`), devolvendo o **Result** às contramedidas.
 
 | Componente | Função | Onde |
 |------------|--------|------|
 | **Main** | `PIN_Init` → inicia a instrumentação | `TOMWare/TOMWare.cpp` |
-| **Instrumentation Core** | Knobs, `IMG` hooks, estratégias, exception handler | `TOMWare/Instrumentation.cpp` |
-| **AntiDebug** (`-dd`) | Sanitização de indicadores de depuração no PEB | `TOMWare/AntiDebugMask.cpp` |
-| **ProcessEnum** (`-dp`) | Filtro na enumeração de processos/módulos | `TOMWare/ProcessEnumMask.cpp` |
-| **SanitizePinEnvVars** (`-de`) | Sanitização do bloco de ambiente | `TOMWare/SanitizePinEnvVars.cpp` |
-| **InstMemcmpMask** (`-dm`) | Mascaramento de assinaturas via comparações | estratégias + `-sf` |
-| **SkewMask** (`-do`) | Compensação de desvios temporais | `TOMWare/SkewMask.cpp` |
-| **Signatures** | Padrões Pin (`PIN_`, `pin.exe`, …) | `config/signatures.txt` |
+| **Instrumentation** | Interpreta **parâmetros** e despacha **módulos** | `TOMWare/Instrumentation.cpp` |
+| **Módulos** | Empacotadores: AntiDeb, ProcessE, SanitizePin, InstMem, SkewM | knobs `-dd/-dp/-de/-dm/-do` (`-da` = todos) |
+| **Contramedidas** | AntiDebug, ProcessEnum, SanitizePinEnvVars, InstMemcmpMask, SkewMask | `AntiDebugMask.cpp`, `ProcessEnumMask.cpp`, `SanitizePinEnvVars.cpp`, InstMemcmp*, `SkewMask.cpp` |
+| **APIs / PEB** | Pontos de atuação (interceptação ou sanitização estrutural) | conforme cada contramedida |
+| **Signatures** | Padrões Pin para **InstMemcmpMask** | `config/signatures.txt` |
+| **Calibrate Mask** | Acúmulo/compensação de skew (**SkewMask**) | `SkewMask.cpp` |
 | **Apps de teste** | Oráculos funcionais por superfície | `Resultados/Apps-Teste/` |
 
-Diagrama editável (Mermaid): `imgs/tomware-architecture-current.mmd`.
+Diagrama Mermaid (mesma visão Módulos → Contramedidas): `imgs/tomware-architecture-current.mmd`.  
+Variante anotada (fluxos PEB / Signatures / Calibrate explícitos): `imgs/tomware-architecture-annotated.png`.
 
 ## 3.4 Como a execução é estruturada
 
@@ -176,10 +206,10 @@ Cada execução de experimento segue **duas etapas**:
 | **[1] App de teste** | `TestAntiDebug.exe`, `TestProcessEnum.exe`, … | Evidência funcional no console (caixa `Resumo` / alertas) |
 | **[2] Amostra real** | `malwares\infected\<SHA256>.exe` | Exercitar a amostra sob Pin ± contramedida; tempo no campo `Result` |
 
-Protocolo de comparação (como no artigo):
+Protocolo de comparação:
 
 1. **Nativo** (referência comportamental, sem Pin).
-2. **Pin + TOMWare sem a contramedida** (baseline — indicador aparece).
+2. **Pin + TOMWare sem a contramedida** (baseline - indicador aparece).
 3. **Pin + TOMWare com a contramedida** (indicador mascarado).
 
 Script recomendado para o print lado a lado:
@@ -188,7 +218,7 @@ Script recomendado para o print lado a lado:
 .\scripts\run-baseline-dm-one.cmd <SHA256> <de|dm|do|dd|dp|da>
 ```
 
-> **Nota (ProcessEnum / tempos):** a eficácia de `-dp` é evidenciada pela caixa do app de teste (`pin.exe : N → 0`). Se a amostra real atingir `outcome=timeout`, o wall-clock **não** deve ser tratado como métrica de eficácia do módulo de enumeração.
+> **Nota (ProcessEnum / tempos):** a eficácia da contramedida **ProcessEnum** (módulo **ProcessE**, `-dp`) é evidenciada pela caixa do app de teste (`pin.exe : N → 0`). Se a amostra real atingir `outcome=timeout`, o wall-clock **não** deve ser tratado como métrica de eficácia dessa contramedida.
 
 ## 3.5 Ambiente recomendado
 
@@ -199,7 +229,7 @@ Script recomendado para o print lado a lado:
 | **VM (guest)** | Windows 10/11 x64; ≥ 4 vCPU; 6–8 GB RAM; rede Host-only ou desligada durante malware |
 | **Snapshot** | Restaurar snapshot limpo **após cada amostra** |
 
-> Para apenas validar a instalação, use o teste mínimo (§7) no host com as apps de teste — **sem** malware.
+> Para apenas validar a instalação, use o teste mínimo (§7) no host com as apps de teste - **sem** malware.
 
 ---
 
@@ -207,8 +237,8 @@ Script recomendado para o print lado a lado:
 
 ## 4.1 Execução
 
-* **Intel Pin** 3.28 (x64, MSVC): [download oficial](https://software.intel.com/sites/landingpage/pintool/downloads/pin-3.28-98749-g6643ecee5-msvc-windows.zip) — pasta `pin/` do repositório (quando fornecida) ou instalação local.
-* **TOMWare.dll** — `x64\Release\TOMWare.dll` após compilação.
+* **Intel Pin** 3.28 (x64, MSVC): [download oficial](https://software.intel.com/sites/landingpage/pintool/downloads/pin-3.28-98749-g6643ecee5-msvc-windows.zip) - pasta `pin/` do repositório (quando fornecida) ou instalação local.
+* **TOMWare.dll** - `x64\Release\TOMWare.dll` após compilação.
 
 ## 4.2 Compilação (host Windows)
 
@@ -230,7 +260,7 @@ Script recomendado para o print lado a lado:
 
 # 5. Segurança
 
-A TOMWare.M **não contém código malicioso** — é uma pintool C/C++ que mascara vestígios do Pin. **O risco vem das amostras reais** usadas nos experimentos.
+A TOMWare.M **não contém código malicioso** - é uma pintool C/C++ que mascara vestígios do Pin. **O risco vem das amostras reais** usadas nos experimentos.
 
 ## 5.1 Vetores de risco
 

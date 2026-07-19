@@ -1,46 +1,52 @@
-%% TOMWare.M — arquitetura atual (SBSeg 2026 SF)
-%% Estilo alinhado ao diagrama Contradef (alvo → Pin → Main → Instrumentation → módulos → saídas)
+%% TOMWare.M — arquitetura: Módulos (empacotadores via parâmetros) → Contramedidas
+%% Nomes dos módulos ≠ nomes das contramedidas (conforme diagrama)
 %% Render: https://mermaid.live
 
 flowchart TD
-  target["Target Process PE x64<br/>malware or test app"]
-  pinRt["Intel Pin Runtime"]
+  mainTw["TOMWare.M Main"]
+  core["Instrumentation"]
+  params["Parâmetros<br/>-da -dd -de -dm -do -dp"]
 
-  subgraph tomware ["TOMWare.M Pintool"]
-    mainTw["Main TOMWare.cpp<br/>PIN_Init"]
-    core["Instrumentation Core<br/>Instrumentation.cpp"]
-    knobs["Knobs<br/>-de -dm -do -dd -dp -da<br/>-sf -q -go -gdb -me"]
-
-    subgraph cm ["Countermeasures"]
-      deMod["SanitizePinEnvVars -de<br/>PEB env PIN_ sanitization"]
-      dmMod["InstMemcmpMask -dm<br/>memcmp family + signatures"]
-      doMod["SkewMask -do<br/>Sleep QPC temporal skew"]
-      ddMod["AntiDebug -dd<br/>PEB BeingDebugged NtGlobalFlag"]
-      dpMod["ProcessEnum -dp<br/>Process32 Module32 GetModuleHandle"]
-    end
-
-    subgraph demos ["Demo only not in -da"]
-      gdbDemo["-gdb simulate PEB debug"]
-      goDemo["-go artificial overhead"]
-    end
-
-    sigs[("Signatures -sf<br/>PIN_ pin.exe pinvm.dll pinipc.dll")]
+  subgraph mods ["Módulos empacotadores"]
+    mDd["AntiDeb"]
+    mDp["ProcessE"]
+    mDe["SanitizePin"]
+    mDm["InstMem"]
+    mDo["SkewM"]
   end
 
-  logTw["TomwareLog"]
-  logEnv["tomware-envvars.log"]
+  subgraph cms ["Contramedidas"]
+    cDd["AntiDebug"]
+    cDp["ProcessEnum"]
+    cDe["SanitizePinEnvVars"]
+    cDm["InstMemcmpMask"]
+    cDo["SkewMask"]
+  end
 
-  target --> pinRt
-  pinRt --> mainTw
+  peb["PEB BeingDebugged NtGlobalFlag env PIN"]
+  apis["APIs Process32 memcmp Sleep QPC"]
+  sigs[("Signatures -sf")]
+  cal["Calibrate Mask"]
+
   mainTw --> core
-  core --> knobs
-  knobs --> deMod
-  knobs --> dmMod
-  knobs --> doMod
-  knobs --> ddMod
-  knobs --> dpMod
-  knobs -.-> gdbDemo
-  knobs -.-> goDemo
-  dmMod --> sigs
-  deMod --> logEnv
-  core --> logTw
+  core --> params
+  params --> mDd
+  params --> mDp
+  params --> mDe
+  params --> mDm
+  params --> mDo
+
+  mDd -->|"aciona"| cDd
+  mDp -->|"aciona"| cDp
+  mDe -->|"aciona"| cDe
+  mDm -->|"aciona"| cDm
+  mDo -->|"aciona"| cDo
+
+  cDd --> peb
+  cDe --> peb
+  cDp --> apis
+  cDm --> apis
+  cDo --> apis
+  cDm -->|"Verify"| sigs
+  cDo --> cal
+  cal -->|"Result"| cDo

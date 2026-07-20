@@ -60,7 +60,7 @@ Este README está organizado nas seguintes seções principais:
 * Intel Pin 3.28 MSVC x64 (`pin/`), quando incluído na distribuição.
 * Assinaturas para mascaramento de memória (`config/signatures.txt`).
 * Scripts de execução e benchmark (`scripts/`).
-* Diagrama de arquitetura atual (`imgs/tomware-architecture-current.png`).
+* Diagrama de arquitetura atual (`imgs/tomware_pintool_20072026.png`).
 * Capturas e resultados de experimento (`Resultados/`, conforme versão publicada).
 
 > O objetivo dos artefatos é permitir: (1) explorar o código; (2) verificar a funcionalidade (teste mínimo); (3) reproduzir os experimentos do artigo (apps de teste + amostras reais sob Pin); (4) avaliar o impacto temporal das contramedidas.
@@ -164,7 +164,7 @@ Parâmetros (-da -dd -de -dm -do -dp)
 ## 3.3 Arquitetura
 
 <p align="center">
-  <img src="imgs/tomware-architecture-current.png" alt="Arquitetura TOMWare.M — Módulos e Contramedidas" width="90%">
+  <img src="imgs/tomware_pintool_20072026.png" alt="Arquitetura TOMWare.M — Módulos e Contramedidas" width="90%">
 </p>
 
 **Leitura do diagrama**

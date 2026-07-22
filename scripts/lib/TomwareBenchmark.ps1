@@ -54,6 +54,51 @@ function Get-ExecutionOutcome {
     return "partial"
 }
 
+function Get-TomwareResourceSnapshot {
+    param(
+        [int]$RootProcessId,
+        [string]$SamplePath,
+        [datetime]$StartedAt,
+        [hashtable]$CpuSecondsByPid
+    )
+
+    $sampleProcessName = [System.IO.Path]::GetFileNameWithoutExtension($SamplePath)
+    $processNames = @($sampleProcessName, "pin", "pinbin") | Select-Object -Unique
+    $workingSetBytes = [long]0
+    $privateBytes = [long]0
+    $processCount = 0
+
+    foreach ($name in $processNames) {
+        $processes = @(Get-Process -Name $name -ErrorAction SilentlyContinue)
+        foreach ($process in $processes) {
+            try {
+                if ($process.Id -ne $RootProcessId -and $process.StartTime -lt $StartedAt.AddSeconds(-2)) {
+                    continue
+                }
+
+                $process.Refresh()
+                $cpuSeconds = [double]$process.CPU
+                if (-not $CpuSecondsByPid.ContainsKey($process.Id) -or
+                    $cpuSeconds -gt [double]$CpuSecondsByPid[$process.Id]) {
+                    $CpuSecondsByPid[$process.Id] = $cpuSeconds
+                }
+                $workingSetBytes += [long]$process.WorkingSet64
+                $privateBytes += [long]$process.PrivateMemorySize64
+                $processCount++
+            }
+            catch {
+                # O processo pode encerrar entre Get-Process e Refresh.
+            }
+        }
+    }
+
+    return [PSCustomObject]@{
+        ProcessCount      = $processCount
+        WorkingSetBytes   = $workingSetBytes
+        PrivateBytes      = $privateBytes
+    }
+}
+
 function Invoke-TomwarePinRun {
     param(
         [string]$PinExe,
@@ -81,6 +126,13 @@ function Invoke-TomwarePinRun {
     $stdout = ""
     $stderr = ""
     $exitCode = 1
+    $startedAt = Get-Date
+    $cpuSecondsByPid = @{}
+    $resourceSamples = 0
+    $workingSetSumBytes = [double]0
+    $peakWorkingSetBytes = [long]0
+    $peakPrivateBytes = [long]0
+    $peakTrackedProcesses = 0
 
     if ($TimeoutSeconds -gt 0) {
         $outFile = [System.IO.Path]::GetTempFileName()
@@ -91,6 +143,16 @@ function Invoke-TomwarePinRun {
 
             $lastProgressAt = 0
             while (-not $proc.WaitForExit(1000)) {
+                $snapshot = Get-TomwareResourceSnapshot -RootProcessId $proc.Id `
+                    -SamplePath $SamplePath -StartedAt $startedAt -CpuSecondsByPid $cpuSecondsByPid
+                if ($snapshot.ProcessCount -gt 0) {
+                    $resourceSamples++
+                    $workingSetSumBytes += $snapshot.WorkingSetBytes
+                    $peakWorkingSetBytes = [Math]::Max($peakWorkingSetBytes, $snapshot.WorkingSetBytes)
+                    $peakPrivateBytes = [Math]::Max($peakPrivateBytes, $snapshot.PrivateBytes)
+                    $peakTrackedProcesses = [Math]::Max($peakTrackedProcesses, $snapshot.ProcessCount)
+                }
+
                 $elapsedSeconds = [int][Math]::Floor($sw.Elapsed.TotalSeconds)
                 if ($TimeoutSeconds -gt 0 -and $elapsedSeconds -ge $TimeoutSeconds) {
                     $proc.Kill()
@@ -111,6 +173,16 @@ function Invoke-TomwarePinRun {
                 $exitCode = $proc.ExitCode
             }
 
+            $finalSnapshot = Get-TomwareResourceSnapshot -RootProcessId $proc.Id `
+                -SamplePath $SamplePath -StartedAt $startedAt -CpuSecondsByPid $cpuSecondsByPid
+            if ($finalSnapshot.ProcessCount -gt 0) {
+                $resourceSamples++
+                $workingSetSumBytes += $finalSnapshot.WorkingSetBytes
+                $peakWorkingSetBytes = [Math]::Max($peakWorkingSetBytes, $finalSnapshot.WorkingSetBytes)
+                $peakPrivateBytes = [Math]::Max($peakPrivateBytes, $finalSnapshot.PrivateBytes)
+                $peakTrackedProcesses = [Math]::Max($peakTrackedProcesses, $finalSnapshot.ProcessCount)
+            }
+
             if (Test-Path $outFile) { $stdout = Get-Content $outFile -Raw -Encoding UTF8 -ErrorAction SilentlyContinue }
             if (Test-Path $errFile) { $stderr = Get-Content $errFile -Raw -Encoding UTF8 -ErrorAction SilentlyContinue }
         }
@@ -125,6 +197,23 @@ function Invoke-TomwarePinRun {
     }
 
     $sw.Stop()
+    $cpuSeconds = [double]0
+    foreach ($cpuValue in $cpuSecondsByPid.Values) {
+        $cpuSeconds += [double]$cpuValue
+    }
+    $averageWorkingSetBytes = if ($resourceSamples -gt 0) {
+        $workingSetSumBytes / $resourceSamples
+    }
+    else {
+        0
+    }
+    $logicalProcessors = [Math]::Max(1, [Environment]::ProcessorCount)
+    $cpuPercentOneCore = if ($sw.Elapsed.TotalSeconds -gt 0) {
+        ($cpuSeconds / $sw.Elapsed.TotalSeconds) * 100.0
+    }
+    else {
+        0
+    }
 
     return [PSCustomObject]@{
         Scenario     = $Scenario
@@ -135,6 +224,18 @@ function Invoke-TomwarePinRun {
         Stdout       = $stdout
         Stderr       = $stderr
         Command      = "$PinExe $($pinArgs -join ' ')"
+        ResourceMetrics = [PSCustomObject]@{
+            Available              = ($resourceSamples -gt 0)
+            SamplingIntervalMs     = 1000
+            SampleCount            = $resourceSamples
+            TrackedProcessPeak     = $peakTrackedProcesses
+            CpuSeconds             = [Math]::Round($cpuSeconds, 3)
+            CpuPercentOneCore      = [Math]::Round($cpuPercentOneCore, 2)
+            CpuPercentTotalCapacity = [Math]::Round($cpuPercentOneCore / $logicalProcessors, 2)
+            AverageWorkingSetMB    = [Math]::Round($averageWorkingSetBytes / 1MB, 3)
+            PeakWorkingSetMB       = [Math]::Round($peakWorkingSetBytes / 1MB, 3)
+            PeakPrivateMemoryMB    = [Math]::Round($peakPrivateBytes / 1MB, 3)
+        }
     }
 }
 

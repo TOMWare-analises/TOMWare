@@ -26,8 +26,10 @@ Resultados/Apps-Teste-src/**/TestGetE.*/
 
 malwares/
 
-# Local documentation (never commit)
+# Local documentation / videos (never commit — keep drafts and captures out of git)
 docs/
+docs/**
+Resultados/evidencias_VM/
 
 # Local evidence and drafts (not part of upstream)
 dist/

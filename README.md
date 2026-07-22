@@ -62,6 +62,7 @@ Este README está organizado nas seguintes seções principais:
 * Scripts de execução e benchmark (`scripts/`).
 * Diagrama de arquitetura atual (`imgs/tomware_pintool_20072026.png`).
 * Capturas e resultados de experimento (`Resultados/`, conforme versão publicada).
+* Pacote de instaladores (Git, Visual Studio, 7-Zip, VMware, Pin, TOMWare) no [Google Drive TOMWare](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing) — ver §4.4.
 
 > O objetivo dos artefatos é permitir: (1) explorar o código; (2) verificar a funcionalidade (teste mínimo); (3) reproduzir os experimentos do artigo (apps de teste + amostras reais sob Pin); (4) avaliar o impacto temporal das contramedidas.
 
@@ -256,6 +257,23 @@ Script recomendado para o print lado a lado:
 | VMware / VirtualBox | Isolamento e snapshots |
 | 7-Zip (opcional) | Extração de amostras protegidas |
 
+## 4.4 Pacote de instaladores (Google Drive)
+
+Para facilitar a reprodução, os instaladores das ferramentas de ambiente estão reunidos na pasta compartilhada:
+
+**[Instaladores TOMWare (Google Drive)](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing)**
+
+| Arquivo (exemplo) | Uso |
+|-------------------|-----|
+| `Git-*-64-bit.exe` | Git for Windows |
+| `VisualStudioSetup.exe` | Visual Studio Installer (Community) |
+| `7z*-x64.exe` | 7-Zip |
+| `VMware-Workstation-Full-*.exe` | VMware Workstation |
+| `pin.7z` | Intel Pin 3.28 (extrair em `pin\`) |
+| `TOMWare.7z` | Artefato / código TOMWare |
+
+> Prefira sempre as páginas oficiais quando possível. O Drive é um **espelho** para acelerar a montagem do ambiente. Para a VM de experimentos com Pin/TOMWare.M, use ISO **Windows 10/11 x64** (Intel/AMD), não Arm64.
+
 ---
 
 # 5. Segurança
@@ -300,6 +318,8 @@ cd TOMWare
 1. Visual Studio com toolset **v142**.
 2. Windows SDK ≥ 10.0.19041.
 3. Pin 3.28 MSVC extraído em `pin\` (conteúdo direto: `pin.exe`, `intel64\`, etc.).
+
+Os instaladores (Git, VS, 7-Zip, VMware, Pin, TOMWare) também estão no [Google Drive TOMWare](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing) — ver §4.4.
 
 ### 6.1.3 Compilar
 
@@ -405,7 +425,8 @@ Via wrapper:
 1. Criar VM Windows 10/11 x64 (snapshot limpo).
 2. Copiar o repositório (ou artefatos) para `C:\TOMWare`.
 3. Compilar ou copiar `x64\Release\TOMWare.dll`.
-4. Colocar amostras como `C:\TOMWare\malwares\infected\<SHA256>.exe`.
+4. Colocar amostras em `C:\TOMWare\malwares\infected\<SHA256>.exe` ou
+   `C:\TOMWare\malwares\benign\<SHA256>.exe`.
 5. Desligar rede / Host-only; desativar AV se o protocolo do artigo exigir.
 
 ## 8.2 Reproduzir comparação baseline vs contramedida
@@ -420,6 +441,11 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\TOMWare\scripts\run-
 .\scripts\run-baseline-dm-one.cmd a0aeb837 dp
 .\scripts\run-baseline-dm-one.cmd 17c79863 dm
 .\scripts\run-baseline-dm-one.cmd 36685efc da -Loop1000
+
+# Amostra benigna: 10 execuções independentes para cada contramedida
+.\scripts\run-baseline-dm-one.ps1 `
+  -Sha256 "4D6937E8D7D58CD1D9224A11E48549A08505836EFABD6FED17A67D42466265BB" `
+  -SampleType benign -AllCountermeasures
 ```
 
 O script imprime, no mesmo console:
@@ -437,6 +463,43 @@ O script imprime, no mesmo console:
 ```
 
 Saídas típicas: `Resultados\Avaliacao\`, `Resultados\baseline-<cm>-<hash8>.log`.
+
+Com `-Repeat N`, cada baseline e contramedida é iniciado como um processo
+independente. A ordem é alternada por rodada para reduzir viés de aquecimento.
+Os relatórios detalhados são gravados em:
+
+* `Resultados\benchmarks\benchmark-<tipo>-<cm>-<hash8>-<data>.csv` — uma linha por execução,
+  incluindo status, resposta e resumo da evidência funcional;
+* `Resultados\benchmarks\benchmark-<tipo>-<cm>-<hash8>-<data>.json` — execuções, evidência
+  funcional completa e avaliação de desempenho com média, mediana, p95, desvio-padrão,
+  mínimo, máximo e contagem de outcomes;
+* `Resultados\benchmarks\benchmark-<tipo>-all-<hash8>-<data>.csv|json` — consolidação
+  automática das cinco contramedidas ao usar `-AllCountermeasures`.
+
+`-AllCountermeasures` executa sequencialmente `de`, `dm`, `do`, `dd` e `dp`.
+Não inclui `da`, pois `da` mede todas as proteções habilitadas simultaneamente,
+e não cada contramedida isolada.
+
+Cada relatório responde separadamente:
+
+* **Funcional:** “A contramedida ocultou o Pin?” (`PASS`, `FAIL` ou `INCONCLUSIVE`);
+* **Desempenho:** “Qual foi o impacto no desempenho?” (`VALID` ou `INCONCLUSIVE`).
+
+Um resultado funcional pode ser `PASS` mesmo quando o desempenho é inconclusivo:
+as duas conclusões usam evidências diferentes.
+
+Por padrão, cada amostra recebe uma janela de observação de 10 segundos
+(`-SampleObservationSeconds 10`). Aplicações que encerram naturalmente mantêm
+o outcome `complete`; aplicações gráficas ou persistentes são encerradas ao fim
+da janela e recebem outcome `observed`. Durante a janela, o benchmark coleta
+CPU acumulada, utilização equivalente de um núcleo, memória de trabalho média/pico
+e pico de memória privada do Pin e da amostra. Assim, aplicações persistentes
+podem ter uma comparação pareada válida de **recursos**, mesmo quando a comparação
+de tempo total é inválida porque a duração foi limitada artificialmente.
+
+Essas métricas representam inicialização mais o estado observado durante a janela.
+Elas não medem a latência de uma operação específica da interface gráfica; para
+isso, seria necessário automatizar a mesma ação em cada rodada.
 
 ## 8.4 Medição de tempo (apps em loop)
 

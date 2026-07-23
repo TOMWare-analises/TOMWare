@@ -60,7 +60,7 @@ Este README está organizado nas seguintes seções principais:
 * Intel Pin 3.28 MSVC x64 (`pin/`), quando incluído na distribuição.
 * Assinaturas para mascaramento de memória (`config/signatures.txt`).
 * Scripts de execução e benchmark (`scripts/`).
-* Diagrama de arquitetura atual (`imgs/tomware_pintool_20072026.png`).
+* Diagrama de fluxo de execução atual (`imgs/tomware-fluxo-execucao-23072026.png`).
 * Capturas e resultados de experimento (`Resultados/`, conforme versão publicada).
 * Pacote de instaladores (Git, Visual Studio, 7-Zip, VMware, Pin, TOMWare) no [Google Drive TOMWare](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing) — ver §4.4.
 
@@ -165,38 +165,43 @@ Parâmetros (-da -dd -de -dm -do -dp)
 ## 3.3 Arquitetura
 
 <p align="center">
-  <img src="imgs/tomware_pintool_20072026.png" alt="Arquitetura TOMWare.M — Módulos e Contramedidas" width="90%">
+  <img src="imgs/tomware-fluxo-execucao-23072026.png" alt="Diagrama de Fluxo de Execução da TOMWare.M" width="90%">
 </p>
 
-**Leitura do diagrama**
+**Leitura do diagrama (fluxo de execução)**
 
-1. **TOMWare.M (Main)** → **Instrumentation** — entrada da pintool e registro dos callbacks do Pin.
-2. **Parâmetros** (`-da`, `-dd`, `-de`, `-dm`, `-do`, `-dp`, …) selecionam quais **Módulos** (empacotadores) entram em cena.
-3. Cada **módulo** aciona a **contramedida** correspondente:
-   - **AntiDeb** → **AntiDebug**
-   - **ProcessE** → **ProcessEnum**
-   - **SanitizePin** → **SanitizePinEnvVars**
-   - **InstMem** → **InstMemcmpMask**
-   - **SkewM** → **SkewMask**
-4. As contramedidas atuam sobre a superfície correspondente:
-   - **AntiDebug** / **SanitizePinEnvVars** — sobretudo via **PEB** (efeito também observado por APIs que leem esses campos, ex. `IsDebuggerPresent` / `GetEnvironmentVariableW`).
-   - **ProcessEnum** / **InstMemcmpMask** / **SkewMask** - via **interceptação** de APIs (`Process32*`, `memcmp*`, `Sleep`/QPC…).
-5. **Signatures** alimentam principalmente a contramedida **InstMemcmpMask** (módulo **InstMem**, knobs `-dm` / `-sf`).
-6. **Calibrate Mask** corresponde à calibração temporal da contramedida **SkewMask** (módulo **SkewM**, `-do`), devolvendo o **Result** às contramedidas.
+O desenho organiza o ciclo da pintool em três fases, alinhadas a `TOMWare.cpp` / `Instrumentation.cpp` e aos fontes das contramedidas:
+
+1. **Inicialização** — `PIN_Init` + `InitInstrumentation()` lê os **parâmetros** (`-dd`, `-dp`, `-de`, `-dm`, `-do`; `-da` ativa todos) e liga os **módulos/contramedidas** correspondentes; em seguida **ativa ganchos e wrappers** (`IMG_AddInstrumentFunction`, RTN replace, callbacks de imagem).
+2. **Execução ativa e interceptação** — a **aplicação analisada** realiza chamadas; a faixa central de **contramedidas modulares** devolve dados mascarados/filtrados; por baixo, a base SO/DBI concretiza, entre outros:
+   - **(1) Filtragem da lista de processos** — **ProcessEnum** oculta `pin.exe` / artefatos Pin em `Process32*` / `Module32*` / `GetModuleHandle*`.
+   - **(2) Mascaramento da memória** — **InstMemcmpMask** (wrappers `memcmp*` + **Signatures** `-sf`) evita hits em strings/módulos Pin.
+   - **(3) Compensação de desvio** — **SkewMask** mede overhead acumulado e compensa consultas temporais (Sleep/QPC…).
+   - Em paralelo (não detalhados nos painéis 1–3 do desenho, mas ativos quando ligados): **AntiDebug** e **SanitizePinEnvVars** atuam sobretudo no **PEB** (`BeingDebugged` / `NtGlobalFlag`; variáveis `PIN_*`).
+3. **Finalização** — término da execução sob Pin; **coleta de dados e relatório** (`Result`: outcome, tempo, saída) são produzidos pelo **harness de avaliação** (`scripts/run-baseline-dm-one.ps1` e afins), não por um gerador embutido na DLL.
+
+| Parâmetro | Contramedida no fluxo | Implementação |
+|-----------|----------------------|---------------|
+| `-de` | SanitizePinEnvVars | `SanitizePinEnvVars.cpp` |
+| `-dp` | ProcessEnum | `ProcessEnumMask.cpp` |
+| `-dd` | AntiDebug | `AntiDebugMask.cpp` |
+| `-dm` | InstMemcmpMask | InstMemcmp* + `config/signatures.txt` |
+| `-do` | SkewMask | `SkewMask.cpp` (calibração temporal) |
+| `-da` | todas as cinco | equivalente a `-de -dm -do -dd -dp` |
 
 | Componente | Função | Onde |
 |------------|--------|------|
-| **Main** | `PIN_Init` → inicia a instrumentação | `TOMWare/TOMWare.cpp` |
-| **Instrumentation** | Interpreta **parâmetros** e despacha **módulos** | `TOMWare/Instrumentation.cpp` |
-| **Módulos** | Empacotadores: AntiDeb, ProcessE, SanitizePin, InstMem, SkewM | knobs `-dd/-dp/-de/-dm/-do` (`-da` = todos) |
-| **Contramedidas** | AntiDebug, ProcessEnum, SanitizePinEnvVars, InstMemcmpMask, SkewMask | `AntiDebugMask.cpp`, `ProcessEnumMask.cpp`, `SanitizePinEnvVars.cpp`, InstMemcmp*, `SkewMask.cpp` |
-| **APIs / PEB** | Pontos de atuação (interceptação ou sanitização estrutural) | conforme cada contramedida |
-| **Signatures** | Padrões Pin para **InstMemcmpMask** | `config/signatures.txt` |
-| **Calibrate Mask** | Acúmulo/compensação de skew (**SkewMask**) | `SkewMask.cpp` |
-| **Apps de teste** | Oráculos funcionais por superfície | `Resultados/Apps-Teste/` |
+| **Main / TOMWare.M** | `PIN_Init` → inicia a instrumentação | `TOMWare/TOMWare.cpp` |
+| **Instrumentation** | Interpreta parâmetros e registra hooks | `TOMWare/Instrumentation.cpp` |
+| **Contramedidas** | Mascaramento seletivo por superfície | fontes acima |
+| **Apps de teste** | Oráculos funcionais (evidência no console) | `Resultados/Apps-Teste/` |
+| **Harness** | Relatório `Result` / CSV / JSON do experimento | `scripts/` |
 
-Diagrama Mermaid (mesma visão Módulos → Contramedidas): `imgs/tomware-architecture-current.mmd`.  
-Variante anotada (fluxos PEB / Signatures / Calibrate explícitos): `imgs/tomware-architecture-annotated.png`.
+**Coerência com o código (verificado):** mapeamento parâmetro→init confere com `InitInstrumentation()`; ProcessEnum / InstMemcmpMask / SkewMask batem com os painéis (1)–(3); AntiDebug e SanitizePinEnvVars existem e são ativados por `-dd`/`-de`, embora o desenho os destaque mais na inicialização do que nos painéis inferiores. O bloco **Relatório de Resultado** corresponde ao protocolo de benchmark (§3.4 / §8), não a um módulo interno da pintool.
+
+Diagrama Mermaid equivalente (fluxo): `imgs/tomware-architecture-current.mmd`.  
+Figura estrutural anterior (módulos → contramedidas): `imgs/tomware_pintool_20072026.png`.  
+Variante anotada (PEB / Signatures / Calibrate): `imgs/tomware-architecture-annotated.png`.
 
 ## 3.4 Como a execução é estruturada
 

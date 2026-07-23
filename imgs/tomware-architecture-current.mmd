@@ -1,52 +1,46 @@
-%% TOMWare.M — arquitetura: Módulos (empacotadores via parâmetros) → Contramedidas
-%% Nomes dos módulos ≠ nomes das contramedidas (conforme diagrama)
+%% TOMWare.M — fluxo de execução (Inicialização → Execução ativa → Finalização)
+%% Alinhado a imgs/tomware-fluxo-execucao-23072026.png e Instrumentation.cpp
 %% Render: https://mermaid.live
 
-flowchart TD
-  mainTw["TOMWare.M Main"]
-  core["Instrumentation"]
-  params["Parâmetros<br/>-da -dd -de -dm -do -dp"]
-
-  subgraph mods ["Módulos empacotadores"]
-    mDd["AntiDeb"]
-    mDp["ProcessE"]
-    mDe["SanitizePin"]
-    mDm["InstMem"]
-    mDo["SkewM"]
+flowchart TB
+  subgraph init ["1. Inicialização"]
+    mainTw["TOMWare.M Principal / Pintool"]
+    params["Parâmetros<br/>-dd -dp -de -dm -do<br/>-da = todos"]
+    hooks["Ativar ganchos e wrappers"]
+    mainTw --> params
+    params --> mDe["SanitizePinEnvVars (-de)"]
+    params --> mDp["ProcessEnum (-dp)"]
+    params --> mDd["AntiDebug (-dd)"]
+    params --> mDm["InstMemcmpMask (-dm)"]
+    params --> mDo["SkewMask (-do)"]
+    mDe --> hooks
+    mDp --> hooks
+    mDd --> hooks
+    mDm --> hooks
+    mDo --> hooks
   end
 
-  subgraph cms ["Contramedidas"]
-    cDd["AntiDebug"]
-    cDp["ProcessEnum"]
-    cDe["SanitizePinEnvVars"]
-    cDm["InstMemcmpMask"]
-    cDo["SkewMask"]
+  subgraph active ["2. Execução ativa e interceptação"]
+    app["Aplicação analisada"]
+    cms["Contramedidas modulares<br/>AntiDebug · ProcessEnum · SanitizePinEnvVars<br/>InstMemcmpMask · SkewMask"]
+    base["Base SO / DBI + Pin"]
+    app -->|"chamadas interceptadas"| cms
+    cms -->|"dados mascarados / filtrados"| app
+    cms -->|"solicitações filtradas"| base
+    base -->|"APIs reais"| cms
+    pe["(1) ProcessEnum — oculta pin.exe"]
+    mem["(2) InstMemcmpMask — memcmp + Signatures"]
+    skew["(3) SkewMask — overhead / tempo"]
+    cms --- pe
+    cms --- mem
+    cms --- skew
   end
 
-  peb["PEB BeingDebugged NtGlobalFlag env PIN"]
-  apis["APIs Process32 memcmp Sleep QPC"]
-  sigs[("Signatures -sf")]
-  cal["Calibrate Mask"]
+  subgraph fini ["3. Finalização"]
+    endRun["Término da execução"]
+    collect["Coleta / relatório harness<br/>Result: outcome · tempo · saída"]
+    endRun --> collect
+  end
 
-  mainTw --> core
-  core --> params
-  params --> mDd
-  params --> mDp
-  params --> mDe
-  params --> mDm
-  params --> mDo
-
-  mDd -->|"aciona"| cDd
-  mDp -->|"aciona"| cDp
-  mDe -->|"aciona"| cDe
-  mDm -->|"aciona"| cDm
-  mDo -->|"aciona"| cDo
-
-  cDd --> peb
-  cDe --> peb
-  cDp --> apis
-  cDm --> apis
-  cDo --> apis
-  cDm -->|"Verify"| sigs
-  cDo --> cal
-  cal -->|"Result"| cDo
+  hooks --> app
+  app --> endRun

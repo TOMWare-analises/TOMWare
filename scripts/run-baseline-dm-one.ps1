@@ -44,7 +44,9 @@ param(
     [switch]$Loop1000,
     [ValidateRange(1, 10)]
     [int]$Repeat = 10,
-    [switch]$AllCountermeasures
+    [switch]$AllCountermeasures,
+    [ValidateSet("de", "dm", "do", "dd", "dp")]
+    [string]$StartFrom = "de"
 )
 
 $ErrorActionPreference = "Stop"
@@ -687,7 +689,7 @@ function Get-ComparisonLogLines {
         $deltaLine,
         "",
         ("  memscan PIN_     : baseline={0} | -{1}={2}" -f `
-            $(if ($null -ne $BaselineCounts.PIN_) { $BaselineCounts.PIN_ } else { "n/a" }), `
+            $(if ($BaselineCounts -and $null -ne $BaselineCounts.PIN_) { $BaselineCounts.PIN_ } else { "n/a" }), `
             $Knob, `
             $(if ($CmCounts -and $null -ne $CmCounts.PIN_) { $CmCounts.PIN_ } else { "n/a" })),
         "",
@@ -836,12 +838,17 @@ function Save-RunArtifacts {
     $outDir = Join-Path $repoRoot "Resultados"
     New-Item -ItemType Directory -Force -Path $outDir | Out-Null
 
-    $BaselineMalware | ConvertTo-Json | Set-Content -Path (Join-Path $outDir "baseline-$Tag.json") -Encoding UTF8
-    $CmMalware | ConvertTo-Json | Set-Content -Path (Join-Path $outDir "$Knob-$Tag.json") -Encoding UTF8
-    @{ Run = $BaselineMemscan; Counts = $BaselineCounts } | ConvertTo-Json -Depth 4 |
+    $safeBaseline = Get-JsonSafeRun $BaselineMalware
+    $safeCm = Get-JsonSafeRun $CmMalware
+    $safeBasePoc = Get-JsonSafeRun $BaselineMemscan
+    $safeCmPoc = Get-JsonSafeRun $CmMemscan
+
+    $safeBaseline | ConvertTo-Json -Depth 6 | Set-Content -Path (Join-Path $outDir "baseline-$Tag.json") -Encoding UTF8
+    $safeCm | ConvertTo-Json -Depth 6 | Set-Content -Path (Join-Path $outDir "$Knob-$Tag.json") -Encoding UTF8
+    @{ Run = $safeBasePoc; Counts = $BaselineCounts } | ConvertTo-Json -Depth 6 |
         Set-Content -Path (Join-Path $outDir "memscan-baseline.json") -Encoding UTF8
     if (Test-CmUsesMemscan -Knob $Knob) {
-        @{ Run = $CmMemscan; Counts = $CmCounts } | ConvertTo-Json -Depth 4 |
+        @{ Run = $safeCmPoc; Counts = $CmCounts } | ConvertTo-Json -Depth 6 |
             Set-Content -Path (Join-Path $outDir "memscan-$Knob.json") -Encoding UTF8
     }
     @{
@@ -852,13 +859,13 @@ function Save-RunArtifacts {
         Countermeasure  = $Knob
         UsesMemscan     = (Test-CmUsesMemscan -Knob $Knob)
         Knobs           = (Get-CountermeasureKnobs -Knob $Knob -SignatureFile $SignatureFile)
-        BaselineMalware = $BaselineMalware
-        CmMalware       = $CmMalware
-        BaselineMemscan = $BaselineMemscan
-        CmMemscan       = $CmMemscan
+        BaselineMalware = $safeBaseline
+        CmMalware       = $safeCm
+        BaselineMemscan = $safeBasePoc
+        CmMemscan       = $safeCmPoc
         BaselineCounts  = $BaselineCounts
         CmCounts        = $CmCounts
-    } | ConvertTo-Json -Depth 4 | Set-Content -Path (Join-Path $outDir "baseline-$Knob-$Tag.json") -Encoding UTF8
+    } | ConvertTo-Json -Depth 6 | Set-Content -Path (Join-Path $outDir "baseline-$Knob-$Tag.json") -Encoding UTF8
 }
 
 function Assert-SavedCountermeasure {
@@ -953,25 +960,100 @@ function Load-SavedRuns {
 function Stop-ResidualSampleProcesses {
     param([string]$SamplePath)
 
-    $resolvedSample = (Resolve-Path $SamplePath).Path
+    $resolvedSample = $null
+    try {
+        $resolvedSample = (Resolve-Path -LiteralPath $SamplePath -ErrorAction Stop).Path
+    }
+    catch {
+        return $true
+    }
+
+    $sampleLeaf = [System.IO.Path]::GetFileName($resolvedSample)
     try {
         $processes = @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object {
-            $_.ExecutablePath -and $_.ExecutablePath -ieq $resolvedSample
+            (
+                $_.ExecutablePath -and $_.ExecutablePath -ieq $resolvedSample
+            ) -or (
+                $sampleLeaf -and $_.Name -and ($_.Name -ieq $sampleLeaf)
+            ) -or (
+                $_.CommandLine -and (
+                    $_.CommandLine -like "*$resolvedSample*" -or
+                    $_.CommandLine -like "*\$sampleLeaf*"
+                ) -and (
+                    $_.Name -match '^(pin|pin\.exe)$'
+                )
+            )
         })
         foreach ($process in $processes) {
-            Invoke-CimMethod -InputObject $process -MethodName Terminate -ErrorAction SilentlyContinue | Out-Null
+            try {
+                Invoke-CimMethod -InputObject $process -MethodName Terminate -ErrorAction SilentlyContinue | Out-Null
+            }
+            catch { }
+            try {
+                Stop-Process -Id $process.ProcessId -Force -ErrorAction SilentlyContinue
+            }
+            catch { }
         }
         if ($processes.Count -gt 0) {
-            Start-Sleep -Milliseconds 300
+            Start-Sleep -Milliseconds 400
         }
         $remaining = @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object {
-            $_.ExecutablePath -and $_.ExecutablePath -ieq $resolvedSample
+            ($_.ExecutablePath -and $_.ExecutablePath -ieq $resolvedSample) -or
+            ($sampleLeaf -and $_.Name -and ($_.Name -ieq $sampleLeaf))
         })
         return ($remaining.Count -eq 0)
     }
     catch {
         Write-Warning "Could not verify residual sample processes: $($_.Exception.Message)"
         return $false
+    }
+}
+
+function Get-JsonSafeNumber {
+    param($Value)
+    if ($null -eq $Value) { return $null }
+    try {
+        $number = [double]$Value
+        if ([double]::IsNaN($number) -or [double]::IsInfinity($number)) { return $null }
+        return $number
+    }
+    catch {
+        return $null
+    }
+}
+
+function Get-JsonSafeRun {
+    param([object]$Run)
+    if (-not $Run) { return $null }
+    $metrics = $null
+    if ($Run.ResourceMetrics) {
+        $metrics = [PSCustomObject]@{
+            Available                 = [bool]$Run.ResourceMetrics.Available
+            SamplingIntervalMs        = $Run.ResourceMetrics.SamplingIntervalMs
+            SampleCount               = $Run.ResourceMetrics.SampleCount
+            TrackedProcessPeak        = $Run.ResourceMetrics.TrackedProcessPeak
+            CpuSeconds                = (Get-JsonSafeNumber $Run.ResourceMetrics.CpuSeconds)
+            CpuPercentOneCore         = (Get-JsonSafeNumber $Run.ResourceMetrics.CpuPercentOneCore)
+            CpuPercentTotalCapacity   = (Get-JsonSafeNumber $Run.ResourceMetrics.CpuPercentTotalCapacity)
+            AverageWorkingSetMB       = (Get-JsonSafeNumber $Run.ResourceMetrics.AverageWorkingSetMB)
+            PeakWorkingSetMB          = (Get-JsonSafeNumber $Run.ResourceMetrics.PeakWorkingSetMB)
+            PeakPrivateMemoryMB       = (Get-JsonSafeNumber $Run.ResourceMetrics.PeakPrivateMemoryMB)
+        }
+    }
+    return [PSCustomObject]@{
+        Scenario         = $Run.Scenario
+        ExitCode         = $Run.ExitCode
+        Seconds          = (Get-JsonSafeNumber $Run.Seconds)
+        TimedOut         = [bool]$Run.TimedOut
+        Outcome          = $Run.Outcome
+        Stdout           = [string]$Run.Stdout
+        Stderr           = [string]$Run.Stderr
+        Command          = [string]$Run.Command
+        ObservationCompleted = [bool]$Run.ObservationCompleted
+        ObservationSeconds   = $Run.ObservationSeconds
+        RepeatCount      = $Run.RepeatCount
+        Statistics       = $Run.Statistics
+        ResourceMetrics  = $metrics
     }
 }
 
@@ -1091,7 +1173,9 @@ function Get-RunStatistics {
 function Get-MetricStatistics {
     param([double[]]$Values)
 
-    $items = @($Values)
+    $items = @($Values | Where-Object {
+        $null -ne $_ -and -not [double]::IsNaN([double]$_) -and -not [double]::IsInfinity([double]$_)
+    })
     if ($items.Count -eq 0) {
         return [PSCustomObject]@{
             Count = 0; Mean = $null; Median = $null; P95 = $null
@@ -1530,12 +1614,39 @@ if ($AllCountermeasures) {
     }
 
     $countermeasures = @("de", "dm", "do", "dd", "dp")
+    $startIndex = [Array]::IndexOf($countermeasures, $StartFrom)
+    if ($startIndex -lt 0) {
+        throw "Invalid -StartFrom value: $StartFrom"
+    }
+    $priorCountermeasures = @()
+    if ($startIndex -gt 0) {
+        $priorCountermeasures = @($countermeasures[0..($startIndex - 1)])
+    }
+    $countermeasures = @($countermeasures[$startIndex..($countermeasures.Count - 1)])
+
     $allReports = @()
     $allTag = $Sha256.Substring(0, 8)
     $benchmarkDir = Join-Path $repoRoot "Resultados\benchmarks"
+    New-Item -ItemType Directory -Force -Path $benchmarkDir | Out-Null
+
+    foreach ($priorKnob in $priorCountermeasures) {
+        $priorJson = Get-ChildItem -Path $benchmarkDir `
+            -Filter "benchmark-$SampleType-$priorKnob-$allTag-*.json" -File -ErrorAction SilentlyContinue |
+            Sort-Object LastWriteTime -Descending |
+            Select-Object -First 1
+        if (-not $priorJson) {
+            throw "Nao ha JSON previo de -$priorKnob em $benchmarkDir. Rode sem -StartFrom ou comece em -$priorKnob."
+        }
+        Write-Host ("Reusando relatorio previo -$priorKnob : {0}" -f $priorJson.Name) -ForegroundColor DarkGray
+        $allReports += Get-Content $priorJson.FullName -Raw -Encoding UTF8 | ConvertFrom-Json
+    }
+
     Write-Host ""
     Write-Host "Benchmark completo: $Repeat repeticoes para cada contramedida." -ForegroundColor Cyan
     Write-Host "Ordem por rodada alternada para reduzir vies de aquecimento/deriva." -ForegroundColor DarkGray
+    if ($StartFrom -ne "de") {
+        Write-Host "Retomando a partir de -$StartFrom." -ForegroundColor Yellow
+    }
 
     foreach ($knob in $countermeasures) {
         Write-Host ""
@@ -1553,29 +1664,32 @@ if ($AllCountermeasures) {
             "-SampleType", $SampleType,
             "-SamplesDir", $SamplesDir,
             "-SignatureFile", $SignatureFile,
-            "-TimeoutSeconds", $TimeoutSeconds,
-            "-SampleObservationSeconds", $SampleObservationSeconds,
-            "-MemscanTimeoutSeconds", $MemscanTimeoutSeconds,
+            "-TimeoutSeconds", "$TimeoutSeconds",
+            "-SampleObservationSeconds", "$SampleObservationSeconds",
+            "-MemscanTimeoutSeconds", "$MemscanTimeoutSeconds",
             "-Configuration", $Configuration,
-            "-Repeat", $Repeat
+            "-Repeat", "$Repeat"
         )
-        if (-not $FollowChild) { $childArgs += "-FollowChild:`$false" }
+        if (-not $FollowChild) { $childArgs += "-FollowChild:false" }
         if ($SkipMemscan) { $childArgs += "-SkipMemscan" }
         if ($Loop1000) { $childArgs += "-Loop1000" }
 
         $childStarted = (Get-Date).AddSeconds(-2)
         & powershell.exe @childArgs
-        if ($LASTEXITCODE -ne 0) {
-            throw "Benchmark failed for countermeasure -$knob (exit=$LASTEXITCODE)."
-        }
+        $childExit = $LASTEXITCODE
 
         $childJson = Get-ChildItem -Path $benchmarkDir `
             -Filter "benchmark-$SampleType-$knob-$allTag-*.json" -File |
             Where-Object { $_.LastWriteTime -ge $childStarted } |
             Sort-Object LastWriteTime -Descending |
             Select-Object -First 1
+
         if (-not $childJson) {
-            throw "Relatorio JSON recem-gerado de -$knob nao foi encontrado em $benchmarkDir."
+            throw "Benchmark failed for countermeasure -$knob (exit=$childExit); relatorio JSON nao foi gerado."
+        }
+        if ($childExit -ne 0) {
+            # Pin/kill as vezes deixa exit code residual no processo filho mesmo com relatorio OK.
+            Write-Warning ("Filho -$knob terminou com exit=$childExit, mas o JSON existe; seguindo em frente.")
         }
         $allReports += Get-Content $childJson.FullName -Raw -Encoding UTF8 | ConvertFrom-Json
     }
@@ -1705,7 +1819,7 @@ for ($iteration = 1; $iteration -le $Repeat; $iteration++) {
             Countermeasure = $Countermeasure
             SampleType     = $SampleType
             Sha256         = $Sha256
-            Seconds        = $run.Seconds
+            Seconds        = (Get-JsonSafeNumber $run.Seconds)
             Outcome        = $run.Outcome
             ExitCode       = $run.ExitCode
             TimedOut       = $run.TimedOut
@@ -1713,12 +1827,12 @@ for ($iteration = 1; $iteration -le $Repeat; $iteration++) {
             ObservationSeconds = $run.ObservationSeconds
             ResourceMetricsAvailable = [bool]$run.ResourceMetrics.Available
             ResourceSampleCount = $run.ResourceMetrics.SampleCount
-            CpuSeconds = $run.ResourceMetrics.CpuSeconds
-            CpuPercentOneCore = $run.ResourceMetrics.CpuPercentOneCore
-            CpuPercentTotalCapacity = $run.ResourceMetrics.CpuPercentTotalCapacity
-            AverageWorkingSetMB = $run.ResourceMetrics.AverageWorkingSetMB
-            PeakWorkingSetMB = $run.ResourceMetrics.PeakWorkingSetMB
-            PeakPrivateMemoryMB = $run.ResourceMetrics.PeakPrivateMemoryMB
+            CpuSeconds = (Get-JsonSafeNumber $run.ResourceMetrics.CpuSeconds)
+            CpuPercentOneCore = (Get-JsonSafeNumber $run.ResourceMetrics.CpuPercentOneCore)
+            CpuPercentTotalCapacity = (Get-JsonSafeNumber $run.ResourceMetrics.CpuPercentTotalCapacity)
+            AverageWorkingSetMB = (Get-JsonSafeNumber $run.ResourceMetrics.AverageWorkingSetMB)
+            PeakWorkingSetMB = (Get-JsonSafeNumber $run.ResourceMetrics.PeakWorkingSetMB)
+            PeakPrivateMemoryMB = (Get-JsonSafeNumber $run.ResourceMetrics.PeakPrivateMemoryMB)
             Scenario       = $run.Scenario
         }
     }
@@ -1742,47 +1856,81 @@ $cmPinCmd = Get-PinCommandFromRun -Run $cmMemscan -PinExe $pinExe -ToolDll $tool
 
 Show-BaselineReport -Knob $Countermeasure -PocRun $baseMemscan -Counts $baseCounts -MalwareRun $baseMalware -PinCommand $basePinCmd -SamplePath $sample
 Show-CmReport -Knob $Countermeasure -PocRun $cmMemscan -Counts $cmCounts -MalwareRun $cmMalware -PinCommand $cmPinCmd -SamplePath $sample
-Write-RunSummaryLog -Tag $tag -Knob $Countermeasure -BaselineMalware $baseMalware -CmMalware $cmMalware `
-    -BaselinePoc $baseMemscan -CmPoc $cmMemscan -BaselineCounts $baseCounts -CmCounts $cmCounts
 
-Save-RunArtifacts -Tag $tag -Knob $Countermeasure -BaselineMalware $baseMalware -CmMalware $cmMalware `
-    -BaselineMemscan $baseMemscan -CmMemscan $cmMemscan -BaselineCounts $baseCounts -CmCounts $cmCounts
+# Limpeza agressiva antes de gravar: residuos do malware (follow_execv) podem
+# derrubar o PowerShell no ConvertTo-Json/Export-Csv sem mensagem clara.
+[void](Stop-ResidualSampleProcesses -SamplePath $sample)
+Start-Sleep -Milliseconds 500
 
-if ($Repeat -gt 1) {
-    $benchmarkReport = Save-BenchmarkReports -Knob $Countermeasure -Tag $tag `
-        -BaselineRuns $baselineRuns -CountermeasureRuns $countermeasureRuns -Rows $benchmarkRows `
-        -BaselinePoc $baseMemscan -CountermeasurePoc $cmMemscan `
-        -BaselineCounts $baseCounts -CountermeasureCounts $cmCounts
+try {
+    Write-RunSummaryLog -Tag $tag -Knob $Countermeasure -BaselineMalware $baseMalware -CmMalware $cmMalware `
+        -BaselinePoc $baseMemscan -CmPoc $cmMemscan -BaselineCounts $baseCounts -CmCounts $cmCounts
 
-    Write-Host ""
-    Write-Host "Respostas do relatorio:" -ForegroundColor Cyan
-    Write-Host ("  funcional      : {0} — {1}" -f `
-        $benchmarkReport.FunctionalEvidence.Status, $benchmarkReport.FunctionalEvidence.Answer) `
-        -ForegroundColor $(if ($benchmarkReport.FunctionalEvidence.Status -eq "PASS") { "Green" } else { "Yellow" })
-    Write-Host ("  evidencia      : {0}" -f $benchmarkReport.FunctionalEvidence.EvidenceSummary)
-    Write-Host ("  desempenho     : {0} — {1}" -f `
-        $benchmarkReport.PerformanceAssessment.Status, $benchmarkReport.PerformanceAssessment.Answer) `
-        -ForegroundColor $(if ($benchmarkReport.PerformanceAssessment.Status -eq "VALID") { "Green" } else { "Yellow" })
-    Write-Host ""
-    Write-Host "Estatisticas da amostra:" -ForegroundColor Cyan
-    Write-Host ("  baseline       : media={0}s | mediana={1}s | p95={2}s | validas={3}/{4} (observed={5})" -f `
-        $benchmarkReport.Baseline.MeanSeconds, $benchmarkReport.Baseline.MedianSeconds, `
-        $benchmarkReport.Baseline.P95Seconds, $benchmarkReport.Baseline.Valid, `
-        $benchmarkReport.Baseline.Attempted, $benchmarkReport.Baseline.Observed)
-    Write-Host ("  -{0}             : media={1}s | mediana={2}s | p95={3}s | validas={4}/{5} (observed={6})" -f `
-        $Countermeasure, $benchmarkReport.CountermeasureResult.MeanSeconds, `
-        $benchmarkReport.CountermeasureResult.MedianSeconds, $benchmarkReport.CountermeasureResult.P95Seconds, `
-        $benchmarkReport.CountermeasureResult.Valid, $benchmarkReport.CountermeasureResult.Attempted, `
-        $benchmarkReport.CountermeasureResult.Observed)
-    Write-Host ("  pares validos  : {0}/{1}" -f `
-        $benchmarkReport.PairedEffect.ValidPairs, $benchmarkReport.PairedEffect.AttemptedPairs)
-    if ($benchmarkReport.ComparisonValid) {
-        Write-Host ("  delta pareado  : mediana={0}s | variacao mediana={1}%" -f `
-            $benchmarkReport.MedianDeltaSeconds, $benchmarkReport.MedianChangePercent)
+    Save-RunArtifacts -Tag $tag -Knob $Countermeasure -BaselineMalware $baseMalware -CmMalware $cmMalware `
+        -BaselineMemscan $baseMemscan -CmMemscan $cmMemscan -BaselineCounts $baseCounts -CmCounts $cmCounts
+
+    if ($Repeat -gt 1) {
+        $benchmarkReport = Save-BenchmarkReports -Knob $Countermeasure -Tag $tag `
+            -BaselineRuns $baselineRuns -CountermeasureRuns $countermeasureRuns -Rows $benchmarkRows `
+            -BaselinePoc $baseMemscan -CountermeasurePoc $cmMemscan `
+            -BaselineCounts $baseCounts -CountermeasureCounts $cmCounts
+
+        Write-Host ""
+        Write-Host "Respostas do relatorio:" -ForegroundColor Cyan
+        Write-Host ("  funcional      : {0} - {1}" -f `
+            $benchmarkReport.FunctionalEvidence.Status, $benchmarkReport.FunctionalEvidence.Answer) `
+            -ForegroundColor $(if ($benchmarkReport.FunctionalEvidence.Status -eq "PASS") { "Green" } else { "Yellow" })
+        Write-Host ("  evidencia      : " + [string]$benchmarkReport.FunctionalEvidence.EvidenceSummary)
+        Write-Host ("  desempenho     : {0} - {1}" -f `
+            $benchmarkReport.PerformanceAssessment.Status, $benchmarkReport.PerformanceAssessment.Answer) `
+            -ForegroundColor $(if ($benchmarkReport.PerformanceAssessment.Status -eq "VALID") { "Green" } else { "Yellow" })
+        Write-Host ""
+        Write-Host "Estatisticas da amostra:" -ForegroundColor Cyan
+        Write-Host ("  baseline       : media={0}s | mediana={1}s | p95={2}s | validas={3}/{4} (observed={5})" -f `
+            $benchmarkReport.Baseline.MeanSeconds, $benchmarkReport.Baseline.MedianSeconds, `
+            $benchmarkReport.Baseline.P95Seconds, $benchmarkReport.Baseline.Valid, `
+            $benchmarkReport.Baseline.Attempted, $benchmarkReport.Baseline.Observed)
+        Write-Host ("  -{0}             : media={1}s | mediana={2}s | p95={3}s | validas={4}/{5} (observed={6})" -f `
+            $Countermeasure, $benchmarkReport.CountermeasureResult.MeanSeconds, `
+            $benchmarkReport.CountermeasureResult.MedianSeconds, $benchmarkReport.CountermeasureResult.P95Seconds, `
+            $benchmarkReport.CountermeasureResult.Valid, $benchmarkReport.CountermeasureResult.Attempted, `
+            $benchmarkReport.CountermeasureResult.Observed)
+        Write-Host ("  pares validos  : {0}/{1}" -f `
+            $benchmarkReport.PairedEffect.ValidPairs, $benchmarkReport.PairedEffect.AttemptedPairs)
+        if ($benchmarkReport.ComparisonValid) {
+            Write-Host ("  delta pareado  : mediana={0}s | variacao mediana={1}%" -f `
+                $benchmarkReport.MedianDeltaSeconds, $benchmarkReport.MedianChangePercent)
+        }
+        else {
+            Write-Host ("  comparacao     : INVALIDA - {0}" -f $benchmarkReport.ComparisonReason) -ForegroundColor Yellow
+        }
+        Write-Host ("  CSV            : {0}" -f $benchmarkReport.CsvPath) -ForegroundColor Green
+        Write-Host ("  JSON           : {0}" -f $benchmarkReport.JsonPath) -ForegroundColor Green
     }
-    else {
-        Write-Host ("  comparacao     : INVALIDA — {0}" -f $benchmarkReport.ComparisonReason) -ForegroundColor Yellow
-    }
-    Write-Host ("  CSV            : {0}" -f $benchmarkReport.CsvPath) -ForegroundColor Green
-    Write-Host ("  JSON           : {0}" -f $benchmarkReport.JsonPath) -ForegroundColor Green
 }
+catch {
+    $errDir = Join-Path $repoRoot "Resultados\benchmarks"
+    New-Item -ItemType Directory -Force -Path $errDir | Out-Null
+    $errPath = Join-Path $errDir ("error-{0}-{1}-{2}.txt" -f $SampleType, $Countermeasure, $tag)
+    $errText = @()
+    $errText += "Time: $(Get-Date -Format o)"
+    $errText += "Countermeasure: -$Countermeasure"
+    $errText += "SampleType: $SampleType"
+    $errText += "Sha256: $Sha256"
+    $errText += "Message: $($_.Exception.Message)"
+    $errText += "Type: $($_.Exception.GetType().FullName)"
+    $errText += "ScriptStackTrace:"
+    $errText += $_.ScriptStackTrace
+    $errText += "InvocationInfo:"
+    $errText += ($_.InvocationInfo.PositionMessage)
+    $errText | Set-Content -Path $errPath -Encoding UTF8
+    Write-Host ""
+    Write-Host ("ERRO ao salvar relatorio -$Countermeasure : {0}" -f $_.Exception.Message) -ForegroundColor Red
+    Write-Host ("Detalhes: {0}" -f $errPath) -ForegroundColor Yellow
+    throw
+}
+
+# Evita que exit code residual do pin.exe (ex.: apos Kill na janela de observacao)
+# vaze para o orquestrador -AllCountermeasures.
+exit 0
+

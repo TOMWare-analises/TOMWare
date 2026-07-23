@@ -264,7 +264,9 @@ function Get-PocTimeout {
         [switch]$Loop1000
     )
     $cfg = Get-PocConfig -Knob $Knob
-    $base = if ($cfg.PocTimeout) { [int]$cfg.PocTimeout } else { $MemscanTimeoutSeconds }
+    # PocTimeout do knob e o piso tipico; -MemscanTimeoutSeconds sobe o teto quando o usuario pede mais tempo.
+    $configured = if ($cfg.PocTimeout) { [int]$cfg.PocTimeout } else { 120 }
+    $base = [Math]::Max($configured, [int]$MemscanTimeoutSeconds)
     if ($Loop1000) {
         # Loop amplifica o tempo. Memscan x1000 sob Pin e muito pesado.
         # O app imprime o Resumo apos a 1a varredura, mas continua executando
@@ -1754,6 +1756,7 @@ Write-Host "  [2] Amostra real ($SampleType)             : $sample"
 Write-Host ""
 
 $pocTimeout = Get-PocTimeout -Knob $Countermeasure -Loop1000:$Loop1000
+Write-Host ("  timeout do app de teste       : {0}s (MemscanTimeoutSeconds={1})" -f $pocTimeout, $MemscanTimeoutSeconds) -ForegroundColor DarkGray
 $pocBaseKnobs = Get-PocBaselineKnobs -Knob $Countermeasure
 $pocCmKnobs = Get-PocCmKnobs -Knob $Countermeasure -SignatureFile $SignatureFile
 $usesMemscan = Test-CmUsesMemscan -Knob $Countermeasure

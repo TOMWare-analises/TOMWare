@@ -1,0 +1,15 @@
+﻿SampleIndex;Sha256;ShaShort;Profile;SampleOutcome;FunctionalPassCount;FunctionalTotal;FunctionalAllPass;DoStatus;DoAttempts;DoSourceJson
+1;0f20b0c906f3ad95dbf75ed526b2fe4341fdf62ab8c971fc10e340091af75b3b;0F20B0C9;persistent;observed;5;5;True;PASS;1;benchmark-infected-do-0f20b0c9-20260722-175552.json
+2;430b487c0bc9b53382537422209acbd1c6ae63773cacf0c9f7d61f23e7fa8485;430B487C;persistent;observed;5;5;True;PASS;1;benchmark-infected-do-430b487c-20260722-185713.json
+3;36685efcf34c7a7a6f6dd2e48199e4700b5ab8fe3945a50297703dd8daced74f;36685EFC;short-lived;complete;5;5;True;PASS;2;benchmark-infected-do-36685efc-20260722-204838.json
+4;0e3e95ee6649238171fb409c143c8a944bc54332f0ce85b94c651b5d0bf95343;0E3E95EE;short-lived;complete;5;5;True;PASS;1;benchmark-infected-do-0e3e95ee-20260722-212800.json
+5;6e89b763cd4dd79f0c3082f09813efbd3dac4374a95455fe86ed27c363309a45;6E89B763;short-lived;complete;5;5;True;PASS;1;benchmark-infected-do-6e89b763-20260722-222440.json
+6;7de3df7d279686adf7a3f9a3160dbbd35be0024cd3de2a22cae911efb61fef8c;7DE3DF7D;short-lived;complete;5;5;True;PASS;1;benchmark-infected-do-7de3df7d-20260722-224031.json
+7;17c7986320e427a1106f3bbed1e122bcb0d9d38611d159c120df11d9689f4ec4;17C79863;persistent;observed;5;5;True;PASS;1;benchmark-infected-do-17c79863-20260722-230004.json
+8;66ebbc7d5f4e3c2b392af7f624ad328c8b4dc2e198f7bf585506b132607e9fbd;66EBBC7D;persistent;observed;5;5;True;PASS;1;benchmark-infected-do-66ebbc7d-20260723-131840.json
+9;166ffce34fd49a69076a31cc5c7eb23584b47c153f744936e240f871144990be;166FFCE3;persistent;observed;5;5;True;PASS;1;benchmark-infected-do-166ffce3-20260723-135315.json
+10;1693df9d970e011cf1c827fceaf49a3724f4478bc0ed7dc50f2d90ea417b6d38;1693DF9D;persistent;observed;5;5;True;PASS;1;benchmark-infected-do-1693df9d-20260723-145127.json
+11;574482778792874721df6f4461490efbc7bbc6dfb833184f20e77ecd61e68270;57448277;persistent;observed;5;5;True;PASS;2;benchmark-infected-do-57448277-20260723-160358.json
+12;a0aeb837cb5e762fc0b7d657c71d343e765cccb5780cd315756f682418b3cdfe;A0AEB837;persistent;observed;5;5;True;PASS;1;benchmark-infected-do-a0aeb837-20260723-165741.json
+13;b640c53e2c02f08aa8ca3db62c628abcaa1694ffec33a59d69d88f5e2d1552aa;B640C53E;persistent;observed;5;5;True;PASS;1;benchmark-infected-do-b640c53e-20260723-182232.json
+14;db32e48a61c59884c1ce4c28f12feee426d361982e2491fbaaf7cb4e75a501dd;DB32E48A;persistent;observed;5;5;True;PASS;1;benchmark-infected-do-db32e48a-20260723-190642.json

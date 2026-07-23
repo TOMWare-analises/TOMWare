@@ -1,0 +1,6 @@
+﻿Countermeasure;Label;Benign_Samples;Infected_Samples;Benign_PinOnly_Detected;Benign_PinCM_Masked;Benign_FunctionalPass;Benign_FunctionalTotal;Infected_PinOnly_Detected;Infected_PinCM_Masked;Infected_FunctionalPass;Infected_FunctionalTotal;Benign_MedianWallChangePct_ShortLived;Infected_MedianWallChangePct_ShortLived;Benign_MedianCpuChangePct_Persistent;Infected_MedianCpuChangePct_Persistent;Benign_MedianMemChangePct_Persistent;Infected_MedianMemChangePct_Persistent
+DE;SanitizePinEnvVars (-de);17;14;17;17;17;17;14;14;14;14;-3.5475;-2.684;0.153;0.0;-0.003;0.1125
+DM;InstMemcmpMask (-dm);17;14;17;17;17;17;14;14;14;14;-3.908;0.8785;0.234;0.34750000000000003;-1.303;0.33999999999999997
+DO;SkewMask (-do);17;14;17;17;17;17;14;14;14;14;-0.158;;-38.534;-29.217;-87.241;-74.41300000000001
+DD;AntiDebug (-dd);17;14;17;17;17;17;14;14;14;14;-0.7105;6.8225;-0.384;0.0025;-0.159;-0.040999999999999995
+DP;ProcessEnum (-dp);17;14;17;17;17;17;14;14;14;14;;;-7.201;-6.68;-12.762;-7.527

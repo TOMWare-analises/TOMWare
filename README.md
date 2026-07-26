@@ -44,7 +44,7 @@ TOMWare.M is a modular DBI pintool built on Intel Pin to mitigate anti-instrumen
 Este README está organizado nas seguintes seções principais:
 
 1. **Estrutura deste README** — visão geral do documento, repositório e **playlist de vídeos** (§1.4).
-2. **Selos considerados** — critérios de artefato (disponível / funcional / reproduzível).
+2. **Selos considerados** — os quatro selos de artefato do CTA (D / F / S / R).
 3. **Informações básicas** — introdução, módulos, arquitetura e ambiente.
 4. **Dependências** — requisitos de host, compilação e VM (+ instaladores no Drive).
 5. **Segurança** — isolamento obrigatório ao executar amostras reais.
@@ -98,15 +98,14 @@ TOMWare/                              ← raiz do repositório (este README)
 
 ## 1.4 Vídeos de demonstração (playlist)
 
-Screencasts com **legendas queimadas** (PT-BR), alinhados ao fluxo do README.
-Assista nesta ordem: **download → instalação → configuração → execução → coleta de resultados**.
+Screencasts com **legendas queimadas** (PT-BR). A playlist é uma **demonstração do fluxo** (download → instalação → configuração → execução de exemplo → coleta), alinhada ao README — **não** pretende cobrir todos os experimentos do §8.
 
 Pasta no Drive: **`demonstracao`** (junto ao [pacote de instaladores](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing)).
 
-### Sequência recomendada
+### Sequência (ordem de assistir)
 
-| # | Fase | O que o vídeo mostra | Arquivo (nome canônico) | README |
-|---|------|----------------------|-------------------------|--------|
+| # | Fase | O que o vídeo mostra | Arquivo | README |
+|---|------|----------------------|---------|--------|
 | 01 | Download | Git for Windows | `01-download-git.mp4` (+ `.srt`) | §4.4 |
 | 02 | Download | Visual Studio Community | `02-download-visual-studio.mp4` (+ `.srt`) | §4.2 / §4.4 |
 | 03 | Download | 7-Zip | `03-download-7zip.mp4` (+ `.srt`) | §4.3 / §4.4 |
@@ -118,52 +117,23 @@ Pasta no Drive: **`demonstracao`** (junto ao [pacote de instaladores](https://dr
 | 09 | Instalação | Instalar VMware + criar VM Windows | `09-instalacao-vmware-e-criacao-vm.mp4` | §3.5 / §8.1 |
 | 10 | Configuração | Rede da VM desligada (pré-amostras) | `10-config-vm-rede-desligada.mp4` | §5.2 / §8.1 |
 | 11 | Configuração | Copiar `pin.7z` + `TOMWare.7z` (Drive → host → VM) | `11-config-copia-pin-tomware-para-vm.mp4` | §4.1 / §8.1 |
-| 12 | Execução | Amostra **benigna** + contramedida **`-dm`** (`run-baseline-dm-one.ps1`) | `12-execucao-amostra-benigna-dm.mp4` | §5 / §8.1–§8.2 |
+| 12 | Execução | Exemplo: amostra **benigna** + contramedida **`-dm`** | `12-execucao-amostra-benigna-dm.mp4` | §5 / §8.1–§8.2 |
 | 13 | Resultados | Coleta CSV/JSON em `Resultados\benchmarks\` (+ cópia ao host) | `13-coleta-resultados-benchmark.mp4` | §8.2–§8.3 |
 
-Os arquivos na pasta Drive **`demonstracao`** já usam os nomes da tabela acima.
-
-### Convenção de nomes
-
-```text
-NN-fase-assunto.mp4
-```
-
-Exemplos de fase: `download`, `instalacao`, `config`, `execucao`, `coleta`.  
-Ordem lexicográfica = ordem de assistir. Itens **01–05** podem ter `.srt` ao lado; **06–13** têm legendas queimadas no MP4.
-
-### Coerência com o README (checagem)
-
-| Checklist do README | Coberto pelos vídeos? |
-|---------------------|------------------------|
-| Instaladores no Drive (§4.4) | Sim — 01–05 (+ espelho no Drive) |
-| Toolset **v142** / VS (§4.2, §6.1) | Sim — 02 + 07 |
-| ISO **x64** (não Arm64) (§4.4) | Sim — 05 (enfatizar no título) |
-| VM + snapshot (§3.5, §8.1) | Sim — 09 |
-| Rede / AV / firewall desligados (§5.2, §8.1) | Sim — 10 + 12 (legendas) |
-| Amostras em `malwares\benign` e `malwares\infected` (§8.1) | Sim — 12 (legendas); pastas no guest |
-| `run-baseline-dm-one.ps1` baseline vs `-dm` (§8.2) | Sim — 12 |
-| Artefatos em `Resultados\benchmarks\` (§8.3) | Sim — 13 (CSV/JSON; PDF consolidado é passo opcional à parte) |
-
-### Lacunas / próximos vídeos sugeridos
-
-1. **`14-execucao-amostra-infectada-dm.mp4`** — mesmo fluxo com `-SampleType infected` (rede off).
-2. **`15-teste-minimo-poc.mp4`** — §7 no host, sem malware (`TestMemoryScan` / etc.).
-3. **`16-pdf-consolidado-corpus.mp4`** — geração do PDF consolidado do corpus (quando aplicável).
-
-> **Nota:** os slides curtos `01-download-ferramentas` / `02-instalacao` / `03-configuracao-local` (pasta local `docs/videos-demo/`) são walkthroughs antigos em slides e **não** fazem parte desta playlist de screencasts.
+Convenção de nomes: `NN-fase-assunto.mp4` (ordem lexicográfica = ordem de assistir). Itens **01–05** podem ter `.srt` ao lado; **06–13** têm legendas queimadas no MP4.
 
 ---
 
 # 2. Selos considerados
 
-Selos alinhados ao Salão de Ferramentas (SBSeg):
+Selos do **Comitê Técnico de Artefatos (CTA)** do SBSeg ([orientação oficial](https://doc-artefatos.github.io/sbseg2026/)). Este artefato **concorre aos quatro**:
 
-| Selo | Critério | Como este repositório atende |
-|------|----------|------------------------------|
-| **Disponível (D)** | Código e artefatos públicos | Fontes, apps de teste, scripts e README |
-| **Funcional (F)** | Ferramenta executável conforme instruções | Teste mínimo (§7) com apps em `Resultados/Apps-Teste/` |
-| **Reproduzível** | Protocolo experimental documentado | §8 — baseline vs contramedida; VM + snapshot |
+| Selo | Critério (resumo CTA) | Como este repositório atende |
+|------|----------------------|------------------------------|
+| **Disponíveis (SeloD)** | Código/dados em repositório estável com README mínimo | GitHub público; este README (§1–§9); instaladores e vídeos no [Drive](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing) |
+| **Funcionais (SeloF)** | Artefato executável; deps, ambiente, instalação e exemplo mínimo | §3.5 / §4 (deps e versões), §6 (instalação), §7 (teste mínimo com apps em `Resultados/Apps-Teste/`) |
+| **Sustentáveis (SeloS)** | Código modular, legível e mapeável às reivindicações | Estrutura `TOMWare/` + `scripts/`; knobs `-dd/-dp/-de/-dm/-do`; diagrama §3.3; evidências em `Resultados/` |
+| **Reproduzíveis (SeloR)** | Reproduzir as principais reivindicações do artigo | §8 (protocolo VM/snapshot, `run-baseline-dm-one.ps1`, corpus/benchmark); playlist §1.4 como demonstração do fluxo |
 
 Trabalho de base: SBSeg 2025 (TOMWare). Extensão atual (**TOMWare.M**, SBSeg 2026 SF): módulos **AntiDebug** (`-dd`) e **ProcessEnum** (`-dp`).
 

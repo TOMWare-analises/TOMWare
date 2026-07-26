@@ -20,6 +20,7 @@ TOMWare.M is a modular DBI pintool built on Intel Pin to mitigate anti-instrumen
   * [1.1 Organização](#11-organização)
   * [1.2 Artefatos distribuídos](#12-artefatos-distribuídos)
   * [1.3 Estrutura do repositório](#13-estrutura-do-repositório)
+  * [1.4 Vídeos de demonstração (playlist)](#14-vídeos-de-demonstração-playlist)
 * [2. Selos considerados](#2-selos-considerados)
 * [3. Informações básicas](#3-informações-básicas)
   * [3.1 Introdução à execução e experimentos](#31-introdução-à-execução-e-experimentos)
@@ -42,10 +43,10 @@ TOMWare.M is a modular DBI pintool built on Intel Pin to mitigate anti-instrumen
 
 Este README está organizado nas seguintes seções principais:
 
-1. **Estrutura deste README** — visão geral do documento e do repositório.
+1. **Estrutura deste README** — visão geral do documento, repositório e **playlist de vídeos** (§1.4).
 2. **Selos considerados** — critérios de artefato (disponível / funcional / reproduzível).
 3. **Informações básicas** — introdução, módulos, arquitetura e ambiente.
-4. **Dependências** — requisitos de host, compilação e VM.
+4. **Dependências** — requisitos de host, compilação e VM (+ instaladores no Drive).
 5. **Segurança** — isolamento obrigatório ao executar amostras reais.
 6. **Instalação** — compilação (opcional) e sintaxe básica da pintool.
 7. **Teste mínimo** — validação rápida com apps de teste (sem malware).
@@ -62,7 +63,8 @@ Este README está organizado nas seguintes seções principais:
 * Scripts de execução e benchmark (`scripts/`).
 * Diagrama de fluxo de execução atual (`imgs/tomware-fluxo-execucao-23072026.png`).
 * Capturas e resultados de experimento (`Resultados/`, conforme versão publicada).
-* Pacote de instaladores (Git, Visual Studio, 7-Zip, VMware, Pin, TOMWare) no [Google Drive TOMWare](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing) — ver §4.4.
+* Pacote de instaladores (Git, Visual Studio, 7-Zip, VMware, Pin, TOMWare, amostras benignas, ISO) no [Google Drive TOMWare](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing) — ver §4.4.
+* Playlist de vídeos (download → instalação → configuração → execução → resultados) na pasta **`demonstracao`** do Drive — ver §1.4.
 
 > O objetivo dos artefatos é permitir: (1) explorar o código; (2) verificar a funcionalidade (teste mínimo); (3) reproduzir os experimentos do artigo (apps de teste + amostras reais sob Pin); (4) avaliar o impacto temporal das contramedidas.
 
@@ -93,6 +95,63 @@ TOMWare/                              ← raiz do repositório (este README)
 ```
 
 > **Importante:** ao baixar o `.zip` do GitHub, a pasta pode chamar-se `TOMWare-main`. Ajuste os caminhos dos exemplos conforme o local de extração.
+
+## 1.4 Vídeos de demonstração (playlist)
+
+Screencasts com **legendas queimadas** (PT-BR), alinhados ao fluxo do README.
+Assista nesta ordem: **download → instalação → configuração → execução → coleta de resultados**.
+
+Pasta no Drive: **`demonstracao`** (junto ao [pacote de instaladores](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing)).
+
+### Sequência recomendada
+
+| # | Fase | O que o vídeo mostra | Arquivo (nome canônico) | README |
+|---|------|----------------------|-------------------------|--------|
+| 01 | Download | Git for Windows | `01-download-git.mp4` (+ `.srt`) | §4.4 |
+| 02 | Download | Visual Studio Community | `02-download-visual-studio.mp4` (+ `.srt`) | §4.2 / §4.4 |
+| 03 | Download | 7-Zip | `03-download-7zip.mp4` (+ `.srt`) | §4.3 / §4.4 |
+| 04 | Download | VMware Workstation | `04-download-vmware.mp4` (+ `.srt`) | §3.5 / §4.4 |
+| 05 | Download | ISO Windows 10/11 **x64** | `05-download-windows-iso-x64.mp4` (+ `.srt`) | §3.5 / §4.4 |
+| 06 | Instalação | Instalar Git | `06-instalacao-git.mp4` | §6.1.1 |
+| 07 | Instalação | Instalar Visual Studio (C++ + **v142**) | `07-instalacao-visual-studio.mp4` | §6.1.2 |
+| 08 | Instalação | Instalar 7-Zip | `08-instalacao-7zip.mp4` | §4.3 |
+| 09 | Instalação | Instalar VMware + criar VM Windows | `09-instalacao-vmware-e-criacao-vm.mp4` | §3.5 / §8.1 |
+| 10 | Configuração | Rede da VM desligada (pré-amostras) | `10-config-vm-rede-desligada.mp4` | §5.2 / §8.1 |
+| 11 | Configuração | Copiar `pin.7z` + `TOMWare.7z` (Drive → host → VM) | `11-config-copia-pin-tomware-para-vm.mp4` | §4.1 / §8.1 |
+| 12 | Execução | Amostra **benigna** + contramedida **`-dm`** (`run-baseline-dm-one.ps1`) | `12-execucao-amostra-benigna-dm.mp4` | §5 / §8.1–§8.2 |
+| 13 | Resultados | Coleta CSV/JSON em `Resultados\benchmarks\` (+ cópia ao host) | `13-coleta-resultados-benchmark.mp4` | §8.2–§8.3 |
+
+Os arquivos na pasta Drive **`demonstracao`** já usam os nomes da tabela acima.
+
+### Convenção de nomes
+
+```text
+NN-fase-assunto.mp4
+```
+
+Exemplos de fase: `download`, `instalacao`, `config`, `execucao`, `coleta`.  
+Ordem lexicográfica = ordem de assistir. Itens **01–05** podem ter `.srt` ao lado; **06–13** têm legendas queimadas no MP4.
+
+### Coerência com o README (checagem)
+
+| Checklist do README | Coberto pelos vídeos? |
+|---------------------|------------------------|
+| Instaladores no Drive (§4.4) | Sim — 01–05 (+ espelho no Drive) |
+| Toolset **v142** / VS (§4.2, §6.1) | Sim — 02 + 07 |
+| ISO **x64** (não Arm64) (§4.4) | Sim — 05 (enfatizar no título) |
+| VM + snapshot (§3.5, §8.1) | Sim — 09 |
+| Rede / AV / firewall desligados (§5.2, §8.1) | Sim — 10 + 12 (legendas) |
+| Amostras em `malwares\benign` e `malwares\infected` (§8.1) | Sim — 12 (legendas); pastas no guest |
+| `run-baseline-dm-one.ps1` baseline vs `-dm` (§8.2) | Sim — 12 |
+| Artefatos em `Resultados\benchmarks\` (§8.3) | Sim — 13 (CSV/JSON; PDF consolidado é passo opcional à parte) |
+
+### Lacunas / próximos vídeos sugeridos
+
+1. **`14-execucao-amostra-infectada-dm.mp4`** — mesmo fluxo com `-SampleType infected` (rede off).
+2. **`15-teste-minimo-poc.mp4`** — §7 no host, sem malware (`TestMemoryScan` / etc.).
+3. **`16-pdf-consolidado-corpus.mp4`** — geração do PDF consolidado do corpus (quando aplicável).
+
+> **Nota:** os slides curtos `01-download-ferramentas` / `02-instalacao` / `03-configuracao-local` (pasta local `docs/videos-demo/`) são walkthroughs antigos em slides e **não** fazem parte desta playlist de screencasts.
 
 ---
 
@@ -268,16 +327,48 @@ Para facilitar a reprodução, os instaladores das ferramentas de ambiente estã
 
 **[Instaladores TOMWare (Google Drive)](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing)**
 
-| Arquivo (exemplo) | Uso |
-|-------------------|-----|
-| `Git-*-64-bit.exe` | Git for Windows |
-| `VisualStudioSetup.exe` | Visual Studio Installer (Community) |
-| `7z*-x64.exe` | 7-Zip |
-| `VMware-Workstation-Full-*.exe` | VMware Workstation |
-| `pin.7z` | Intel Pin 3.28 (extrair em `pin\`) |
-| `TOMWare.7z` | Artefato / código TOMWare |
+O Drive é um **espelho** dos sites oficiais (Git, Microsoft, 7-Zip, Broadcom/VMware, Intel Pin). Prefira as páginas oficiais quando possível; use o Drive para montar o ambiente mais rápido.
 
-> Prefira sempre as páginas oficiais quando possível. O Drive é um **espelho** para acelerar a montagem do ambiente. Para a VM de experimentos com Pin/TOMWare.M, use ISO **Windows 10/11 x64** (Intel/AMD), não Arm64.
+### Conteúdo da pasta `Instaladores`
+
+| # | Arquivo (Drive) | O que é | Onde usar | Observação |
+|---|-----------------|---------|-----------|------------|
+| 1 | `7z2602-x64.exe` | 7-Zip (x64) | **Host** e **VM** | Extrai `.7z` / `.zip` (`pin.7z`, `TOMWare.7z`, amostras) |
+| 2 | `Git-*-64-bit.exe` | Git for Windows | **Host** (e VM se for clonar) | Necessário para `git clone` do repositório |
+| 3 | `VisualStudioSetup.exe` | Visual Studio Installer | **Host** (compilação) | Workload C++ + toolset **v142** (§4.2 / §6.1) |
+| 4 | `VMware-Workstation-Full-*.exe` | VMware Workstation | **Host** | Hipervisor para a VM de experimentos (§3.5) |
+| 5 | `Windows.iso` | ISO Windows **x64** | **Host** → criar VM | **Usar esta** para Pin/TOMWare.M (Intel/AMD) |
+| 6 | `MediaCreationTool_22H2.exe` | Media Creation Tool (Win 10 22H2) | **Host** (opcional) | Alternativa oficial para baixar/gerar ISO x64 |
+| 7 | `Win11_25H2_*_Arm64.iso` | ISO Windows 11 **Arm64** | — | **Não usar** com Pin 3.28 MSVC x64 / TOMWare.M |
+| 8 | `pin.7z` | Intel Pin 3.28 (MSVC x64) | Extrair na VM (ou host) em `C:\TOMWare\pin\` | Deve conter `pin.exe`, `intel64\`, etc. |
+| 9 | `TOMWare.7z` | Código / artefato TOMWare | Extrair na VM em `C:\TOMWare\` | Inclui scripts, `TOMWare.dll` (se pré-build), apps de teste |
+| 10 | `TOMware_pin_samples_benign.7z` | Corpus de amostras **benignas** | Extrair na VM em `C:\TOMWare\malwares\benign\` | Arquivos nomeados por SHA256 (`.exe`) |
+
+> **Arm64:** a ISO `Win11_*_Arm64.iso` serve só a máquinas ARM. Para os experimentos deste README, a VM deve ser **Windows 10/11 x64**. Use `Windows.iso` (ou ISO x64 gerada pelo Media Creation Tool).
+
+### Sequência correta de instalação
+
+Ordem alinhada à playlist (§1.4) e ao fluxo host → VM:
+
+| Passo | Onde | Ação | Arquivo(s) |
+|------:|------|------|------------|
+| 1 | Host | Instalar **7-Zip** | `7z2602-x64.exe` |
+| 2 | Host | Instalar **Git** | `Git-*-64-bit.exe` |
+| 3 | Host | Instalar **Visual Studio** (C++ + **v142**) | `VisualStudioSetup.exe` |
+| 4 | Host | Instalar **VMware Workstation** | `VMware-Workstation-Full-*.exe` |
+| 5 | Host | Criar VM com ISO **x64** (não Arm64) | `Windows.iso` (ou MCT → ISO x64) |
+| 6 | VM | (Opcional) instalar 7-Zip / Git na guest | mesmos `.exe` |
+| 7 | VM | Extrair **Pin** em `C:\TOMWare\pin\` | `pin.7z` |
+| 8 | VM | Extrair **TOMWare** em `C:\TOMWare\` | `TOMWare.7z` |
+| 9 | VM | Extrair amostras benignas | `TOMware_pin_samples_benign.7z` → `malwares\benign\` |
+| 10 | VM | Colocar amostras infectadas (se houver) | `malwares\infected\<SHA256>.exe` |
+| 11 | VM | Antes de rodar amostras: rede / Internet / AV / firewall **desligados** | — (§5 / §8.1) |
+
+Compilação da pintool (se `x64\Release\TOMWare.dll` ainda não vier no pacote): §6.1 no **host** ou na VM com VS instalado.
+
+Amostras infectadas **não** entram neste pacote de instaladores (risco / política de distribuição). Obtenha-as conforme o protocolo do artigo e coloque-as apenas na VM, em `C:\TOMWare\malwares\infected\`.
+
+Vídeos: download/instalação dos itens 1–5 → playlist §1.4 (01–09); cópia Pin/TOMWare → item **11**; execução benigna → **12**; coleta → **13**.
 
 ---
 
@@ -433,6 +524,8 @@ Via wrapper:
 4. Colocar amostras em `C:\TOMWare\malwares\infected\<SHA256>.exe` ou
    `C:\TOMWare\malwares\benign\<SHA256>.exe`.
 5. Desligar rede / Host-only; desativar AV se o protocolo do artigo exigir.
+
+Demonstração em vídeo: §1.4 itens **10–12** (rede off → cópia Pin/TOMWare → execução benigna `-dm`).
 
 ## 8.2 Reproduzir comparação baseline vs contramedida
 

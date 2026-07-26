@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Generate article-ready PDF for benign corpus with detailed evidence tables.
+"""Generate article-ready PDF for infected corpus with detailed evidence tables.
 
-Layout:
+Same layout as the current benign PDF (TOMWare-corpus-benigno-17-amostras.pdf):
   1. Objetivo e leitura da tabela + visão geral
   2. Detalhamento por amostra
   3. Notas para o artigo
@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import csv
 import re
+import shutil
 from pathlib import Path
 
 from reportlab.lib import colors
@@ -28,44 +29,41 @@ from reportlab.platypus import (
     TableStyle,
 )
 
-ROOT = Path(r"D:\MMB\evidencias_VM\benign")
-OUT = ROOT / "TOMWare-corpus-benigno-17-amostras.pdf"
-OUT_TMP = ROOT / "TOMWare-corpus-benigno-17-amostras-novo.pdf"
+ROOT = Path(r"D:\MMB\evidencias_VM\malign")
+OUT = ROOT / "TOMWare-corpus-maligno-14-amostras.pdf"
+OUT_TMP = ROOT / "TOMWare-corpus-maligno-14-amostras-novo.pdf"
 REPO_OUT = Path(
-    r"D:\MMB\workspace\tomware-melhorias\TOMWare\Resultados\evidencias_VM\benign"
-    r"\TOMWare-corpus-benigno-17-amostras.pdf"
+    r"D:\MMB\workspace\tomware-melhorias\TOMWare\Resultados\evidencias_VM\malign"
+    r"\TOMWare-corpus-maligno-14-amostras.pdf"
 )
 REPO_SCRIPT = Path(
-    r"D:\MMB\workspace\tomware-melhorias\TOMWare\Resultados\evidencias_VM\benign"
-    r"\_make_benign_corpus_pdf.py"
+    r"D:\MMB\workspace\tomware-melhorias\TOMWare\Resultados\evidencias_VM\malign"
+    r"\_make_infected_corpus_pdf.py"
 )
 DOCS_OUT = Path(
     r"D:\MMB\workspace\tomware-melhorias\TOMWare\docs\avaliacao"
-    r"\TOMWare-corpus-benigno-17-amostras.pdf"
+    r"\TOMWare-corpus-maligno-14-amostras.pdf"
 )
 
 EXECUTION_ORDER = [
-    "4D6937E8",
-    "6ED8D67B",
-    "7DF61608",
-    "8C9E0494",
-    "8F9BDDC4",
-    "16B45C2C",
-    "17F1BB08",
-    "38A1D8F7",
-    "78BA41F0",
-    "445E672D",
-    "1128D0B4",
-    "52479B2B",
-    "B350FAC8",
-    "CC2A1377",
-    "D3DC7512",
-    "DACBE8CB",
-    "FAEC71CB",
+    "0F20B0C9",
+    "430B487C",
+    "36685EFC",
+    "0E3E95EE",
+    "6E89B763",
+    "7DE3DF7D",
+    "17C79863",
+    "66EBBC7D",
+    "166FFCE3",
+    "1693DF9D",
+    "57448277",
+    "A0AEB837",
+    "B640C53E",
+    "DB32E48A",
 ]
 
 CM_ORDER = ["DE", "DM", "DO", "DD", "DP"]
-N_SAMPLES = 17
+N_SAMPLES = 14
 N_CELLS = N_SAMPLES * 5
 
 
@@ -83,7 +81,7 @@ def register_fonts() -> tuple[str, str]:
 
 
 def load_rows() -> list[dict]:
-    path = ROOT / "consolidado-benign-17-amostras.csv"
+    path = ROOT / "consolidado-infected-14-amostras.csv"
     with path.open(encoding="utf-8-sig", newline="") as handle:
         return list(csv.DictReader(handle, delimiter=";"))
 
@@ -110,39 +108,40 @@ def fmt_pct(value: float | None) -> str:
     return f"{sign}{value:.1f}%".replace(".", ",")
 
 
-def short_evidence(knob: str, evidence: str) -> str:
+def short_evidence(cm: str, evidence: str) -> str:
     text = evidence or ""
-    if knob == "DE":
+    if cm == "DE":
         nums = re.findall(r"PIN_CRT_TZDATA\s*:?\s*(\d+)", text)
         if len(nums) >= 2:
             return f"PIN_CRT_TZDATA: {nums[0]} → {nums[1]}"
         return "PIN_CRT_TZDATA: 1 → 0"
-    if knob == "DM":
+    if cm == "DM":
         m = re.search(r"PIN_:\s*baseline=(\d+),\s*-dm=(\d+)", text)
         if m:
             return f"PIN_: {m.group(1)} → {m.group(2)}; módulos Pin → 0"
-        return "PIN_: 212 → 0; módulos Pin → 0"
-    if knob == "DO":
+        return "PIN_: N → 0; módulos Pin → 0"
+    if cm == "DO":
         ticks = re.findall(r"Ticks \+ Latencia:\s*([0-9]+(?:[.,][0-9]+)?)", text)
         if len(ticks) >= 2:
             a = ticks[0].replace(".", ",")
             b = ticks[1].replace(".", ",")
             return f"Ticks percebidos: {a} → {b} (&lt; 3000)"
         return "Ticks: anomalia → OK (&lt; 3000)"
-    if knob == "DD":
+    if cm == "DD":
         return "Indicadores anti-debug: 1 → 0"
-    if knob == "DP":
+    if cm == "DP":
         nums = re.findall(r"pin\.exe\s*:?\s*(\d+)", text, re.I)
         if len(nums) >= 2:
             return f"pin.exe: {nums[0]} → {nums[1]}"
         if nums:
             return f"pin.exe: {nums[0]} → 0"
-        return "pin.exe: 3 → 0"
+        return "pin.exe: N → 0"
     return (text[:80] + "…") if len(text) > 80 else text
 
 
 def sample_metric_cells(row: dict) -> tuple[str, str, str]:
-    knob = row["Countermeasure"]
+    """Return (baseline→CM, variação, avaliação)."""
+    cm = row["Countermeasure"]
     profile = row["Profile"]
     runtime_valid = str(row.get("RuntimeComparisonValid", "")).lower() == "true"
     resource_valid = str(row.get("ResourceComparisonValid", "")).lower() == "true"
@@ -158,7 +157,7 @@ def sample_metric_cells(row: dict) -> tuple[str, str, str]:
     mem_c = parse_num(row.get("CountermeasureMedianPeakWorkingSetMB"))
     mem_pct = parse_num(row.get("MedianPeakWorkingSetChangePercent"))
 
-    if profile == "short-lived" and runtime_valid and knob != "DP":
+    if profile == "short-lived" and runtime_valid and cm != "DP":
         amostra = f"{fmt_num(wall_b, 3)} s → {fmt_num(wall_c, 3)} s"
         variacao = fmt_pct(wall_pct)
         abs_delta = abs((wall_c or 0) - (wall_b or 0))
@@ -173,12 +172,12 @@ def sample_metric_cells(row: dict) -> tuple[str, str, str]:
             f"CPU {fmt_num(cpu_b, 2)}→{fmt_num(cpu_c, 2)} s; "
             f"mem {fmt_num(mem_b, 0)}→{fmt_num(mem_c, 0)} MB"
         )
-        if knob == "DO" and mem_pct is not None and abs(mem_pct) > 50:
+        if cm == "DO" and mem_pct is not None and abs(mem_pct) > 50:
             variacao = f"CPU {fmt_pct(cpu_pct)} / mem {fmt_pct(mem_pct)}"
             avaliacao = (
                 "Mascaramento OK; deltas de recurso anômalos (não usar como ganho)"
             )
-        elif knob == "DP":
+        elif cm == "DP":
             variacao = f"CPU {fmt_pct(cpu_pct)} / mem {fmt_pct(mem_pct)}"
             avaliacao = (
                 "Passou funcionalmente; tempo/recurso não são métrica de eficácia do DP"
@@ -196,18 +195,18 @@ def sample_metric_cells(row: dict) -> tuple[str, str, str]:
                 avaliacao = "Passou funcionalmente; registrar impacto de recursos"
         return amostra, variacao, avaliacao
 
-    if knob == "DP":
-        return (
-            f"{fmt_num(wall_b, 3)} s → {fmt_num(wall_c, 3)} s",
-            "n/a",
-            "Passou funcionalmente; tempo não é métrica de eficácia, mas é impacto",
+    if cm == "DP":
+        amostra = f"{fmt_num(wall_b, 3)} s → {fmt_num(wall_c, 3)} s"
+        variacao = "n/a"
+        avaliacao = (
+            "Passou funcionalmente; tempo não é métrica de eficácia, mas é impacto"
         )
+        return amostra, variacao, avaliacao
 
-    return (
-        f"{fmt_num(wall_b, 3)} s → {fmt_num(wall_c, 3)} s",
-        fmt_pct(wall_pct) if wall_pct is not None else "n/a",
-        f"Status funcional: {func}",
-    )
+    amostra = f"{fmt_num(wall_b, 3)} s → {fmt_num(wall_c, 3)} s"
+    variacao = fmt_pct(wall_pct) if wall_pct is not None else "n/a"
+    avaliacao = f"Status funcional: {func}"
+    return amostra, variacao, avaliacao
 
 
 def build_pdf() -> Path:
@@ -216,6 +215,10 @@ def build_pdf() -> Path:
     by_short: dict[str, dict[str, dict]] = {}
     for row in rows:
         by_short.setdefault(row["ShaShort"], {})[row["Countermeasure"]] = row
+
+    missing = [s for s in EXECUTION_ORDER if s not in by_short]
+    if missing:
+        raise SystemExit(f"SHA ausente no consolidado: {missing}")
 
     n_persist = sum(
         1 for s in EXECUTION_ORDER if by_short[s]["DE"]["Profile"] == "persistent"
@@ -295,14 +298,14 @@ def build_pdf() -> Path:
         rightMargin=1.4 * cm,
         topMargin=1.3 * cm,
         bottomMargin=1.4 * cm,
-        title="TOMWare — Corpus benigno consolidado (17 amostras)",
+        title="TOMWare — Corpus maligno consolidado (14 amostras)",
         author="TOMWare",
     )
 
     story: list = []
     story.append(
         Paragraph(
-            "TOMWare: resultados consolidados do corpus de amostras benignas "
+            "TOMWare: resultados consolidados do corpus de amostras malignas "
             f"({N_SAMPLES} executáveis)",
             title,
         )
@@ -397,7 +400,7 @@ def build_pdf() -> Path:
             ]
         )
     )
-    story.append(Paragraph("Tabela 1. Visão geral do corpus benigno.", caption))
+    story.append(Paragraph("Tabela 1. Visão geral do corpus maligno.", caption))
     story.append(overview)
     story.append(
         Paragraph(
@@ -498,25 +501,26 @@ def build_pdf() -> Path:
     story.append(Paragraph("3. Notas para o artigo", h2))
     story.append(
         Paragraph(
-            "• <b>Controle negativo:</b> o PASS nas 17 benignas indica que as "
-            "contramedidas ocultam vestígios do Pin independentemente da natureza "
-            "maligna do binário.",
+            f"• <b>Equivalência funcional:</b> o PASS nas {N_SAMPLES} malignas "
+            f"({N_CELLS}/{N_CELLS}) indica que as contramedidas ocultam vestígios "
+            "do Pin também sob cargas reais infectadas, no mesmo protocolo do "
+            "controle negativo benigno.",
             body,
         )
     )
     story.append(
         Paragraph(
             "• <b>DO:</b> flutuação do limiar de ticks (&lt; 3000) pode tornar a primeira "
-            "passagem inconclusiva; a reexecução isolada restaurou PASS em todos os "
-            "casos do corpus.",
+            "passagem inconclusiva; a reexecução isolada restaurou PASS nos casos "
+            "afetados deste corpus.",
             body,
         )
     )
     story.append(
         Paragraph(
             "• <b>Desempenho:</b> não misturar wall-time de CLI curta com CPU/memória "
-            "da janela de 10&nbsp;s. Em DO sobre GUI, deltas extremos de memória/CPU "
-            "são anomalia de amostragem e não devem ser lidos como melhoria.",
+            "da janela de 10&nbsp;s. Em DO sobre GUI/persistentes, deltas extremos de "
+            "memória/CPU são anomalia de amostragem e não devem ser lidos como melhoria.",
             body,
         )
     )
@@ -530,8 +534,9 @@ def build_pdf() -> Path:
     )
     story.append(
         Paragraph(
-            "Arquivos-fonte: consolidado-benign-17-amostras.csv / .json. "
-            "Tabela análoga: TOMWare-corpus-maligno-14-amostras.pdf.",
+            "Arquivos-fonte: consolidado-infected-14-amostras.csv / .json. "
+            "Comparativo com o corpus benigno: "
+            "TOMWare-comparativo-benigno-vs-maligno.pdf.",
             caption,
         )
     )
@@ -541,12 +546,13 @@ def build_pdf() -> Path:
         canvas.setFont(font, 8)
         canvas.setFillColor(colors.HexColor("#6b7280"))
         canvas.drawString(
-            1.4 * cm, 0.9 * cm, "TOMWare — corpus benigno (controle negativo)"
+            1.4 * cm, 0.9 * cm, "TOMWare — corpus maligno (amostras infectadas)"
         )
         canvas.drawRightString(A4[0] - 1.4 * cm, 0.9 * cm, f"Página {_doc.page}")
         canvas.restoreState()
 
     doc.build(story, onFirstPage=_footer, onLaterPages=_footer)
+
     DOCS_OUT.parent.mkdir(parents=True, exist_ok=True)
     DOCS_OUT.write_bytes(OUT_TMP.read_bytes())
     REPO_OUT.parent.mkdir(parents=True, exist_ok=True)
@@ -556,14 +562,18 @@ def build_pdf() -> Path:
         if OUT.exists():
             OUT.unlink()
         OUT_TMP.replace(OUT)
-        return OUT
+        final = OUT
     except OSError:
-        return OUT_TMP
+        final = OUT_TMP
+
+    return final
 
 
 def main() -> None:
     path = build_pdf()
-    REPO_SCRIPT.write_text(Path(__file__).read_text(encoding="utf-8"), encoding="utf-8")
+    # Keep generator mirrored in Resultados
+    src = Path(__file__).resolve()
+    REPO_SCRIPT.write_text(src.read_text(encoding="utf-8"), encoding="utf-8")
     print(path)
     print(f"size_bytes={path.stat().st_size}")
     print(f"REPO={REPO_OUT}")

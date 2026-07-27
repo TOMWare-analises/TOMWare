@@ -46,11 +46,11 @@ Este README está organizado nas seguintes seções principais:
 1. **Estrutura deste README** — visão geral do documento, repositório e **playlist de vídeos** (§1.4).
 2. **Selos considerados** — os quatro selos de artefato do CTA (D / F / S / R).
 3. **Informações básicas** — introdução, módulos, arquitetura e ambiente.
-4. **Dependências** — requisitos de host, compilação e VM (+ instaladores no Drive).
+4. **Dependências** — requisitos de host, compilação e VM (+ instaladores e amostras no Drive).
 5. **Segurança** — isolamento obrigatório ao executar amostras reais.
 6. **Instalação** — compilação (opcional) e sintaxe básica da pintool.
 7. **Teste mínimo** — validação rápida com apps de teste (sem malware).
-8. **Experimentos** — baseline vs contramedida, corpus e medição temporal.
+8. **Experimentos** — baseline vs contramedida, corpus, medição temporal e evidências (§8.6).
 9. **Licença** — termos de uso.
 
 ## 1.2 Artefatos distribuídos
@@ -62,8 +62,9 @@ Este README está organizado nas seguintes seções principais:
 * Assinaturas para mascaramento de memória (`config/signatures.txt`).
 * Scripts de execução e benchmark (`scripts/`).
 * Diagrama de fluxo de execução atual (`imgs/tomware-fluxo-execucao-23072026.png`).
-* Capturas e resultados de experimento (`Resultados/`, conforme versão publicada).
-* Pacote de instaladores (Git, Visual Studio, 7-Zip, VMware, Pin, TOMWare, amostras benignas, ISO) no [Google Drive TOMWare](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing) — ver §4.4.
+* Capturas e resultados de experimento (`Resultados/`), incluindo evidências consolidadas em `Resultados/evidencias_VM/` — ver §8.6.
+* Pacote de instaladores (Git, Visual Studio, 7-Zip, VMware, Pin, TOMWare, ISO) no [Google Drive — Instaladores](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing) — ver §4.4.
+* Corpus de amostras **benignas** e **infectadas** no [Google Drive — malwares](https://drive.google.com/drive/folders/1h9isdbOZhvAJrYbzOn1CKMKEo5TsNzXS?usp=sharing) — ver §4.5.
 * Playlist de vídeos (download → instalação → configuração → execução → resultados) na pasta **`demonstracao`** do Drive — ver §1.4.
 
 > O objetivo dos artefatos é permitir: (1) explorar o código; (2) verificar a funcionalidade (teste mínimo); (3) reproduzir os experimentos do artigo (apps de teste + amostras reais sob Pin); (4) avaliar o impacto temporal das contramedidas.
@@ -88,13 +89,19 @@ TOMWare/                              ← raiz do repositório (este README)
 │   │   └── Loop_X_1000/              ← mesmas apps com 1000 iterações
 │   ├── Apps-Teste-src/               ← fontes das apps de teste
 │   ├── Capturas-Tela/                ← capturas dos experimentos
-│   └── Avaliacao/                    ← saídas de benchmark (quando geradas)
+│   ├── Avaliacao/                    ← saídas de benchmark (quando geradas)
+│   ├── benchmarks/                   ← CSV/JSON por execução (gerados na VM)
+│   └── evidencias_VM/                ← evidências publicadas (PDF/CSV/JSON) — §8.6
+│       ├── benign/                   ← corpus benigno (por hash + consolidado)
+│       ├── malign/                   ← corpus infectado (por hash + consolidado)
+│       └── comparativo/              ← benigno vs maligno
 ├── TOMWare.sln
 ├── LICENSE
 └── README.md
 ```
 
-> **Importante:** ao baixar o `.zip` do GitHub, a pasta pode chamar-se `TOMWare-main`. Ajuste os caminhos dos exemplos conforme o local de extração.
+> **Importante:** ao baixar o `.zip` do GitHub, a pasta pode chamar-se `TOMWare-main`. Ajuste os caminhos dos exemplos conforme o local de extração.  
+> Na VM, as amostras para execução ficam em `C:\TOMWare\malwares\benign\` e `C:\TOMWare\malwares\infected\` (download: §4.5).
 
 ## 1.4 Vídeos de demonstração (playlist)
 
@@ -130,10 +137,10 @@ Selos do **Comitê Técnico de Artefatos (CTA)** do SBSeg ([orientação oficial
 
 | Selo | Critério (resumo CTA) | Como este repositório atende |
 |------|----------------------|------------------------------|
-| **Disponíveis (SeloD)** | Código/dados em repositório estável com README mínimo | GitHub público; este README (§1–§9); instaladores e vídeos no [Drive](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing) |
+| **Disponíveis (SeloD)** | Código/dados em repositório estável com README mínimo | GitHub público; este README; [Instaladores](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing), [malwares](https://drive.google.com/drive/folders/1h9isdbOZhvAJrYbzOn1CKMKEo5TsNzXS?usp=sharing) e playlist no Drive; evidências em `Resultados/evidencias_VM/` |
 | **Funcionais (SeloF)** | Artefato executável; deps, ambiente, instalação e exemplo mínimo | §3.5 / §4 (deps e versões), §6 (instalação), §7 (teste mínimo com apps em `Resultados/Apps-Teste/`) |
 | **Sustentáveis (SeloS)** | Código modular, legível e mapeável às reivindicações | Estrutura `TOMWare/` + `scripts/`; knobs `-dd/-dp/-de/-dm/-do`; diagrama §3.3; evidências em `Resultados/` |
-| **Reproduzíveis (SeloR)** | Reproduzir as principais reivindicações do artigo | §8 (protocolo VM/snapshot, `run-baseline-dm-one.ps1`, corpus/benchmark); playlist §1.4 como demonstração do fluxo |
+| **Reproduzíveis (SeloR)** | Reproduzir as principais reivindicações do artigo | §8 (protocolo VM/snapshot, scripts, corpus); evidências em `Resultados/evidencias_VM/` (§8.6); playlist §1.4 como demonstração do fluxo |
 
 Trabalho de base: SBSeg 2025 (TOMWare). Extensão atual (**TOMWare.M**, SBSeg 2026 SF): módulos **AntiDebug** (`-dd`) e **ProcessEnum** (`-dp`).
 
@@ -312,7 +319,7 @@ O Drive é um **espelho** dos sites oficiais (Git, Microsoft, 7-Zip, Broadcom/VM
 | 7 | `Win11_25H2_*_Arm64.iso` | ISO Windows 11 **Arm64** | — | **Não usar** com Pin 3.28 MSVC x64 / TOMWare.M |
 | 8 | `pin.7z` | Intel Pin 3.28 (MSVC x64) | Extrair na VM (ou host) em `C:\TOMWare\pin\` | Deve conter `pin.exe`, `intel64\`, etc. |
 | 9 | `TOMWare.7z` | Código / artefato TOMWare | Extrair na VM em `C:\TOMWare\` | Inclui scripts, `TOMWare.dll` (se pré-build), apps de teste |
-| 10 | `TOMware_pin_samples_benign.7z` | Corpus de amostras **benignas** | Extrair na VM em `C:\TOMWare\malwares\benign\` | Arquivos nomeados por SHA256 (`.exe`) |
+| 10 | `TOMware_pin_samples_benign.7z` | (Opcional) pacote compactado de benignas | Extrair na VM em `malwares\benign\` | Preferir o corpus completo no Drive **malwares** (§4.5) |
 
 > **Arm64:** a ISO `Win11_*_Arm64.iso` serve só a máquinas ARM. Para os experimentos deste README, a VM deve ser **Windows 10/11 x64**. Use `Windows.iso` (ou ISO x64 gerada pelo Media Creation Tool).
 
@@ -330,15 +337,25 @@ Ordem alinhada à playlist (§1.4) e ao fluxo host → VM:
 | 6 | VM | (Opcional) instalar 7-Zip / Git na guest | mesmos `.exe` |
 | 7 | VM | Extrair **Pin** em `C:\TOMWare\pin\` | `pin.7z` |
 | 8 | VM | Extrair **TOMWare** em `C:\TOMWare\` | `TOMWare.7z` |
-| 9 | VM | Extrair amostras benignas | `TOMware_pin_samples_benign.7z` → `malwares\benign\` |
-| 10 | VM | Colocar amostras infectadas (se houver) | `malwares\infected\<SHA256>.exe` |
-| 11 | VM | Antes de rodar amostras: rede / Internet / AV / firewall **desligados** | — (§5 / §8.1) |
+| 9 | VM | Baixar e colocar amostras | Drive **malwares** (§4.5) → `malwares\benign\` e `malwares\infected\` |
+| 10 | VM | Antes de rodar amostras: rede / Internet / AV / firewall **desligados** | — (§5 / §8.1) |
 
 Compilação da pintool (se `x64\Release\TOMWare.dll` ainda não vier no pacote): §6.1 no **host** ou na VM com VS instalado.
 
-Amostras infectadas **não** entram neste pacote de instaladores (risco / política de distribuição). Obtenha-as conforme o protocolo do artigo e coloque-as apenas na VM, em `C:\TOMWare\malwares\infected\`.
-
 Vídeos: download/instalação dos itens 1–5 → playlist §1.4 (01–09); cópia Pin/TOMWare → item **11**; execução benigna → **12**; coleta → **13**.
+
+## 4.5 Amostras para experimentos (Google Drive)
+
+As amostras usadas nos testes (benignas e infectadas) estão na pasta compartilhada:
+
+**[malwares — benign / infected (Google Drive)](https://drive.google.com/drive/folders/1h9isdbOZhvAJrYbzOn1CKMKEo5TsNzXS?usp=sharing)**
+
+| Subpasta no Drive | Destino na VM | Uso |
+|-------------------|---------------|-----|
+| `benign/` | `C:\TOMWare\malwares\benign\<SHA256>.exe` | Corpus benigno (`-SampleType benign`) |
+| `infected/` | `C:\TOMWare\malwares\infected\<SHA256>.exe` | Corpus infectado (padrão do script) |
+
+> **Segurança:** baixe e execute amostras infectadas **somente na VM**, com rede/AV/firewall desligados (§5). Não execute no host.
 
 ---
 
@@ -491,9 +508,10 @@ Via wrapper:
 1. Criar VM Windows 10/11 x64 (snapshot limpo).
 2. Copiar o repositório (ou artefatos) para `C:\TOMWare`.
 3. Compilar ou copiar `x64\Release\TOMWare.dll`.
-4. Colocar amostras em `C:\TOMWare\malwares\infected\<SHA256>.exe` ou
-   `C:\TOMWare\malwares\benign\<SHA256>.exe`.
-5. Desligar rede / Host-only; desativar AV se o protocolo do artigo exigir.
+4. Baixar as amostras do [Drive malwares](https://drive.google.com/drive/folders/1h9isdbOZhvAJrYbzOn1CKMKEo5TsNzXS?usp=sharing) e colocar em:
+   - `C:\TOMWare\malwares\benign\<SHA256>.exe`
+   - `C:\TOMWare\malwares\infected\<SHA256>.exe`
+5. Desligar rede / Host-only; desativar AV e firewall se o protocolo do artigo exigir.
 
 Demonstração em vídeo: §1.4 itens **10–12** (rede off → cópia Pin/TOMWare → execução benigna `-dm`).
 
@@ -585,6 +603,27 @@ Measure-Command {
 | Baseline: alerta / contagem > 0; com knob: `OK` / zeros | Contramedida **funcional** na superfície testada |
 | `Result … outcome=complete` | Tempo da amostra pode entrar na comparação quantitativa |
 | `Result … outcome=timeout` | Amostra não terminou no limite — **não** use como tempo válido de eficácia (comum em `-dp`) |
+
+## 8.6 Evidências dos resultados (publicadas)
+
+Além dos CSV/JSON gerados na VM em `Resultados\benchmarks\` (§8.3 / vídeo 13), o repositório publica evidências consolidadas das execuções em:
+
+```text
+Resultados/evidencias_VM/
+├── benign/          ← por amostra (hash) + consolidado do corpus benigno
+├── malign/          ← por amostra (hash) + consolidado do corpus infectado
+└── comparativo/     ← comparação benigno vs maligno
+```
+
+| Conteúdo | Onde |
+|----------|------|
+| Relatório por amostra (PDF) | `evidencias_VM/benign/<SHA256>/` e `evidencias_VM/malign/<SHA256>/` |
+| Consolidado benigno (17 amostras) | `evidencias_VM/benign/TOMWare-corpus-benigno-17-amostras.pdf` (+ CSV/JSON) |
+| Consolidado infectado (14 amostras) | `evidencias_VM/malign/TOMWare-corpus-maligno-14-amostras.pdf` (+ CSV/JSON) |
+| Comparativo benigno × maligno | `evidencias_VM/comparativo/TOMWare-comparativo-benigno-vs-maligno.pdf` (+ CSV) |
+| Saídas brutas de uma execução local | `Resultados\benchmarks\benchmark-<tipo>-<cm>-<hash8>-<data>.{csv,json}` |
+
+Amostras usadas nesses experimentos: download no [Drive malwares](https://drive.google.com/drive/folders/1h9isdbOZhvAJrYbzOn1CKMKEo5TsNzXS?usp=sharing) (§4.5).
 
 ---
 

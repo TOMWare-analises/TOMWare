@@ -1,8 +1,8 @@
-# **TOMWare.M — Mitigação de Técnicas de Anti-Instrumentação em Ambientes DBI**
+# **TOMWare.M — Mitigating Anti-Instrumentation Techniques in DBI Environments**
 
-**TOMWare.M** (*Transparency and Overhead Measurement for Malware*) é uma ferramenta modular de Instrumentação Binária Dinâmica (DBI), desenvolvida sobre o **Intel Pin**, voltada à mitigação de técnicas de anti-instrumentação em executáveis Windows x64.
+**TOMWare.M** (*Transparency and Overhead Measurement for Malware*) is a modular Dynamic Binary Instrumentation (DBI) tool built on **Intel Pin**, aimed at mitigating anti-instrumentation techniques in Windows x64 executables.
 
-Repositório: [https://github.com/TOMWare-analises/TOMWare](https://github.com/TOMWare-analises/TOMWare)
+Repository: [https://github.com/TOMWare-analises/TOMWare](https://github.com/TOMWare-analises/TOMWare)
 
 ---
 
@@ -10,170 +10,170 @@ Repositório: [https://github.com/TOMWare-analises/TOMWare](https://github.com/T
 
 TOMWare.M is a modular DBI pintool built on Intel Pin to mitigate anti-instrumentation techniques. It implements five selectively activatable countermeasures targeting debugging indicators, process enumeration, environment variables, memory signatures, and execution-time discrepancies. The five modules were validated through controlled test applications; execution times were recorded before and after activation. Results indicate that the countermeasures reduce the corresponding instrumentation indicators in the evaluated scenarios, while temporal impact varies according to the intercepted mechanism and its activation frequency.
 
-**Resumo.** A TOMWare.M implementa cinco contramedidas ativáveis de forma seletiva (`-dd`, `-dp`, `-de`, `-dm`, `-do`), validáveis por aplicações de teste controladas e exercitáveis sobre amostras reais sob Pin. Fornece uma plataforma experimental para investigar a relação entre **transparência** e **impacto temporal** em ambientes DBI.
+TOMWare.M implements five selectively activatable countermeasures (`-dd`, `-dp`, `-de`, `-dm`, `-do`), validated with controlled test applications and exercisable on real samples under Pin. It provides an experimental platform to investigate the relationship between **transparency** and **temporal impact** in DBI environments.
 
 ---
 
 ## Table of Contents
 
-* [1. Estrutura deste README](#1-estrutura-deste-readme)
-  * [1.1 Organização](#11-organização)
-  * [1.2 Artefatos distribuídos](#12-artefatos-distribuídos)
-  * [1.3 Estrutura do repositório](#13-estrutura-do-repositório)
-  * [1.4 Vídeos de demonstração (playlist)](#14-vídeos-de-demonstração-playlist)
-* [2. Selos considerados](#2-selos-considerados)
-* [3. Informações básicas](#3-informações-básicas)
-  * [3.1 Introdução à execução e experimentos](#31-introdução-à-execução-e-experimentos)
-  * [3.2 Principais funcionalidades](#32-principais-funcionalidades)
-  * [3.3 Arquitetura](#33-arquitetura)
-  * [3.4 Como a execução é estruturada](#34-como-a-execução-é-estruturada)
-  * [3.5 Ambiente recomendado](#35-ambiente-recomendado)
-* [4. Dependências](#4-dependências)
-* [5. Segurança](#5-segurança)
-* [6. Instalação](#6-instalação)
-* [7. Teste mínimo](#7-teste-mínimo)
-* [8. Experimentos](#8-experimentos)
-* [9. Licença](#9-licença)
+* [1. Structure of this README](#1-structure-of-this-readme)
+  * [1.1 Organization](#11-organization)
+  * [1.2 Distributed artifacts](#12-distributed-artifacts)
+  * [1.3 Repository layout](#13-repository-layout)
+  * [1.4 Demonstration videos (playlist)](#14-demonstration-videos-playlist)
+* [2. Artifact badges considered](#2-artifact-badges-considered)
+* [3. Basic information](#3-basic-information)
+  * [3.1 Introduction to execution and experiments](#31-introduction-to-execution-and-experiments)
+  * [3.2 Main features](#32-main-features)
+  * [3.3 Architecture](#33-architecture)
+  * [3.4 How execution is structured](#34-how-execution-is-structured)
+  * [3.5 Recommended environment](#35-recommended-environment)
+* [4. Dependencies](#4-dependencies)
+* [5. Security](#5-security)
+* [6. Installation](#6-installation)
+* [7. Minimal test](#7-minimal-test)
+* [8. Experiments](#8-experiments)
+* [9. License](#9-license)
 
 ---
 
-# 1. Estrutura deste README
+# 1. Structure of this README
 
-## 1.1 Organização
+## 1.1 Organization
 
-Este README está organizado nas seguintes seções principais:
+This README is organized into the following main sections:
 
-1. **Estrutura deste README** — visão geral do documento, repositório e **playlist de vídeos** (§1.4).
-2. **Selos considerados** — os quatro selos de artefato do CTA (D / F / S / R).
-3. **Informações básicas** — introdução, módulos, arquitetura e ambiente.
-4. **Dependências** — requisitos de host, compilação e VM (+ instaladores no Drive; amostras em `samples/`).
-5. **Segurança** — isolamento obrigatório ao executar amostras reais.
-6. **Instalação** — compilação (opcional) e sintaxe básica da pintool.
-7. **Teste mínimo** — validação rápida com apps de teste (sem malware).
-8. **Experimentos** — baseline vs contramedida, corpus, medição temporal e evidências (§8.6).
-9. **Licença** — termos de uso.
+1. **Structure of this README** — overview of the document, repository, and **video playlist** (§1.4).
+2. **Artifact badges considered** — the four CTA artifact badges (D / F / S / R).
+3. **Basic information** — introduction, modules, architecture, and environment.
+4. **Dependencies** — host, build, and VM requirements (+ installers on Drive; samples in `samples/`).
+5. **Security** — mandatory isolation when running real samples.
+6. **Installation** — optional build and basic pintool syntax.
+7. **Minimal test** — quick validation with test apps (no malware).
+8. **Experiments** — baseline vs countermeasure, corpus, timing, and evidence (§8.6).
+9. **License** — terms of use.
 
-## 1.2 Artefatos distribuídos
+## 1.2 Distributed artifacts
 
-* Código-fonte da pintool **TOMWare** (`TOMWare/`).
-* Binários de teste pré-compilados (`Resultados/Apps-Teste/`), incluindo variantes `Loop_X_1000/`.
-* Fontes das aplicações de teste (`Resultados/Apps-Teste-src/`).
-* Intel Pin 3.28 MSVC x64 (`pin/`), quando incluído na distribuição.
-* Assinaturas para mascaramento de memória (`config/signatures.txt`).
-* Scripts de execução e benchmark (`scripts/`).
-* Diagrama de fluxo de execução atual (`imgs/tomware-fluxo-execucao-23072026.png`).
-* Capturas e resultados de experimento (`Resultados/`), incluindo evidências consolidadas em `Resultados/evidencias_VM/` — ver §8.6.
-* Pacote de instaladores (Git, Visual Studio, 7-Zip, VMware, Pin, TOMWare, ISO) no [Google Drive — Instaladores](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing) — ver §4.4.
-* Corpus de amostras **benignas** e **infectadas** em `samples/` no repositório — ver §4.5.
-  (O Google Drive bloqueia o compartilhamento público desses arquivos por política; por isso o corpus vai no Git.)
-* Playlist de vídeos (download → instalação → configuração → execução → resultados) na pasta **`demonstracao`** do Drive — ver §1.4.
+* Source code of the **TOMWare** pintool (`TOMWare/`).
+* Pre-built test binaries (`Resultados/Apps-Teste/`), including `Loop_X_1000/` variants.
+* Sources of the test applications (`Resultados/Apps-Teste-src/`).
+* Intel Pin 3.28 MSVC x64 (`pin/`), when included in the distribution.
+* Signatures for memory masking (`config/signatures.txt`).
+* Execution and benchmark scripts (`scripts/`).
+* Current execution-flow diagram (`imgs/tomware-fluxo-execucao-23072026.png`).
+* Experiment captures and results (`Resultados/`), including consolidated evidence under `Resultados/evidencias_VM/` — see §8.6.
+* Installer package (Git, Visual Studio, 7-Zip, VMware, Pin, TOMWare, ISO) on [Google Drive — Installers](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing) — see §4.4.
+* Corpus of **benign** and **infected** samples in `samples/` in this repository — see §4.5.
+  (Google Drive blocks public sharing of these files by policy; therefore the corpus is shipped via Git.)
+* Video playlist (download → installation → configuration → execution → results) in the Drive folder **`demonstracao`** — see §1.4.
 
-> O objetivo dos artefatos é permitir: (1) explorar o código; (2) verificar a funcionalidade (teste mínimo); (3) reproduzir os experimentos do artigo (apps de teste + amostras reais sob Pin); (4) avaliar o impacto temporal das contramedidas.
+> The goal of the artifacts is to enable: (1) exploring the code; (2) verifying functionality (minimal test); (3) reproducing the paper experiments (test apps + real samples under Pin); (4) assessing the temporal impact of the countermeasures.
 
-## 1.3 Estrutura do repositório
+## 1.3 Repository layout
 
 ```text
-TOMWare/                              ← raiz do repositório (este README)
-├── TOMWare/                          ← código-fonte da pintool (.cpp/.h)
+TOMWare/                              ← repository root (this README)
+├── TOMWare/                          ← pintool source (.cpp/.h)
 ├── pin/                              ← Intel Pin 3.28 (x64, MSVC)
-├── config/                           ← assinaturas (-sf), corpus, mapeamentos
-├── scripts/                          ← execução e benchmark
+├── config/                           ← signatures (-sf), corpus, mappings
+├── scripts/                          ← execution and benchmarks
 │   ├── run-sample.ps1
-│   ├── run-baseline-dm-one.ps1/.cmd  ← baseline vs uma contramedida (mesmo print)
+│   ├── run-baseline-dm-one.ps1/.cmd  ← baseline vs one countermeasure (same print)
 │   ├── benchmark-poc.ps1
 │   ├── benchmark-corpus.ps1
 │   ├── benchmark-infected.ps1
 │   └── lib/TomwareBenchmark.ps1
-├── imgs/                             ← figuras do README / arquitetura
-├── samples/                          ← corpus de experimentos (§4.5)
-│   ├── benign/                       ← <SHA256>.exe (benignas)
-│   └── infected/                     ← <SHA256>.zip (infectadas; senha em password.txt)
+├── imgs/                             ← README / architecture figures
+├── samples/                          ← experiment corpus (§4.5)
+│   ├── benign/                       ← <SHA256>.exe (benign)
+│   └── infected/                     ← <SHA256>.zip (infected; password in password.txt)
 ├── Resultados/
-│   ├── Apps-Teste/                   ← executáveis das apps de teste
-│   │   └── Loop_X_1000/              ← mesmas apps com 1000 iterações
-│   ├── Apps-Teste-src/               ← fontes das apps de teste
-│   ├── Capturas-Tela/                ← capturas dos experimentos
-│   ├── Avaliacao/                    ← saídas de benchmark (quando geradas)
-│   ├── benchmarks/                   ← CSV/JSON por execução (gerados na VM)
-│   └── evidencias_VM/                ← evidências publicadas (PDF/CSV/JSON) — §8.6
-│       ├── benign/                   ← corpus benigno (por hash + consolidado)
-│       ├── malign/                   ← corpus infectado (por hash + consolidado)
-│       └── comparativo/              ← benigno vs maligno
+│   ├── Apps-Teste/                   ← test-app executables
+│   │   └── Loop_X_1000/              ← same apps with 1000 iterations
+│   ├── Apps-Teste-src/               ← test-app sources
+│   ├── Capturas-Tela/                ← experiment screenshots
+│   ├── Avaliacao/                    ← benchmark outputs (when generated)
+│   ├── benchmarks/                   ← per-run CSV/JSON (generated on the VM)
+│   └── evidencias_VM/                ← published evidence (PDF/CSV/JSON) — §8.6
+│       ├── benign/                   ← benign corpus (per hash + consolidated)
+│       ├── malign/                   ← infected corpus (per hash + consolidated)
+│       └── comparativo/              ← benign vs infected
 ├── TOMWare.sln
 ├── LICENSE
 └── README.md
 ```
 
-> **Importante:** ao baixar o `.zip` do GitHub, a pasta pode chamar-se `TOMWare-main`. Ajuste os caminhos dos exemplos conforme o local de extração.  
-> Na VM, copie/extraia as amostras de `samples/` para `C:\TOMWare\malwares\benign\` e `C:\TOMWare\malwares\infected\` (§4.5).
+> **Important:** when downloading the GitHub `.zip`, the folder may be named `TOMWare-main`. Adjust example paths to your extraction location.  
+> On the VM, copy/extract samples from `samples/` into `C:\TOMWare\malwares\benign\` and `C:\TOMWare\malwares\infected\` (§4.5).
 
-## 1.4 Vídeos de demonstração (playlist)
+## 1.4 Demonstration videos (playlist)
 
-Screencasts com **legendas queimadas** (PT-BR). A playlist é uma **demonstração do fluxo** (download → instalação → configuração → execução de exemplo → coleta), alinhada ao README — **não** pretende cobrir todos os experimentos do §8.
+Screencasts with **burned-in subtitles** (PT-BR). The playlist is a **flow demonstration** (download → installation → configuration → sample run → collection), aligned with this README — it does **not** cover every experiment in §8.
 
-Pasta no Drive: **`demonstracao`** (junto ao [pacote de instaladores](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing)).
+Drive folder: **`demonstracao`** (next to the [installer package](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing)).
 
-### Sequência (ordem de assistir)
+### Watch order
 
-| # | Fase | O que o vídeo mostra | Arquivo | README |
-|---|------|----------------------|---------|--------|
+| # | Phase | What the video shows | File | README |
+|---|-------|----------------------|------|--------|
 | 01 | Download | Git for Windows | `01-download-git.mp4` (+ `.srt`) | §4.4 |
 | 02 | Download | Visual Studio Community | `02-download-visual-studio.mp4` (+ `.srt`) | §4.2 / §4.4 |
 | 03 | Download | 7-Zip | `03-download-7zip.mp4` (+ `.srt`) | §4.3 / §4.4 |
 | 04 | Download | VMware Workstation | `04-download-vmware.mp4` (+ `.srt`) | §3.5 / §4.4 |
-| 05 | Download | ISO Windows 10/11 **x64** | `05-download-windows-iso-x64.mp4` (+ `.srt`) | §3.5 / §4.4 |
-| 06 | Instalação | Instalar Git | `06-instalacao-git.mp4` | §6.1.1 |
-| 07 | Instalação | Instalar Visual Studio (C++ + **v142**) | `07-instalacao-visual-studio.mp4` | §6.1.2 |
-| 08 | Instalação | Instalar 7-Zip | `08-instalacao-7zip.mp4` | §4.3 |
-| 09 | Instalação | Instalar VMware + criar VM Windows | `09-instalacao-vmware-e-criacao-vm.mp4` | §3.5 / §8.1 |
-| 10 | Configuração | Rede da VM desligada (pré-amostras) | `10-config-vm-rede-desligada.mp4` | §5.2 / §8.1 |
-| 11 | Configuração | Copiar `pin.7z` + `TOMWare.7z` (Drive → host → VM) | `11-config-copia-pin-tomware-para-vm.mp4` | §4.1 / §8.1 |
-| 12 | Execução | Exemplo: amostra **benigna** + contramedida **`-dm`** | `12-execucao-amostra-benigna-dm.mp4` | §5 / §8.1–§8.2 |
-| 13 | Resultados | Coleta CSV/JSON em `Resultados\benchmarks\` (+ cópia ao host) | `13-coleta-resultados-benchmark.mp4` | §8.2–§8.3 |
+| 05 | Download | Windows 10/11 **x64** ISO | `05-download-windows-iso-x64.mp4` (+ `.srt`) | §3.5 / §4.4 |
+| 06 | Installation | Install Git | `06-instalacao-git.mp4` | §6.1.1 |
+| 07 | Installation | Install Visual Studio (C++ + **v142**) | `07-instalacao-visual-studio.mp4` | §6.1.2 |
+| 08 | Installation | Install 7-Zip | `08-instalacao-7zip.mp4` | §4.3 |
+| 09 | Installation | Install VMware + create Windows VM | `09-instalacao-vmware-e-criacao-vm.mp4` | §3.5 / §8.1 |
+| 10 | Configuration | VM network disabled (before samples) | `10-config-vm-rede-desligada.mp4` | §5.2 / §8.1 |
+| 11 | Configuration | Copy `pin.7z` + `TOMWare.7z` (Drive → host → VM) | `11-config-copia-pin-tomware-para-vm.mp4` | §4.1 / §8.1 |
+| 12 | Execution | Example: **benign** sample + **`-dm`** countermeasure | `12-execucao-amostra-benigna-dm.mp4` | §5 / §8.1–§8.2 |
+| 13 | Results | Collect CSV/JSON under `Resultados\benchmarks\` (+ copy to host) | `13-coleta-resultados-benchmark.mp4` | §8.2–§8.3 |
 
-Convenção de nomes: `NN-fase-assunto.mp4` (ordem lexicográfica = ordem de assistir). Itens **01–05** podem ter `.srt` ao lado; **06–13** têm legendas queimadas no MP4.
-
----
-
-# 2. Selos considerados
-
-Selos do **Comitê Técnico de Artefatos (CTA)** do SBSeg ([orientação oficial](https://doc-artefatos.github.io/sbseg2026/)). Este artefato **concorre aos quatro**:
-
-| Selo | Critério (resumo CTA) | Como este repositório atende |
-|------|----------------------|------------------------------|
-| **Disponíveis (SeloD)** | Código/dados em repositório estável com README mínimo | GitHub público; este README; corpus em `samples/`; [Instaladores](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing) e playlist no Drive; evidências em `Resultados/evidencias_VM/` |
-| **Funcionais (SeloF)** | Artefato executável; deps, ambiente, instalação e exemplo mínimo | §3.5 / §4 (deps e versões), §6 (instalação), §7 (teste mínimo com apps em `Resultados/Apps-Teste/`) |
-| **Sustentáveis (SeloS)** | Código modular, legível e mapeável às reivindicações | Estrutura `TOMWare/` + `scripts/`; knobs `-dd/-dp/-de/-dm/-do`; diagrama §3.3; evidências em `Resultados/` |
-| **Reproduzíveis (SeloR)** | Reproduzir as principais reivindicações do artigo | §8 (protocolo VM/snapshot, scripts, corpus); evidências em `Resultados/evidencias_VM/` (§8.6); playlist §1.4 como demonstração do fluxo |
-
-Trabalho de base: SBSeg 2025 (TOMWare). Extensão atual (**TOMWare.M**, SBSeg 2026 SF): módulos **AntiDebug** (`-dd`) e **ProcessEnum** (`-dp`).
+Naming convention: `NN-phase-topic.mp4` (lexicographic order = watch order). Items **01–05** may ship a sidecar `.srt`; **06–13** have burned-in subtitles.
 
 ---
 
-# 3. Informações básicas
+# 2. Artifact badges considered
 
-## 3.1 Introdução à execução e experimentos
+Badges from the SBSeg **Artifact Technical Committee (CTA)** ([official guidance](https://doc-artefatos.github.io/sbseg2026/)). This artifact **competes for all four**:
 
-Malware ciente de contexto pode detectar o Intel Pin por: indicadores de depuração, enumeração de processos (`pin.exe`), variáveis de ambiente `PIN_*`, assinaturas em memória e discrepâncias de tempo (overhead). A TOMWare.M mascara essas superfícies para permitir análise dinâmica com maior transparência.
+| Badge | Criterion (CTA summary) | How this repository addresses it |
+|-------|-------------------------|----------------------------------|
+| **Available (SeloD)** | Code/data in a stable repository with a minimal README | Public GitHub; this README; corpus in `samples/`; [Installers](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing) and playlist on Drive; evidence under `Resultados/evidencias_VM/` |
+| **Functional (SeloF)** | Runnable artifact; deps, environment, install, and minimal example | §3.5 / §4 (deps and versions), §6 (install), §7 (minimal test with apps in `Resultados/Apps-Teste/`) |
+| **Sustainable (SeloS)** | Modular, readable code mapped to paper claims | `TOMWare/` + `scripts/` layout; knobs `-dd/-dp/-de/-dm/-do`; diagram §3.3; evidence under `Resultados/` |
+| **Reproducible (SeloR)** | Reproduce the main paper claims | §8 (VM/snapshot protocol, scripts, corpus); evidence under `Resultados/evidencias_VM/` (§8.6); playlist §1.4 as a flow demo |
 
-Os experimentos deste repositório têm dois objetivos:
+Base work: SBSeg 2025 (TOMWare). Current extension (**TOMWare.M**, SBSeg 2026 Tools Fair): **AntiDebug** (`-dd`) and **ProcessEnum** (`-dp`) modules.
 
-1. **Validar funcionalidade** - demonstrar que cada módulo reduz o indicador correspondente na aplicação de teste (oráculo controlado).
-2. **Avaliar impacto** - registrar tempos de execução sob Pin **sem** e **com** a contramedida (campo `Result` / medição de parede), inclusive sobre amostras reais.
+---
 
-> **Ambiente isolado:** experimentos com malware devem ocorrer **somente em VM**, restaurada a partir de snapshot limpo após cada amostra.
+# 3. Basic information
 
-> **Binários benignos:** apps de teste e ferramentas legítimas podem rodar no host, sem desativar antivírus, para validar a instalação.
+## 3.1 Introduction to execution and experiments
 
-## 3.2 Principais funcionalidades
+Context-aware malware can detect Intel Pin via: debugging indicators, process enumeration (`pin.exe`), `PIN_*` environment variables, in-memory signatures, and timing discrepancies (overhead). TOMWare.M masks these surfaces to enable more transparent dynamic analysis.
 
-A arquitetura distingue **módulos** (empacotadores ativados pelos parâmetros da linha de comando) e **contramedidas** (mecanismos que mascaram a superfície de detecção). Os nomes são **distintos**: o módulo é o empacotador; a contramedida é o mecanismo acionado.
+Experiments in this repository have two goals:
+
+1. **Validate functionality** — show that each module reduces the corresponding indicator on the test application (controlled oracle).
+2. **Assess impact** — record wall-clock execution times under Pin **without** and **with** the countermeasure (`Result` field), including on real samples.
+
+> **Isolated environment:** malware experiments must run **only in a VM**, restored from a clean snapshot after each sample.
+
+> **Benign binaries:** test apps and legitimate tools may run on the host, without disabling antivirus, to validate the installation.
+
+## 3.2 Main features
+
+The architecture distinguishes **modules** (wrappers activated by command-line parameters) from **countermeasures** (mechanisms that mask a detection surface). The names are **distinct**: the module is the wrapper; the countermeasure is the mechanism it triggers.
 
 ```text
-Parâmetros (-da -dd -de -dm -do -dp)
+Parameters (-da -dd -de -dm -do -dp)
         │
         ▼
- Instrumentation ──► Módulos (empacotadores) ──► Contramedidas
+ Instrumentation ──► Modules (wrappers) ──► Countermeasures
                            AntiDeb                    AntiDebug
                            ProcessE                   ProcessEnum
                            SanitizePin                SanitizePinEnvVars
@@ -181,176 +181,176 @@ Parâmetros (-da -dd -de -dm -do -dp)
                            SkewM                      SkewMask
 ```
 
-| Parâmetro | Módulo (empacotador) | Contramedida acionada | Mecanismo (implementação) |
-|-----------|----------------------|------------------------|---------------------------|
+| Parameter | Module (wrapper) | Countermeasure triggered | Mechanism (implementation) |
+|-----------|------------------|--------------------------|----------------------------|
 | `-dd` | **AntiDeb** | **AntiDebug** | PEB: `BeingDebugged`, `NtGlobalFlag` (`AntiDebugMask.cpp`) |
-| `-dp` | **ProcessE** | **ProcessEnum** | Filtro em `Process32*` / `Module32*` / `GetModuleHandle*` |
-| `-de` | **SanitizePin** | **SanitizePinEnvVars** | Sanitização do bloco de ambiente no PEB (`PIN_*`) |
-| `-dm` | **InstMem** | **InstMemcmpMask** | Wrappers `memcmp*` + **Signatures** (`-sf`) |
-| `-do` | **SkewM** | **SkewMask** | Hooks temporais + **Calibrate Mask** (Sleep/QPC…) |
-| `-da` | *(todos os módulos)* | as cinco contramedidas | Equivale a `-de -dm -do -dd -dp` (**não** inclui `-go`) |
+| `-dp` | **ProcessE** | **ProcessEnum** | Filter on `Process32*` / `Module32*` / `GetModuleHandle*` |
+| `-de` | **SanitizePin** | **SanitizePinEnvVars** | Sanitize the PEB environment block (`PIN_*`) |
+| `-dm` | **InstMem** | **InstMemcmpMask** | `memcmp*` wrappers + **Signatures** (`-sf`) |
+| `-do` | **SkewM** | **SkewMask** | Timing hooks + **Calibrate Mask** (Sleep/QPC…) |
+| `-da` | *(all modules)* | all five countermeasures | Equivalent to `-de -dm -do -dd -dp` (**does not** include `-go`) |
 
-**Knobs auxiliares**
+**Auxiliary knobs**
 
-| Knob | Descrição |
-|------|-----------|
-| `-sf PATH` | Assinaturas extras para o módulo **InstMem** / contramedida **InstMemcmpMask** (padrão: `config/signatures.txt`) |
-| `-q` | Modo silencioso (suprime logs informativos) |
-| `-me N` | Limite de exceções antes de abortar (`0` = ilimitado) |
-| `-go` | Overhead **artificial** - apenas demos com `TestOverhead.exe` (fora de `-da`) |
-| `-gdb` | Simula indicadores de debug no PEB - demo de baseline para o módulo **AntiDeb** |
+| Knob | Description |
+|------|-------------|
+| `-sf PATH` | Extra signatures for **InstMem** / **InstMemcmpMask** (default: `config/signatures.txt`) |
+| `-q` | Quiet mode (suppresses informational logs) |
+| `-me N` | Exception limit before abort (`0` = unlimited) |
+| `-go` | **Artificial** overhead — demos with `TestOverhead.exe` only (outside `-da`) |
+| `-gdb` | Simulate PEB debug indicators — baseline demo for **AntiDeb** |
 
-> Os **módulos** são complementares e ativáveis de forma seletiva via **parâmetros**, sem recompilar. Suporte atual: **PE nativo 64-bit** (e builds x86 conforme configuração); sem suporte direto a .NET/Java/scripts.
+> **Modules** are complementary and selectively activatable via **parameters**, without rebuilding. Current support: **native 64-bit PE** (and x86 builds depending on configuration); no direct support for .NET/Java/scripts.
 
-## 3.3 Arquitetura
+## 3.3 Architecture
 
 <p align="center">
-  <img src="imgs/tomware-fluxo-execucao-23072026.png" alt="Diagrama de Fluxo de Execução da TOMWare.M" width="90%">
+  <img src="imgs/tomware-fluxo-execucao-23072026.png" alt="TOMWare.M execution flow diagram" width="90%">
 </p>
 
-**Leitura do diagrama (fluxo de execução)**
+**Reading the diagram (execution flow)**
 
-O desenho organiza o ciclo da pintool em três fases, alinhadas a `TOMWare.cpp` / `Instrumentation.cpp` e aos fontes das contramedidas:
+The figure organizes the pintool lifecycle into three phases, aligned with `TOMWare.cpp` / `Instrumentation.cpp` and the countermeasure sources:
 
-1. **Inicialização** — `PIN_Init` + `InitInstrumentation()` lê os **parâmetros** (`-dd`, `-dp`, `-de`, `-dm`, `-do`; `-da` ativa todos) e liga os **módulos/contramedidas** correspondentes; em seguida **ativa ganchos e wrappers** (`IMG_AddInstrumentFunction`, RTN replace, callbacks de imagem).
-2. **Execução ativa e interceptação** — a **aplicação analisada** realiza chamadas; a faixa central de **contramedidas modulares** devolve dados mascarados/filtrados; por baixo, a base SO/DBI concretiza, entre outros:
-   - **(1) Filtragem da lista de processos** — **ProcessEnum** oculta `pin.exe` / artefatos Pin em `Process32*` / `Module32*` / `GetModuleHandle*`.
-   - **(2) Mascaramento da memória** — **InstMemcmpMask** (wrappers `memcmp*` + **Signatures** `-sf`) evita hits em strings/módulos Pin.
-   - **(3) Compensação de desvio** — **SkewMask** mede overhead acumulado e compensa consultas temporais (Sleep/QPC…).
-   - Em paralelo (não detalhados nos painéis 1–3 do desenho, mas ativos quando ligados): **AntiDebug** e **SanitizePinEnvVars** atuam sobretudo no **PEB** (`BeingDebugged` / `NtGlobalFlag`; variáveis `PIN_*`).
-3. **Finalização** — término da execução sob Pin; **coleta de dados e relatório** (`Result`: outcome, tempo, saída) são produzidos pelo **harness de avaliação** (`scripts/run-baseline-dm-one.ps1` e afins), não por um gerador embutido na DLL.
+1. **Initialization** — `PIN_Init` + `InitInstrumentation()` reads the **parameters** (`-dd`, `-dp`, `-de`, `-dm`, `-do`; `-da` enables all) and wires the matching **modules/countermeasures**; then **activates hooks and wrappers** (`IMG_AddInstrumentFunction`, RTN replace, image callbacks).
+2. **Active execution and interception** — the **analyzed application** makes calls; the central band of **modular countermeasures** returns masked/filtered data; underneath, the OS/DBI layer implements, among others:
+   - **(1) Process-list filtering** — **ProcessEnum** hides `pin.exe` / Pin artifacts in `Process32*` / `Module32*` / `GetModuleHandle*`.
+   - **(2) Memory masking** — **InstMemcmpMask** (`memcmp*` wrappers + **Signatures** `-sf`) avoids hits on Pin strings/modules.
+   - **(3) Skew compensation** — **SkewMask** measures accumulated overhead and compensates timing queries (Sleep/QPC…).
+   - In parallel (not detailed in panels 1–3, but active when enabled): **AntiDebug** and **SanitizePinEnvVars** act mainly on the **PEB** (`BeingDebugged` / `NtGlobalFlag`; `PIN_*` variables).
+3. **Finalization** — end of the Pin run; **data collection and reporting** (`Result`: outcome, time, output) come from the **evaluation harness** (`scripts/run-baseline-dm-one.ps1` and related), not from a generator embedded in the DLL.
 
-| Parâmetro | Contramedida no fluxo | Implementação |
-|-----------|----------------------|---------------|
+| Parameter | Countermeasure in the flow | Implementation |
+|-----------|----------------------------|----------------|
 | `-de` | SanitizePinEnvVars | `SanitizePinEnvVars.cpp` |
 | `-dp` | ProcessEnum | `ProcessEnumMask.cpp` |
 | `-dd` | AntiDebug | `AntiDebugMask.cpp` |
 | `-dm` | InstMemcmpMask | InstMemcmp* + `config/signatures.txt` |
-| `-do` | SkewMask | `SkewMask.cpp` (calibração temporal) |
-| `-da` | todas as cinco | equivalente a `-de -dm -do -dd -dp` |
+| `-do` | SkewMask | `SkewMask.cpp` (timing calibration) |
+| `-da` | all five | equivalent to `-de -dm -do -dd -dp` |
 
-| Componente | Função | Onde |
-|------------|--------|------|
-| **Main / TOMWare.M** | `PIN_Init` → inicia a instrumentação | `TOMWare/TOMWare.cpp` |
-| **Instrumentation** | Interpreta parâmetros e registra hooks | `TOMWare/Instrumentation.cpp` |
-| **Contramedidas** | Mascaramento seletivo por superfície | fontes acima |
-| **Apps de teste** | Oráculos funcionais (evidência no console) | `Resultados/Apps-Teste/` |
-| **Harness** | Relatório `Result` / CSV / JSON do experimento | `scripts/` |
+| Component | Role | Location |
+|-----------|------|----------|
+| **Main / TOMWare.M** | `PIN_Init` → start instrumentation | `TOMWare/TOMWare.cpp` |
+| **Instrumentation** | Parse parameters and register hooks | `TOMWare/Instrumentation.cpp` |
+| **Countermeasures** | Selective masking per surface | sources above |
+| **Test apps** | Functional oracles (console evidence) | `Resultados/Apps-Teste/` |
+| **Harness** | Experiment `Result` / CSV / JSON report | `scripts/` |
 
-**Coerência com o código (verificado):** mapeamento parâmetro→init confere com `InitInstrumentation()`; ProcessEnum / InstMemcmpMask / SkewMask batem com os painéis (1)–(3); AntiDebug e SanitizePinEnvVars existem e são ativados por `-dd`/`-de`, embora o desenho os destaque mais na inicialização do que nos painéis inferiores. O bloco **Relatório de Resultado** corresponde ao protocolo de benchmark (§3.4 / §8), não a um módulo interno da pintool.
+**Consistency with the code (verified):** parameter→init mapping matches `InitInstrumentation()`; ProcessEnum / InstMemcmpMask / SkewMask match panels (1)–(3); AntiDebug and SanitizePinEnvVars exist and are enabled by `-dd`/`-de`, though the figure emphasizes them more at initialization than in the lower panels. The **Result Report** block corresponds to the benchmark protocol (§3.4 / §8), not to an internal pintool module.
 
-Diagrama Mermaid equivalente (fluxo): `imgs/tomware-architecture-current.mmd`.  
-Figura estrutural anterior (módulos → contramedidas): `imgs/tomware_pintool_20072026.png`.  
-Variante anotada (PEB / Signatures / Calibrate): `imgs/tomware-architecture-annotated.png`.
+Equivalent Mermaid diagram (flow): `imgs/tomware-architecture-current.mmd`.  
+Earlier structural figure (modules → countermeasures): `imgs/tomware_pintool_20072026.png`.  
+Annotated variant (PEB / Signatures / Calibrate): `imgs/tomware-architecture-annotated.png`.
 
-## 3.4 Como a execução é estruturada
+## 3.4 How execution is structured
 
-Cada execução de experimento segue **duas etapas**:
+Each experiment run follows **two stages**:
 
-| Etapa | Alvo | Objetivo |
-|-------|------|----------|
-| **[1] App de teste** | `TestAntiDebug.exe`, `TestProcessEnum.exe`, … | Evidência funcional no console (caixa `Resumo` / alertas) |
-| **[2] Amostra real** | `malwares\infected\<SHA256>.exe` | Exercitar a amostra sob Pin ± contramedida; tempo no campo `Result` |
+| Stage | Target | Goal |
+|-------|--------|------|
+| **[1] Test app** | `TestAntiDebug.exe`, `TestProcessEnum.exe`, … | Functional evidence on the console (`Resumo` / alerts box) |
+| **[2] Real sample** | `malwares\infected\<SHA256>.exe` | Exercise the sample under Pin ± countermeasure; time in the `Result` field |
 
-Protocolo de comparação:
+Comparison protocol:
 
-1. **Nativo** (referência comportamental, sem Pin).
-2. **Pin + TOMWare sem a contramedida** (baseline - indicador aparece).
-3. **Pin + TOMWare com a contramedida** (indicador mascarado).
+1. **Native** (behavioral reference, no Pin).
+2. **Pin + TOMWare without the countermeasure** (baseline — indicator appears).
+3. **Pin + TOMWare with the countermeasure** (indicator masked).
 
-Script recomendado para o print lado a lado:
+Recommended script for side-by-side output:
 
 ```powershell
 .\scripts\run-baseline-dm-one.cmd <SHA256> <de|dm|do|dd|dp|da>
 ```
 
-> **Nota (ProcessEnum / tempos):** a eficácia da contramedida **ProcessEnum** (módulo **ProcessE**, `-dp`) é evidenciada pela caixa do app de teste (`pin.exe : N → 0`). Se a amostra real atingir `outcome=timeout`, o wall-clock **não** deve ser tratado como métrica de eficácia dessa contramedida.
+> **Note (ProcessEnum / timing):** effectiveness of the **ProcessEnum** countermeasure (**ProcessE** module, `-dp`) is shown by the test-app box (`pin.exe : N → 0`). If the real sample reaches `outcome=timeout`, wall-clock time **must not** be treated as an effectiveness metric for that countermeasure.
 
-## 3.5 Ambiente recomendado
+## 3.5 Recommended environment
 
-| Camada | Especificação sugerida |
-|--------|------------------------|
-| **Host** | CPU com VT-x/AMD-V; RAM ≥ 16 GB; SSD |
-| **Hipervisor** | VMware Workstation / VirtualBox 7.x |
-| **VM (guest)** | Windows 10/11 x64; ≥ 4 vCPU; 6–8 GB RAM; rede Host-only ou desligada durante malware |
-| **Snapshot** | Restaurar snapshot limpo **após cada amostra** |
+| Layer | Suggested specification |
+|-------|-------------------------|
+| **Host** | CPU with VT-x/AMD-V; RAM ≥ 16 GB; SSD |
+| **Hypervisor** | VMware Workstation / VirtualBox 7.x |
+| **VM (guest)** | Windows 10/11 x64; ≥ 4 vCPU; 6–8 GB RAM; Host-only or disconnected network during malware |
+| **Snapshot** | Restore a clean snapshot **after each sample** |
 
-> Para apenas validar a instalação, use o teste mínimo (§7) no host com as apps de teste - **sem** malware.
+> To validate the install only, use the minimal test (§7) on the host with the test apps — **no** malware.
 
 ---
 
-# 4. Dependências
+# 4. Dependencies
 
-## 4.1 Execução
+## 4.1 Runtime
 
-* **Intel Pin** 3.28 (x64, MSVC): [download oficial](https://software.intel.com/sites/landingpage/pintool/downloads/pin-3.28-98749-g6643ecee5-msvc-windows.zip) - pasta `pin/` do repositório (quando fornecida) ou instalação local.
-* **TOMWare.dll** - `x64\Release\TOMWare.dll` após compilação.
+* **Intel Pin** 3.28 (x64, MSVC): [official download](https://software.intel.com/sites/landingpage/pintool/downloads/pin-3.28-98749-g6643ecee5-msvc-windows.zip) — repository `pin/` folder (when provided) or a local install.
+* **TOMWare.dll** — `x64\Release\TOMWare.dll` after building.
 
-## 4.2 Compilação (host Windows)
+## 4.2 Build (Windows host)
 
-| Ferramenta | Versão / nota |
-|------------|---------------|
-| Visual Studio 2019 ou 2022 | Workload *Desktop development with C++* |
-| Toolset | **v142** (obrigatório, inclusive no VS 2022) |
+| Tool | Version / note |
+|------|----------------|
+| Visual Studio 2019 or 2022 | *Desktop development with C++* workload |
+| Toolset | **v142** (required, including on VS 2022) |
 | Windows 10 SDK | ≥ 10.0.19041 |
-| Intel Pin | 3.28 x64 **MSVC** (não Clang) |
+| Intel Pin | 3.28 x64 **MSVC** (not Clang) |
 
 ## 4.3 VM
 
-| Ferramenta | Uso |
-|------------|-----|
-| VMware / VirtualBox | Isolamento e snapshots |
-| 7-Zip (opcional) | Extração de amostras protegidas |
+| Tool | Use |
+|------|-----|
+| VMware / VirtualBox | Isolation and snapshots |
+| 7-Zip (optional) | Extract password-protected samples |
 
-## 4.4 Pacote de instaladores (Google Drive)
+## 4.4 Installer package (Google Drive)
 
-Para facilitar a reprodução, os instaladores das ferramentas de ambiente estão reunidos na pasta compartilhada:
+To ease reproduction, environment installers are collected in the shared folder:
 
-**[Instaladores TOMWare (Google Drive)](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing)**
+**[TOMWare Installers (Google Drive)](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing)**
 
-O Drive é um **espelho** dos sites oficiais (Git, Microsoft, 7-Zip, Broadcom/VMware, Intel Pin). Prefira as páginas oficiais quando possível; use o Drive para montar o ambiente mais rápido.
+Drive is a **mirror** of the official sites (Git, Microsoft, 7-Zip, Broadcom/VMware, Intel Pin). Prefer official pages when possible; use Drive to set up the environment faster.
 
-### Conteúdo da pasta `Instaladores`
+### Contents of the `Instaladores` folder
 
-| # | Arquivo (Drive) | O que é | Onde usar | Observação |
-|---|-----------------|---------|-----------|------------|
-| 1 | `7z2602-x64.exe` | 7-Zip (x64) | **Host** e **VM** | Extrai `.7z` / `.zip` (`pin.7z`, `TOMWare.7z`, amostras) |
-| 2 | `Git-*-64-bit.exe` | Git for Windows | **Host** (e VM se for clonar) | Necessário para `git clone` do repositório |
-| 3 | `VisualStudioSetup.exe` | Visual Studio Installer | **Host** (compilação) | Workload C++ + toolset **v142** (§4.2 / §6.1) |
-| 4 | `VMware-Workstation-Full-*.exe` | VMware Workstation | **Host** | Hipervisor para a VM de experimentos (§3.5) |
-| 5 | `Windows.iso` | ISO Windows **x64** | **Host** → criar VM | **Usar esta** para Pin/TOMWare.M (Intel/AMD) |
-| 6 | `MediaCreationTool_22H2.exe` | Media Creation Tool (Win 10 22H2) | **Host** (opcional) | Alternativa oficial para baixar/gerar ISO x64 |
-| 7 | `Win11_25H2_*_Arm64.iso` | ISO Windows 11 **Arm64** | — | **Não usar** com Pin 3.28 MSVC x64 / TOMWare.M |
-| 8 | `pin.7z` | Intel Pin 3.28 (MSVC x64) | Extrair na VM (ou host) em `C:\TOMWare\pin\` | Deve conter `pin.exe`, `intel64\`, etc. |
-| 9 | `TOMWare.7z` | Código / artefato TOMWare | Extrair na VM em `C:\TOMWare\` | Inclui scripts, `TOMWare.dll` (se pré-build), apps de teste |
-| 10 | `TOMware_pin_samples_benign.7z` | (Opcional) pacote compactado de benignas | Extrair na VM em `malwares\benign\` | Preferir `samples/benign/` do repositório (§4.5) |
+| # | Drive file | What it is | Where to use | Note |
+|---|------------|------------|--------------|------|
+| 1 | `7z2602-x64.exe` | 7-Zip (x64) | **Host** and **VM** | Extracts `.7z` / `.zip` (`pin.7z`, `TOMWare.7z`, samples) |
+| 2 | `Git-*-64-bit.exe` | Git for Windows | **Host** (and VM if cloning) | Needed for `git clone` of the repository |
+| 3 | `VisualStudioSetup.exe` | Visual Studio Installer | **Host** (build) | C++ workload + **v142** toolset (§4.2 / §6.1) |
+| 4 | `VMware-Workstation-Full-*.exe` | VMware Workstation | **Host** | Hypervisor for the experiment VM (§3.5) |
+| 5 | `Windows.iso` | Windows **x64** ISO | **Host** → create VM | **Use this** for Pin/TOMWare.M (Intel/AMD) |
+| 6 | `MediaCreationTool_22H2.exe` | Media Creation Tool (Win 10 22H2) | **Host** (optional) | Official alternative to download/generate an x64 ISO |
+| 7 | `Win11_25H2_*_Arm64.iso` | Windows 11 **Arm64** ISO | — | **Do not use** with Pin 3.28 MSVC x64 / TOMWare.M |
+| 8 | `pin.7z` | Intel Pin 3.28 (MSVC x64) | Extract on the VM (or host) under `C:\TOMWare\pin\` | Must contain `pin.exe`, `intel64\`, etc. |
+| 9 | `TOMWare.7z` | TOMWare code / artifact | Extract on the VM under `C:\TOMWare\` | Includes scripts, `TOMWare.dll` (if pre-built), test apps |
+| 10 | `TOMware_pin_samples_benign.7z` | (Optional) packed benign set | Extract on the VM under `malwares\benign\` | Prefer `samples/benign/` from the repository (§4.5) |
 
-> **Arm64:** a ISO `Win11_*_Arm64.iso` serve só a máquinas ARM. Para os experimentos deste README, a VM deve ser **Windows 10/11 x64**. Use `Windows.iso` (ou ISO x64 gerada pelo Media Creation Tool).
+> **Arm64:** the `Win11_*_Arm64.iso` is only for ARM machines. For the experiments in this README, the VM must be **Windows 10/11 x64**. Use `Windows.iso` (or an x64 ISO from the Media Creation Tool).
 
-### Sequência correta de instalação
+### Correct installation sequence
 
-Ordem alinhada à playlist (§1.4) e ao fluxo host → VM:
+Order aligned with the playlist (§1.4) and the host → VM flow:
 
-| Passo | Onde | Ação | Arquivo(s) |
-|------:|------|------|------------|
-| 1 | Host | Instalar **7-Zip** | `7z2602-x64.exe` |
-| 2 | Host | Instalar **Git** | `Git-*-64-bit.exe` |
-| 3 | Host | Instalar **Visual Studio** (C++ + **v142**) | `VisualStudioSetup.exe` |
-| 4 | Host | Instalar **VMware Workstation** | `VMware-Workstation-Full-*.exe` |
-| 5 | Host | Criar VM com ISO **x64** (não Arm64) | `Windows.iso` (ou MCT → ISO x64) |
-| 6 | VM | (Opcional) instalar 7-Zip / Git na guest | mesmos `.exe` |
-| 7 | VM | Extrair **Pin** em `C:\TOMWare\pin\` | `pin.7z` |
-| 8 | VM | Extrair **TOMWare** em `C:\TOMWare\` | `TOMWare.7z` |
-| 9 | VM | Preparar amostras | Copiar/extrair de `samples/` → `malwares\benign\` e `malwares\infected\` (§4.5) |
-| 10 | VM | Antes de rodar amostras: rede / Internet / AV / firewall **desligados** | — (§5 / §8.1) |
+| Step | Where | Action | File(s) |
+|-----:|-------|--------|---------|
+| 1 | Host | Install **7-Zip** | `7z2602-x64.exe` |
+| 2 | Host | Install **Git** | `Git-*-64-bit.exe` |
+| 3 | Host | Install **Visual Studio** (C++ + **v142**) | `VisualStudioSetup.exe` |
+| 4 | Host | Install **VMware Workstation** | `VMware-Workstation-Full-*.exe` |
+| 5 | Host | Create VM with **x64** ISO (not Arm64) | `Windows.iso` (or MCT → x64 ISO) |
+| 6 | VM | (Optional) install 7-Zip / Git in the guest | same `.exe` files |
+| 7 | VM | Extract **Pin** under `C:\TOMWare\pin\` | `pin.7z` |
+| 8 | VM | Extract **TOMWare** under `C:\TOMWare\` | `TOMWare.7z` |
+| 9 | VM | Prepare samples | Copy/extract from `samples/` → `malwares\benign\` and `malwares\infected\` (§4.5) |
+| 10 | VM | Before running samples: network / Internet / AV / firewall **disabled** | — (§5 / §8.1) |
 
-Compilação da pintool (se `x64\Release\TOMWare.dll` ainda não vier no pacote): §6.1 no **host** ou na VM com VS instalado.
+Pintool build (if `x64\Release\TOMWare.dll` is not already in the package): §6.1 on the **host** or on a VM with VS installed.
 
-Vídeos: download/instalação dos itens 1–5 → playlist §1.4 (01–09); cópia Pin/TOMWare → item **11**; execução benigna → **12**; coleta → **13**.
+Videos: download/install of items 1–5 → playlist §1.4 (01–09); copy Pin/TOMWare → item **11**; benign run → **12**; collection → **13**.
 
-## 4.5 Amostras para experimentos (`samples/`)
+## 4.5 Experiment samples (`samples/`)
 
-As amostras usadas nos testes (**benignas** e **infectadas**) são distribuídas **no repositório**, em:
+Samples used in the tests (**benign** and **infected**) are distributed **in the repository**, under:
 
 ```text
 samples/
@@ -358,114 +358,114 @@ samples/
 └── infected/    ← <SHA256>.zip  (+ password.txt)
 ```
 
-> **Por que não no Google Drive?** O compartilhamento público de arquivos classificados como malware no Drive viola a política da plataforma e fica bloqueado. Por isso o corpus está versionado em `samples/` (uso acadêmico / Salão de Ferramentas).
+> **Why not Google Drive?** Public sharing of files classified as malware on Drive violates the platform policy and gets blocked. Therefore the corpus is versioned under `samples/` (academic use / Tools Fair).
 
-| Pasta no repo | Destino na VM | Formato | Uso |
-|---------------|---------------|---------|-----|
-| `samples/benign/` | `C:\TOMWare\malwares\benign\<SHA256>.exe` | `.exe` | Corpus benigno (`-SampleType benign`) |
-| `samples/infected/` | `C:\TOMWare\malwares\infected\<SHA256>.exe` | `.zip` → extrair `.exe` | Corpus infectado (padrão do script) |
+| Repo folder | Destination on the VM | Format | Use |
+|-------------|----------------------|--------|-----|
+| `samples/benign/` | `C:\TOMWare\malwares\benign\<SHA256>.exe` | `.exe` | Benign corpus (`-SampleType benign`) |
+| `samples/infected/` | `C:\TOMWare\malwares\infected\<SHA256>.exe` | `.zip` → extract `.exe` | Infected corpus (script default) |
 
-**Infectadas:** os ZIPs estão protegidos por senha. A senha está em `samples/infected/password.txt` (valor: `infected`). Extraia com 7-Zip e renomeie/mantenha o executável como `<SHA256>.exe` no destino.
+**Infected samples:** ZIPs are password-protected. The password is in `samples/infected/password.txt` (value: `infected`). Extract with 7-Zip and keep/rename the executable as `<SHA256>.exe` at the destination.
 
-Exemplo (na VM, após clonar/copiar o repo para `C:\TOMWare`):
+Example (on the VM, after cloning/copying the repo to `C:\TOMWare`):
 
 ```powershell
 New-Item -ItemType Directory -Force -Path C:\TOMWare\malwares\benign, C:\TOMWare\malwares\infected | Out-Null
 Copy-Item C:\TOMWare\samples\benign\*.exe C:\TOMWare\malwares\benign\ -Force
-# Extrair cada ZIP de samples\infected\ com senha "infected" para malwares\infected\
-# (7-Zip GUI ou: 7z x -pinfected arquivo.zip -oC:\TOMWare\malwares\infected\)
+# Extract each ZIP under samples\infected\ with password "infected" into malwares\infected\
+# (7-Zip GUI or: 7z x -pinfected file.zip -oC:\TOMWare\malwares\infected\)
 ```
 
-> **Segurança:** prepare e execute amostras infectadas **somente na VM**, com rede/AV/firewall desligados (§5). Não execute no host.
+> **Security:** prepare and run infected samples **only in the VM**, with network/AV/firewall disabled (§5). Do not run them on the host.
 
 ---
 
-# 5. Segurança
+# 5. Security
 
-A TOMWare.M **não contém código malicioso** - é uma pintool C/C++ que mascara vestígios do Pin. **O risco vem das amostras reais** usadas nos experimentos.
+TOMWare.M **does not contain malicious code** — it is a C/C++ pintool that masks Pin traces. **Risk comes from the real samples** used in the experiments.
 
-## 5.1 Vetores de risco
+## 5.1 Risk vectors
 
-| Vetor | Descrição |
-|-------|-----------|
-| Execução de amostra | Escape da VM pode infectar o host |
-| Rede | Download de payloads / exfiltração |
-| Pastas compartilhadas / clipboard | Canal de fuga para o host |
+| Vector | Description |
+|--------|-------------|
+| Sample execution | VM escape may infect the host |
+| Network | Payload download / exfiltration |
+| Shared folders / clipboard | Escape channel to the host |
 
-## 5.2 Medidas obrigatórias
+## 5.2 Mandatory measures
 
-1. Não execute amostras reais no host.
-2. VM dedicada, rede desligada ou Host-only durante a execução.
-3. Snapshot limpo; restaurar após cada amostra.
-4. Desative pastas compartilhadas/clipboard enquanto o malware roda; habilite só para copiar logs **antes** de restaurar.
-5. Apps de teste em `Resultados/Apps-Teste/` são benignas e podem rodar no host.
+1. Do not run real samples on the host.
+2. Dedicated VM; network disabled or Host-only during execution.
+3. Clean snapshot; restore after each sample.
+4. Disable shared folders/clipboard while malware runs; enable them only to copy logs **before** restoring.
+5. Test apps under `Resultados/Apps-Teste/` are benign and may run on the host.
 
-## 5.3 Aviso legal
+## 5.3 Legal notice
 
-As amostras e instruções destinam-se a **fins acadêmicos**. Os autores não se responsabilizam por danos decorrentes de uso inadequado ou fora de ambiente controlado.
+Samples and instructions are intended for **academic purposes**. The authors are not liable for damage from misuse or use outside a controlled environment.
 
 ---
 
-# 6. Instalação
+# 6. Installation
 
-## 6.1 Compilação (opcional, se `TOMWare.dll` ainda não existir)
+## 6.1 Build (optional, if `TOMWare.dll` does not already exist)
 
-### 6.1.1 Obter o código
+### 6.1.1 Get the code
 
 ```powershell
 git clone https://github.com/TOMWare-analises/TOMWare.git
 cd TOMWare
 ```
 
-### 6.1.2 Dependências
+### 6.1.2 Dependencies
 
-1. Visual Studio com toolset **v142**.
+1. Visual Studio with toolset **v142**.
 2. Windows SDK ≥ 10.0.19041.
-3. Pin 3.28 MSVC extraído em `pin\` (conteúdo direto: `pin.exe`, `intel64\`, etc.).
+3. Pin 3.28 MSVC extracted under `pin\` (direct contents: `pin.exe`, `intel64\`, etc.).
 
-Os instaladores (Git, VS, 7-Zip, VMware, Pin, TOMWare) também estão no [Google Drive TOMWare](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing) — ver §4.4.
+Installers (Git, VS, 7-Zip, VMware, Pin, TOMWare) are also on [Google Drive TOMWare](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing) — see §4.4.
 
-### 6.1.3 Compilar
+### 6.1.3 Build
 
-1. Abra `TOMWare.sln`.
-2. Se o VS pedir upgrade de toolset → **Não** (mantenha v142).
-3. Configuração **`Release | x64`**.
+1. Open `TOMWare.sln`.
+2. If VS offers a toolset upgrade → **No** (keep v142).
+3. Configuration **`Release | x64`**.
 4. Build (**Ctrl+Shift+B**).
 
-Saída esperada:
+Expected output:
 
 ```text
 x64\Release\TOMWare.dll
 ```
 
 <details>
-<summary>Capturas — compilação no VS 2022</summary>
+<summary>Screenshots — building with VS 2022</summary>
 
-<p align="center"><img src="imgs/01.png" alt="Workload C++" width="75%"></p>
+<p align="center"><img src="imgs/01.png" alt="C++ workload" width="75%"></p>
 <p align="center"><img src="imgs/02.png" alt="Toolset v142" width="75%"></p>
-<p align="center"><img src="imgs/04.png" alt="Solução aberta" width="75%"></p>
+<p align="center"><img src="imgs/04.png" alt="Solution open" width="75%"></p>
 <p align="center"><img src="imgs/10.png" alt="Release x64" width="75%"></p>
 <p align="center"><img src="imgs/12.png" alt="Build OK" width="75%"></p>
 <p align="center"><img src="imgs/13.png" alt="TOMWare.dll" width="75%"></p>
 
 </details>
 
-**MSBuild (linha de comando):**
+**MSBuild (command line):**
 
 ```powershell
 & "${env:ProgramFiles}\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe" `
     TOMWare.sln /p:Configuration=Release /p:Platform=x64
 ```
 
-## 6.2 Execução
+## 6.2 Execution
 
-### 6.2.1 Sintaxe básica
+### 6.2.1 Basic syntax
 
 ```powershell
-.\pin\pin.exe -t .\x64\Release\TOMWare.dll [KNOBS] -- <alvo.exe>
+.\pin\pin.exe -t .\x64\Release\TOMWare.dll [KNOBS] -- <target.exe>
 ```
 
-Exemplos:
+Examples:
 
 ```powershell
 # AntiDebug
@@ -474,42 +474,42 @@ Exemplos:
 # ProcessEnum
 .\pin\pin.exe -t .\x64\Release\TOMWare.dll -dp -q -- .\Resultados\Apps-Teste\TestProcessEnum.exe
 
-# Todas as contramedidas + follow child (amostra real)
+# All countermeasures + follow child (real sample)
 .\scripts\run-sample.ps1 -Sample C:\TOMWare\malwares\infected\<SHA256>.exe -DefendAll -Quiet -FollowChild
 ```
 
 ---
 
-# 7. Teste mínimo
+# 7. Minimal test
 
-Valida a instalação **sem malware**, usando apps de teste no host.
+Validates the installation **without malware**, using test apps on the host.
 
-## 7.1 Pré-requisitos
+## 7.1 Prerequisites
 
 * Windows 10/11 x64
-* `pin\` e `x64\Release\TOMWare.dll`
-* `Resultados\Apps-Teste\TestGetEnvironments.exe` (ou outro app da tabela)
+* `pin\` and `x64\Release\TOMWare.dll`
+* `Resultados\Apps-Teste\TestGetEnvironments.exe` (or another app from the table)
 
-## 7.2 Passo a passo
+## 7.2 Step by step
 
 ```powershell
-cd C:\caminho\para\TOMWare
+cd C:\path\to\TOMWare
 
-# (1) Sem Pin — referência
+# (1) Without Pin — reference
 .\Resultados\Apps-Teste\TestGetEnvironments.exe
 
-# (2) Pin sem contramedida — deve alertar / detectar vestígios
+# (2) Pin without countermeasure — should alert / detect traces
 .\pin\pin.exe -t .\x64\Release\TOMWare.dll -q -- .\Resultados\Apps-Teste\TestGetEnvironments.exe
 
-# (3) Pin com contramedida — indicador mascarado
+# (3) Pin with countermeasure — indicator masked
 .\pin\pin.exe -t .\x64\Release\TOMWare.dll -de -q -- .\Resultados\Apps-Teste\TestGetEnvironments.exe
 ```
 
-| App de teste | Knob |
-|--------------|------|
+| Test app | Knob |
+|----------|------|
 | `TestGetEnvironments.exe` | `-de` |
 | `TestMemoryScan.exe` | `-dm` |
-| `TestOverhead.exe` | `-do` (+ `-go` em demo) |
+| `TestOverhead.exe` | `-do` (+ `-go` in demos) |
 | `TestAntiDebug.exe` | `-dd` |
 | `TestProcessEnum.exe` | `-dp` |
 
@@ -522,45 +522,45 @@ Via wrapper:
 
 ---
 
-# 8. Experimentos
+# 8. Experiments
 
-## 8.1 Preparar a VM
+## 8.1 Prepare the VM
 
-1. Criar VM Windows 10/11 x64 (snapshot limpo).
-2. Copiar o repositório (ou artefatos) para `C:\TOMWare`.
-3. Compilar ou copiar `x64\Release\TOMWare.dll`.
-4. Preparar as amostras a partir de `samples/` (§4.5):
+1. Create a Windows 10/11 x64 VM (clean snapshot).
+2. Copy the repository (or artifacts) to `C:\TOMWare`.
+3. Build or copy `x64\Release\TOMWare.dll`.
+4. Prepare samples from `samples/` (§4.5):
    - `C:\TOMWare\malwares\benign\<SHA256>.exe`
-   - `C:\TOMWare\malwares\infected\<SHA256>.exe` (extrair os `.zip` com a senha em `samples/infected/password.txt`)
-5. Desligar rede / Host-only; desativar AV e firewall se o protocolo do artigo exigir.
+   - `C:\TOMWare\malwares\infected\<SHA256>.exe` (extract the `.zip` files with the password in `samples/infected/password.txt`)
+5. Disable network / Host-only; disable AV and firewall if the paper protocol requires it.
 
-Demonstração em vídeo: §1.4 itens **10–12** (rede off → cópia Pin/TOMWare → execução benigna `-dm`).
+Video demo: §1.4 items **10–12** (network off → copy Pin/TOMWare → benign `-dm` run).
 
-## 8.2 Reproduzir comparação baseline vs contramedida
+## 8.2 Reproduce baseline vs countermeasure comparison
 
 ```powershell
-# Preferir linha única (evitar "^" no CMD — evita prompt "Mais?")
+# Prefer a single line (avoid "^" in CMD — avoids the "More?" prompt)
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\TOMWare\scripts\run-baseline-dm-one.ps1" `
   -Sha256 "36685efcf34c7a7a6f6dd2e48199e4700b5ab8fe3945a50297703dd8daced74f" `
   -Countermeasure dd
 
-# Outros módulos
+# Other modules
 .\scripts\run-baseline-dm-one.cmd a0aeb837 dp
 .\scripts\run-baseline-dm-one.cmd 17c79863 dm
 .\scripts\run-baseline-dm-one.cmd 36685efc da -Loop1000
 
-# Amostra benigna: 10 execuções independentes para cada contramedida
+# Benign sample: 10 independent runs for each countermeasure
 .\scripts\run-baseline-dm-one.ps1 `
   -Sha256 "4D6937E8D7D58CD1D9224A11E48549A08505836EFABD6FED17A67D42466265BB" `
   -SampleType benign -AllCountermeasures
 ```
 
-O script imprime, no mesmo console:
+The script prints, on the same console:
 
-* caminho da amostra (hash);
-* comando Pin do app de teste;
-* caixa de evidência (baseline vs `-xx`);
-* linha `Result` da amostra real.
+* sample path (hash);
+* Pin command for the test app;
+* evidence box (baseline vs `-xx`);
+* `Result` line for the real sample.
 
 ## 8.3 Corpus / benchmark
 
@@ -569,46 +569,46 @@ O script imprime, no mesmo console:
 .\scripts\benchmark-corpus.ps1 -SamplesDir C:\TOMWare\malwares\infected -FollowChild -TimeoutSeconds 120
 ```
 
-Saídas típicas: `Resultados\Avaliacao\`, `Resultados\baseline-<cm>-<hash8>.log`.
+Typical outputs: `Resultados\Avaliacao\`, `Resultados\baseline-<cm>-<hash8>.log`.
 
-Com `-Repeat N`, cada baseline e contramedida é iniciado como um processo
-independente. A ordem é alternada por rodada para reduzir viés de aquecimento.
-Os relatórios detalhados são gravados em:
+With `-Repeat N`, each baseline and countermeasure starts as an independent
+process. Order alternates per round to reduce warm-up bias.
+Detailed reports are written to:
 
-* `Resultados\benchmarks\benchmark-<tipo>-<cm>-<hash8>-<data>.csv` — uma linha por execução,
-  incluindo status, resposta e resumo da evidência funcional;
-* `Resultados\benchmarks\benchmark-<tipo>-<cm>-<hash8>-<data>.json` — execuções, evidência
-  funcional completa e avaliação de desempenho com média, mediana, p95, desvio-padrão,
-  mínimo, máximo e contagem de outcomes;
-* `Resultados\benchmarks\benchmark-<tipo>-all-<hash8>-<data>.csv|json` — consolidação
-  automática das cinco contramedidas ao usar `-AllCountermeasures`.
+* `Resultados\benchmarks\benchmark-<type>-<cm>-<hash8>-<date>.csv` — one row per run,
+  including status, response, and a functional-evidence summary;
+* `Resultados\benchmarks\benchmark-<type>-<cm>-<hash8>-<date>.json` — runs, full
+  functional evidence, and performance evaluation with mean, median, p95, standard
+  deviation, min, max, and outcome counts;
+* `Resultados\benchmarks\benchmark-<type>-all-<hash8>-<date>.csv|json` — automatic
+  consolidation of all five countermeasures when using `-AllCountermeasures`.
 
-`-AllCountermeasures` executa sequencialmente `de`, `dm`, `do`, `dd` e `dp`.
-Não inclui `da`, pois `da` mede todas as proteções habilitadas simultaneamente,
-e não cada contramedida isolada.
+`-AllCountermeasures` runs `de`, `dm`, `do`, `dd`, and `dp` sequentially.
+It does not include `da`, because `da` measures all protections enabled at once,
+not each countermeasure in isolation.
 
-Cada relatório responde separadamente:
+Each report answers separately:
 
-* **Funcional:** “A contramedida ocultou o Pin?” (`PASS`, `FAIL` ou `INCONCLUSIVE`);
-* **Desempenho:** “Qual foi o impacto no desempenho?” (`VALID` ou `INCONCLUSIVE`).
+* **Functional:** “Did the countermeasure hide Pin?” (`PASS`, `FAIL`, or `INCONCLUSIVE`);
+* **Performance:** “What was the performance impact?” (`VALID` or `INCONCLUSIVE`).
 
-Um resultado funcional pode ser `PASS` mesmo quando o desempenho é inconclusivo:
-as duas conclusões usam evidências diferentes.
+A functional result may be `PASS` even when performance is inconclusive:
+the two conclusions use different evidence.
 
-Por padrão, cada amostra recebe uma janela de observação de 10 segundos
-(`-SampleObservationSeconds 10`). Aplicações que encerram naturalmente mantêm
-o outcome `complete`; aplicações gráficas ou persistentes são encerradas ao fim
-da janela e recebem outcome `observed`. Durante a janela, o benchmark coleta
-CPU acumulada, utilização equivalente de um núcleo, memória de trabalho média/pico
-e pico de memória privada do Pin e da amostra. Assim, aplicações persistentes
-podem ter uma comparação pareada válida de **recursos**, mesmo quando a comparação
-de tempo total é inválida porque a duração foi limitada artificialmente.
+By default, each sample gets a 10-second observation window
+(`-SampleObservationSeconds 10`). Applications that exit naturally keep
+outcome `complete`; GUI or persistent applications are terminated at the end
+of the window and receive outcome `observed`. During the window, the benchmark
+collects accumulated CPU, equivalent single-core utilization, average/peak
+working-set memory, and peak private memory for Pin and the sample. Persistent
+applications can therefore still get a valid paired **resource** comparison,
+even when total wall-time comparison is invalid because duration was capped.
 
-Essas métricas representam inicialização mais o estado observado durante a janela.
-Elas não medem a latência de uma operação específica da interface gráfica; para
-isso, seria necessário automatizar a mesma ação em cada rodada.
+These metrics represent startup plus the observed state during the window.
+They do not measure latency of a specific GUI action; that would require
+automating the same action in every run.
 
-## 8.4 Medição de tempo (apps em loop)
+## 8.4 Timing measurement (loop apps)
 
 ```powershell
 Measure-Command {
@@ -617,54 +617,54 @@ Measure-Command {
 }
 ```
 
-## 8.5 Interpretação rápida dos resultados
+## 8.5 Quick interpretation of results
 
-| Observação | Interpretação |
-|------------|---------------|
-| Baseline: alerta / contagem > 0; com knob: `OK` / zeros | Contramedida **funcional** na superfície testada |
-| `Result … outcome=complete` | Tempo da amostra pode entrar na comparação quantitativa |
-| `Result … outcome=timeout` | Amostra não terminou no limite — **não** use como tempo válido de eficácia (comum em `-dp`) |
+| Observation | Interpretation |
+|-------------|----------------|
+| Baseline: alert / count > 0; with knob: `OK` / zeros | Countermeasure is **functional** on the tested surface |
+| `Result … outcome=complete` | Sample time may enter quantitative comparison |
+| `Result … outcome=timeout` | Sample did not finish within the limit — **do not** use as a valid effectiveness time (common with `-dp`) |
 
-## 8.6 Evidências dos resultados (publicadas)
+## 8.6 Published result evidence
 
-Além dos CSV/JSON gerados na VM em `Resultados\benchmarks\` (§8.3 / vídeo 13), o repositório publica evidências consolidadas das execuções em:
+Besides CSV/JSON generated on the VM under `Resultados\benchmarks\` (§8.3 / video 13), the repository publishes consolidated run evidence under:
 
 ```text
 Resultados/evidencias_VM/
-├── benign/          ← por amostra (hash) + consolidado do corpus benigno
-├── malign/          ← por amostra (hash) + consolidado do corpus infectado
-└── comparativo/     ← comparação benigno vs maligno
+├── benign/          ← per sample (hash) + consolidated benign corpus
+├── malign/          ← per sample (hash) + consolidated infected corpus
+└── comparativo/     ← benign vs infected comparison
 ```
 
-| Conteúdo | Onde |
-|----------|------|
-| Relatório por amostra (PDF) | `evidencias_VM/benign/<SHA256>/` e `evidencias_VM/malign/<SHA256>/` |
-| Consolidado benigno (17 amostras) | `evidencias_VM/benign/TOMWare-corpus-benigno-17-amostras.pdf` (+ CSV/JSON) |
-| Consolidado infectado (14 amostras) | `evidencias_VM/malign/TOMWare-corpus-maligno-14-amostras.pdf` (+ CSV/JSON) |
-| Comparativo benigno × maligno | `evidencias_VM/comparativo/TOMWare-comparativo-benigno-vs-maligno.pdf` (+ CSV) |
-| Saídas brutas de uma execução local | `Resultados\benchmarks\benchmark-<tipo>-<cm>-<hash8>-<data>.{csv,json}` |
+| Content | Location |
+|---------|----------|
+| Per-sample report (PDF) | `evidencias_VM/benign/<SHA256>/` and `evidencias_VM/malign/<SHA256>/` |
+| Benign consolidated (17 samples) | `evidencias_VM/benign/TOMWare-corpus-benigno-17-amostras.pdf` (+ CSV/JSON) |
+| Infected consolidated (14 samples) | `evidencias_VM/malign/TOMWare-corpus-maligno-14-amostras.pdf` (+ CSV/JSON) |
+| Benign × infected comparison | `evidencias_VM/comparativo/TOMWare-comparativo-benigno-vs-maligno.pdf` (+ CSV) |
+| Raw outputs of a local run | `Resultados\benchmarks\benchmark-<type>-<cm>-<hash8>-<date>.{csv,json}` |
 
-Amostras usadas nesses experimentos: pasta `samples/` do repositório (§4.5).
+Samples used in these experiments: repository folder `samples/` (§4.5).
 
 ---
 
-# 9. Licença
+# 9. License
 
-Este projeto é distribuído para fins acadêmicos e de pesquisa. Consulte o arquivo [`LICENSE`](LICENSE) na raiz do repositório.
+This project is distributed for academic and research purposes. See [`LICENSE`](LICENSE) at the repository root.
 
-**Intel Pin** possui licença própria (veja `pin/licensing/`).
+**Intel Pin** has its own license (see `pin/licensing/`).
 
-**Citação sugerida (TOMWare.M / SBSeg 2026 SF):**
+**Suggested citation (TOMWare.M / SBSeg 2026 Tools Fair):**
 
 ```text
-TOMWare.M: Uma Ferramenta para Mitigação de Técnicas de Anti-Instrumentação
-em Ambientes DBI — Salão de Ferramentas, SBSeg 2026.
+TOMWare.M: A Tool for Mitigating Anti-Instrumentation Techniques
+in DBI Environments — Tools Fair, SBSeg 2026.
 https://github.com/TOMWare-analises/TOMWare
 ```
 
 ---
 
-## Referência rápida
+## Quick reference
 
 ```text
 TOMWare.M — Transparency and Overhead Measurement for Malware

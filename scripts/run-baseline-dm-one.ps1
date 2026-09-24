@@ -117,6 +117,9 @@ $PocByKnob = @{
         RelPaths = @("Resultados/Apps-Teste/TestAntiDebug.exe")
         UsesMemscan = $false
         BaselineKnobs = @("-gdb", "-q")
+        # Keep -gdb in the CM condition so baseline and treatment share the same
+        # simulated PEB stimulus (matched comparison required by IEEE R1).
+        PocCmExtra = @("-gdb")
         PocTimeout = 120
         DetectPattern = "Alerta:"
         StealthPattern = "OK - nenhuma anomalia"

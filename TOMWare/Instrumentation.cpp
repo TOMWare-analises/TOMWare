@@ -185,12 +185,17 @@ int InitInstrumentation()
         SkewMask_Init();
     }
 
-    if (debugDefend) {
-        AntiDebugMask_Init();
-    }
-
+    // Matched AntiDebug protocol (-gdb -dd): ApplicationStart callbacks run in
+    // registration order. Simulate PEB indicators first, then sanitize, so the
+    // final process state reflects -dd while keeping the same -gdb stimulus as
+    // the baseline. Previous order (sanitize then simulate) left indicators set
+    // and made the matched comparison inconclusive.
     if (simulateDebug) {
         AntiDebugMask_SimulateDebug_Init();
+    }
+
+    if (debugDefend) {
+        AntiDebugMask_Init();
     }
 
     if (processEnumDefend) {

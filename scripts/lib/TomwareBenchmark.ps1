@@ -99,6 +99,80 @@ function Get-TomwareResourceSnapshot {
     }
 }
 
+function Stop-TomwareProcessTree {
+    param(
+        [int]$ProcessId = 0,
+        [string]$SamplePath = ""
+    )
+    # taskkill writes "not found" to stderr; with $ErrorActionPreference=Stop that aborts the campaign
+    $prev = $ErrorActionPreference
+    $ErrorActionPreference = "SilentlyContinue"
+    try {
+        if ($ProcessId -gt 0) {
+            cmd.exe /c "taskkill /PID $ProcessId /T /F >nul 2>&1" | Out-Null
+            Start-Sleep -Milliseconds 300
+            try {
+                $p = Get-Process -Id $ProcessId -ErrorAction SilentlyContinue
+                if ($p) { $p.Kill() }
+            } catch {}
+        }
+        if ($SamplePath) {
+            $base = [IO.Path]::GetFileNameWithoutExtension($SamplePath)
+            # Prefer short name: full SHA256.exe often already exited / renamed
+            if ($base -and $base.Length -ge 4) {
+                $im = $base + ".exe"
+                cmd.exe /c "taskkill /IM `"$im`" /T /F >nul 2>&1" | Out-Null
+                if ($base.Length -gt 8) {
+                    $short = $base.Substring(0, 8) + "*.exe"
+                    # best-effort: kill by sha8 prefix via PowerShell
+                    Get-Process -ErrorAction SilentlyContinue |
+                        Where-Object { $_.ProcessName -like ($base.Substring(0, 8) + "*") } |
+                        ForEach-Object {
+                            try { $_.Kill() } catch {}
+                        }
+                }
+            }
+        }
+        cmd.exe /c "taskkill /IM pin.exe /T /F >nul 2>&1" | Out-Null
+        cmd.exe /c "taskkill /IM pinbin.exe /T /F >nul 2>&1" | Out-Null
+    }
+    finally {
+        $ErrorActionPreference = $prev
+    }
+}
+
+function Start-TomwareShutdownAbortWatchdog {
+    <#
+      Malware samples often call ExitWindows/InitiateSystemShutdown.
+      Abort pending shutdowns every ~2s while the campaign runs.
+    #>
+    $script = @'
+while ($true) {
+  try { & shutdown.exe /a 2>$null | Out-Null } catch {}
+  Start-Sleep -Seconds 2
+}
+'@
+    $tmp = Join-Path $env:TEMP ("tomware_shutdown_abort_{0}.ps1" -f $PID)
+    Set-Content -Path $tmp -Value $script -Encoding ASCII
+    $proc = Start-Process -FilePath "powershell.exe" -ArgumentList @(
+        "-NoProfile", "-WindowStyle", "Hidden", "-ExecutionPolicy", "Bypass", "-File", $tmp
+    ) -PassThru -WindowStyle Hidden
+    return [PSCustomObject]@{ Pid = $proc.Id; ScriptPath = $tmp }
+}
+
+function Stop-TomwareShutdownAbortWatchdog {
+    param($Handle)
+    if (-not $Handle) { return }
+    try {
+        $p = Get-Process -Id $Handle.Pid -ErrorAction SilentlyContinue
+        if ($p) { Stop-Process -Id $Handle.Pid -Force -ErrorAction SilentlyContinue }
+    } catch {}
+    if ($Handle.ScriptPath) {
+        Remove-Item -LiteralPath $Handle.ScriptPath -Force -ErrorAction SilentlyContinue
+    }
+    try { & shutdown.exe /a 2>$null | Out-Null } catch {}
+}
+
 function Invoke-TomwarePinRun {
     param(
         [string]$PinExe,
@@ -143,6 +217,9 @@ function Invoke-TomwarePinRun {
 
             $lastProgressAt = 0
             while (-not $proc.WaitForExit(1000)) {
+                # Abort malware-initiated shutdown mid-run
+                try { & shutdown.exe /a 2>$null | Out-Null } catch {}
+
                 $snapshot = Get-TomwareResourceSnapshot -RootProcessId $proc.Id `
                     -SamplePath $SamplePath -StartedAt $startedAt -CpuSecondsByPid $cpuSecondsByPid
                 if ($snapshot.ProcessCount -gt 0) {
@@ -155,7 +232,7 @@ function Invoke-TomwarePinRun {
 
                 $elapsedSeconds = [int][Math]::Floor($sw.Elapsed.TotalSeconds)
                 if ($TimeoutSeconds -gt 0 -and $elapsedSeconds -ge $TimeoutSeconds) {
-                    $proc.Kill()
+                    Stop-TomwareProcessTree -ProcessId $proc.Id -SamplePath $SamplePath
                     $timedOut = $true
                     $exitCode = -2
                     Write-Host ("    timeout: {0}s atingidos em {1}" -f $TimeoutSeconds, $(if ($ProgressLabel) { $ProgressLabel } else { $Scenario })) -ForegroundColor Yellow
@@ -171,6 +248,10 @@ function Invoke-TomwarePinRun {
 
             if (-not $timedOut) {
                 $exitCode = $proc.ExitCode
+            }
+            else {
+                Start-Sleep -Seconds 1
+                Stop-TomwareProcessTree -ProcessId $proc.Id -SamplePath $SamplePath
             }
 
             $finalSnapshot = Get-TomwareResourceSnapshot -RootProcessId $proc.Id `
@@ -249,19 +330,43 @@ function Invoke-TomwareNativeRun {
     $sw = [System.Diagnostics.Stopwatch]::StartNew()
     $timedOut = $false
     $exitCode = 1
+    $stdout = ""
+    $stderr = ""
 
     if ($TimeoutSeconds -gt 0) {
-        $proc = Start-Process -FilePath $SamplePath -PassThru -NoNewWindow
-        if (-not $proc.WaitForExit($TimeoutSeconds * 1000)) {
-            $proc.Kill()
-            $timedOut = $true
-            $exitCode = -2
+        $outFile = [System.IO.Path]::GetTempFileName()
+        $errFile = [System.IO.Path]::GetTempFileName()
+        try {
+            # WorkingDirectory = sample folder so sidecar DLLs (if any) resolve
+            $workDir = Split-Path -Parent $SamplePath
+            $proc = Start-Process -FilePath $SamplePath -WorkingDirectory $workDir `
+                -PassThru -NoNewWindow `
+                -RedirectStandardOutput $outFile -RedirectStandardError $errFile
+            if (-not $proc.WaitForExit($TimeoutSeconds * 1000)) {
+                Stop-TomwareProcessTree -ProcessId $proc.Id -SamplePath $SamplePath
+                $timedOut = $true
+                $exitCode = -2
+            }
+            else {
+                $exitCode = $proc.ExitCode
+            }
+            try { & shutdown.exe /a 2>$null | Out-Null } catch {}
+            if (Test-Path $outFile) { $stdout = Get-Content $outFile -Raw -ErrorAction SilentlyContinue }
+            if (Test-Path $errFile) { $stderr = Get-Content $errFile -Raw -ErrorAction SilentlyContinue }
         }
-        else { $exitCode = $proc.ExitCode }
+        finally {
+            Remove-Item $outFile, $errFile -Force -ErrorAction SilentlyContinue
+        }
     }
     else {
-        & $SamplePath
-        $exitCode = $LASTEXITCODE
+        Push-Location (Split-Path -Parent $SamplePath)
+        try {
+            & $SamplePath 2>&1 | Out-Null
+            $exitCode = $LASTEXITCODE
+        }
+        finally {
+            Pop-Location
+        }
     }
 
     $sw.Stop()
@@ -271,8 +376,8 @@ function Invoke-TomwareNativeRun {
         Seconds  = [Math]::Round($sw.Elapsed.TotalSeconds, 3)
         TimedOut = $timedOut
         Outcome  = (Get-ExecutionOutcome -ExitCode $exitCode -Seconds $sw.Elapsed.TotalSeconds -TimedOut:$timedOut)
-        Stdout   = ""
-        Stderr   = ""
+        Stdout   = $stdout
+        Stderr   = $stderr
         Command  = $SamplePath
     }
 }

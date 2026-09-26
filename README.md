@@ -33,6 +33,8 @@ TOMWare.M implements five selectively activatable countermeasures (`-dd`, `-dp`,
 * [6. Installation](#6-installation)
 * [7. Minimal test](#7-minimal-test)
 * [8. Experiments](#8-experiments)
+  * [8.6 Published result evidence](#86-published-result-evidence)
+  * [8.7 IEEE Access revision protocols](#87-ieee-access-revision-protocols)
 * [9. License](#9-license)
 
 ---
@@ -50,7 +52,7 @@ This README is organized into the following main sections:
 5. **Security** — mandatory isolation when running real samples.
 6. **Installation** — optional build and basic pintool syntax.
 7. **Minimal test** — quick validation with test apps (no malware).
-8. **Experiments** — baseline vs countermeasure, corpus, timing, and evidence (§8.6).
+8. **Experiments** — baseline vs countermeasure, corpus, timing, published evidence (§8.6), and IEEE Access revision protocols (§8.7).
 9. **License** — terms of use.
 
 ## 1.2 Distributed artifacts
@@ -83,7 +85,10 @@ TOMWare/                              ← repository root (this README)
 │   ├── benchmark-poc.ps1
 │   ├── benchmark-corpus.ps1
 │   ├── benchmark-infected.ps1
+│   ├── r2-*.ps1                      ← IEEE Access revision campaigns (§8.7)
 │   └── lib/TomwareBenchmark.ps1
+├── EmptyPinTool/                     ← empty pintool baseline (pin_empty ladder)
+├── FidelityProbe/                    ← behavioral fidelity probe helper
 ├── imgs/                             ← README / architecture figures
 ├── samples/                          ← experiment corpus (§4.5)
 │   ├── benign/                       ← <SHA256>.exe (benign)
@@ -98,8 +103,10 @@ TOMWare/                              ← repository root (this README)
 │   └── evidencias_VM/                ← published evidence (PDF/CSV/JSON) — §8.6
 │       ├── benign/                   ← benign corpus (per hash + consolidated)
 │       ├── malign/                   ← infected corpus (per hash + consolidated)
-│       └── comparativo/              ← benign vs infected
+│       ├── comparativo/              ← benign vs infected
+│       └── ieee_access_revision/     ← Overleaf / response packs (§8.7)
 ├── TOMWare.sln
+├── .env.example                      ← VT_API_KEY template (never commit `.env`)
 ├── LICENSE
 └── README.md
 ```
@@ -631,9 +638,10 @@ Besides CSV/JSON generated on the VM under `Resultados\benchmarks\` (§8.3 / vid
 
 ```text
 Resultados/evidencias_VM/
-├── benign/          ← per sample (hash) + consolidated benign corpus
-├── malign/          ← per sample (hash) + consolidated infected corpus
-└── comparativo/     ← benign vs infected comparison
+├── benign/                 ← per sample (hash) + consolidated benign corpus
+├── malign/                 ← per sample (hash) + consolidated infected corpus
+├── comparativo/            ← benign vs infected comparison
+└── ieee_access_revision/   ← IEEE Access Overleaf / response packs (§8.7)
 ```
 
 | Content | Location |
@@ -642,9 +650,50 @@ Resultados/evidencias_VM/
 | Benign consolidated (17 samples) | `evidencias_VM/benign/TOMWare-corpus-benigno-17-amostras.pdf` (+ CSV/JSON) |
 | Infected consolidated (14 samples) | `evidencias_VM/malign/TOMWare-corpus-maligno-14-amostras.pdf` (+ CSV/JSON) |
 | Benign × infected comparison | `evidencias_VM/comparativo/TOMWare-comparativo-benigno-vs-maligno.pdf` (+ CSV) |
+| IEEE Access Reviewer 3 pack | `evidencias_VM/ieee_access_revision/r3/` (PDF + Overleaf snippets + response letter) |
 | Raw outputs of a local run | `Resultados\benchmarks\benchmark-<type>-<cm>-<hash8>-<date>.{csv,json}` |
 
 Samples used in these experiments: repository folder `samples/` (§4.5).
+
+## 8.7 IEEE Access revision protocols
+
+For the IEEE Access revision (`Access-2026-38745`), additional campaigns close matched-validation,
+selection-bias, and corpus-label gaps. Scripts live under `scripts/r2-*.ps1` and reuse the same
+VM/snapshot discipline as §8.1. **Reviewer 3 (minor)** reuses this evidence; no new VM campaign
+is required once the Overleaf pack in §8.6 is pasted into the manuscript.
+
+| Protocol | Script / artifact | Purpose |
+|----------|-------------------|---------|
+| Matched AntiDebug | `run-baseline-dm-one` / manual `-gdb -q` vs `-gdb -dd -q` | Paired functional validation (do **not** label AntiDebug as unvalidated) |
+| Baseline ladder | `scripts/r2-baseline-ladder.ps1` | Native → `pin_empty` → disabled → enabled → `-da` |
+| Empty pintool | `EmptyPinTool/` + `scripts/r2-build-empty-pintool.ps1` | Isolate Pin overhead without TOMWare modules |
+| SkewMask fixed-N | `scripts/r2-skewmask-fixedN.ps1` | Fixed N (e.g. 30), retain **all** runs; report median/IQR/CI |
+| Behavioral fidelity | `scripts/r2-behavioral-fidelity.ps1`, `r2-fidelity-one-sample-noshares.ps1` | Zero-share / one-sample-then-exit malware loops on a snapshot |
+| Fidelity probe | `FidelityProbe/` | Helper probe used by the fidelity campaigns |
+| Corpus VT labels | `scripts/r2-corpus-vt-lookup.ps1` + `.env.example` | Hash-only VirusTotal `suggested_threat_label` (API key in `.env`, never committed) |
+| Reviewer 3 pack | `Resultados/evidencias_VM/ieee_access_revision/r3/` | Overleaf snippets (§29% bias, IC/descriptive, related-systems table), response letter, master PDF |
+
+**Matched AntiDebug (knobs):**
+
+```powershell
+# Baseline (debugger indicators visible under -gdb)
+.\pin\pin.exe -t .\x64\Release\TOMWare.dll -gdb -q -- .\Resultados\Apps-Teste\TestAntiDebug.exe
+
+# Treatment (matched + AntiDebug countermeasure)
+.\pin\pin.exe -t .\x64\Release\TOMWare.dll -gdb -dd -q -- .\Resultados\Apps-Teste\TestAntiDebug.exe
+```
+
+**SkewMask fixed-N / VT (examples):**
+
+```powershell
+.\scripts\r2-skewmask-fixedN.ps1
+# Copy .env.example → .env and set VT_API_KEY (gitignored)
+.\scripts\r2-corpus-vt-lookup.ps1
+```
+
+Manuscript integration for Reviewer 3 still requires pasting the Overleaf snippets, removing any
+remaining AntiDebug “unvalidated” / “inconclusive” wording, inserting `tab:related-r3`, and a
+final language/formatting pass. See `ieee_access_revision/r3/AUDITORIA_R3_RIGOROSA.md`.
 
 ---
 

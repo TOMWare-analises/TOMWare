@@ -1,0 +1,51 @@
+Response to Reviewer 3 — TOMWare.M (Access-2026-38745)
+
+We thank Reviewer 3 for the constructive minor comments. Below we address each point.
+Evidence reuses the matched AntiDebug and fixed-N SkewMask campaigns prepared for
+Reviewers 1--2 (no new VM campaign required for R3). Manuscript edits land in the
+revised Overleaf (snippets in overleaf_pack_R3_COMPLETO/).
+
+R3-1 AntiDebug matched configurations
+a) Concern: repeat AntiDebug with matched -gdb baseline vs -gdb -dd, or classify unvalidated.
+b) Response: Completed under matched knobs. Baseline: pin ... -t TOMWare.dll -gdb -q --
+   TestAntiDebug.exe; treatment: ... -gdb -dd -q -- TestAntiDebug.exe (3 reps) plus a
+   Pin-only control. Functional outcomes: baseline detection vs treatment OK (ApplicationStart
+   simulate then sanitize). We do not classify AntiDebug as unvalidated.
+c) Action: Results figure + Abstract/Methods wording aligned with matched evidence;
+   remove any prior "unvalidated"/"inconclusive" AntiDebug wording manuscript-wide
+   (Reviewer typo -gbd interpreted as -gdb).
+
+R3-2 Timing-oracle re-execution (~29%) and selection bias
+a) Concern: clarify implications of the ~29% re-execution rate and selection bias.
+b) Response: Agreed. In the earlier corpus protocol, additional attempts were allowed after
+   a failed first run. A fixed-1-attempt recount of those reports yields 22/31 first-attempt
+   completions and 9/31 (29.0%) cases that previously relied on re-execution.
+   Retaining only eventually threshold-satisfying runs can overstate success and bias timing
+   summaries. Mitigation: (1) explicit first-attempt statistics; (2) descriptive framing for
+   corpus aggregates; (3) redesigned SkewMask oracle with fixed N and all runs retained.
+c) Action: Discussion/Results paragraphs (Section 7.2 paste) + this Response Letter.
+
+R3-3 Uncertainty measures / descriptive performance
+a) Concern: add confidence intervals where feasible, or emphasize descriptive-only results.
+b) Response: For the redesigned SkewMask oracle (fixed-N=30, all retained) we
+   report median, IQR, and 95% bootstrap CI of the median
+   (B: median 3213.49, IQR [3062.36, 3511.81],
+   CI [3140.16, 3432.05];
+   C: median 2114.34, IQR [2109.25, 2122.07],
+   CI [2112.96, 2119.14]). Corpus PE-level medians remain
+   descriptive summaries without significance testing.
+c) Action: Results stats + explicit "descriptive" wording where CIs are not applicable.
+
+R3-4 Concise comparison with related systems
+a) Concern: briefly compare TOMWare.M with closely related systems in a table.
+b) Response: We include a concise architectural comparison to Arancino, COBAI, and Peekaboo.
+   We did not perform shared-workload empirical benchmarks against those systems. In our
+   comparison, TOMWare.M combines selective knobs with matched oracle validation and an
+   auditable compatibility-probe protocol under Intel Pin on Windows x64.
+c) Action: Table tab:related-r3 + Related-work paragraph (no superiority claim).
+
+R3-5 Language and formatting
+a) Concern: final language/formatting pass for typos and spacing.
+b) Response: We apply a final editorial checklist (knob notation -gdb/-dd, hyphenation,
+   caption punctuation, spacing around units/math) in the revised Overleaf.
+c) Action: Checklist in AUDITORIA_R3_RIGOROSA.md / Section 5 of the pack PDF.

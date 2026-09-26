@@ -103,8 +103,7 @@ TOMWare/                              ← repository root (this README)
 │   └── evidencias_VM/                ← published evidence (PDF/CSV/JSON) — §8.6
 │       ├── benign/                   ← benign corpus (per hash + consolidated)
 │       ├── malign/                   ← infected corpus (per hash + consolidated)
-│       ├── comparativo/              ← benign vs infected
-│       └── ieee_access_revision/     ← Overleaf / response packs (§8.7)
+│       └── comparativo/              ← benign vs infected
 ├── TOMWare.sln
 ├── .env.example                      ← VT_API_KEY template (never commit `.env`)
 ├── LICENSE
@@ -638,10 +637,9 @@ Besides CSV/JSON generated on the VM under `Resultados\benchmarks\` (§8.3 / vid
 
 ```text
 Resultados/evidencias_VM/
-├── benign/                 ← per sample (hash) + consolidated benign corpus
-├── malign/                 ← per sample (hash) + consolidated infected corpus
-├── comparativo/            ← benign vs infected comparison
-└── ieee_access_revision/   ← IEEE Access Overleaf / response packs (§8.7)
+├── benign/          ← per sample (hash) + consolidated benign corpus
+├── malign/          ← per sample (hash) + consolidated infected corpus
+└── comparativo/     ← benign vs infected comparison
 ```
 
 | Content | Location |
@@ -650,7 +648,6 @@ Resultados/evidencias_VM/
 | Benign consolidated (17 samples) | `evidencias_VM/benign/TOMWare-corpus-benigno-17-amostras.pdf` (+ CSV/JSON) |
 | Infected consolidated (14 samples) | `evidencias_VM/malign/TOMWare-corpus-maligno-14-amostras.pdf` (+ CSV/JSON) |
 | Benign × infected comparison | `evidencias_VM/comparativo/TOMWare-comparativo-benigno-vs-maligno.pdf` (+ CSV) |
-| IEEE Access Reviewer 3 pack | `evidencias_VM/ieee_access_revision/r3/` (PDF + Overleaf snippets + response letter) |
 | Raw outputs of a local run | `Resultados\benchmarks\benchmark-<type>-<cm>-<hash8>-<date>.{csv,json}` |
 
 Samples used in these experiments: repository folder `samples/` (§4.5).
@@ -658,20 +655,34 @@ Samples used in these experiments: repository folder `samples/` (§4.5).
 ## 8.7 IEEE Access revision protocols
 
 For the IEEE Access revision (`Access-2026-38745`), additional campaigns close matched-validation,
-selection-bias, and corpus-label gaps. Scripts live under `scripts/r2-*.ps1` and reuse the same
-VM/snapshot discipline as §8.1. **Reviewer 3 (minor)** reuses this evidence; no new VM campaign
-is required once the Overleaf pack in §8.6 is pasted into the manuscript.
+selection-bias, metric-validity, and SkewMask resource-interpretation gaps. Scripts live under
+`scripts/r2-*.ps1` and reuse the same VM/snapshot discipline as §8.1. Pre-built DLLs
+(`TOMWare.dll`, `EmptyPinTool.dll`, `FidelityProbe.dll`) are copied to the VM — builds are done
+on the host, not inside the guest.
 
 | Protocol | Script / artifact | Purpose |
 |----------|-------------------|---------|
-| Matched AntiDebug | `run-baseline-dm-one` / manual `-gdb -q` vs `-gdb -dd -q` | Paired functional validation (do **not** label AntiDebug as unvalidated) |
+| Matched AntiDebug | manual `-gdb -q` vs `-gdb -dd -q` | Paired functional validation (do **not** label AntiDebug as unvalidated) |
 | Baseline ladder | `scripts/r2-baseline-ladder.ps1` | Native → `pin_empty` → disabled → enabled → `-da` |
 | Empty pintool | `EmptyPinTool/` + `scripts/r2-build-empty-pintool.ps1` | Isolate Pin overhead without TOMWare modules |
-| SkewMask fixed-N | `scripts/r2-skewmask-fixedN.ps1` | Fixed N (e.g. 30), retain **all** runs; report median/IQR/CI |
-| Behavioral fidelity | `scripts/r2-behavioral-fidelity.ps1`, `r2-fidelity-one-sample-noshares.ps1` | Zero-share / one-sample-then-exit malware loops on a snapshot |
-| Fidelity probe | `FidelityProbe/` | Helper probe used by the fidelity campaigns |
+| SkewMask fixed-N | `scripts/r2-skewmask-fixedN.ps1` | Fixed N (e.g. 30), retain **all** runs; compensation rate + median/IQR/CI |
+| Behavioral fidelity | `scripts/r2-behavioral-fidelity.ps1`, `r2-fidelity-one-sample-noshares.ps1` | Zero-share / one-sample-then-exit loops on a snapshot |
+| Fidelity probe | `FidelityProbe/` | BBL / image / API-watchlist counters for behavioural comparisons |
 | Corpus VT labels | `scripts/r2-corpus-vt-lookup.ps1` + `.env.example` | Hash-only VirusTotal `suggested_threat_label` (API key in `.env`, never committed) |
-| Reviewer 3 pack | `Resultados/evidencias_VM/ieee_access_revision/r3/` | Overleaf snippets (§29% bias, IC/descriptive, related-systems table), response letter, master PDF |
+
+**Reviewer 3 (minor)** — reuses matched AntiDebug, fixed-N timing (first-attempt 22/31 vs 9/31 re-exec
+under the old protocol), descriptive/IC wording, and an architectural related-systems table.
+No new VM campaign once those texts are in the manuscript.
+
+**Reviewer 4 (minor)** — same matched AntiDebug and fixed-N compensation rates
+(baseline below-threshold **7/30**, treatment **30/30**). Large SkewMask resource deltas
+(e.g. about −87% peak working set / −38.5% CPU on cited persistent cells) are **not**
+performance gains: confirmatory Pin runs on the three benign hashes that drive those
+working-set cuts (`1128D0B4`, `16B45C2C`, `445E672D`) complete with modules off and hit the
+observation timeout under `-do`. Metric validity is stated a priori (profile → primary metric;
+ProcessEnum never uses wall-clock as effectiveness; fixed-N attempts; no outcome-selected
+exclusions). Remaining work is manuscript paste (Abstract/Table 3 rates, Methods rule,
+Discussion interpretation), not a new VM campaign.
 
 **Matched AntiDebug (knobs):**
 
@@ -691,9 +702,10 @@ is required once the Overleaf pack in §8.6 is pasted into the manuscript.
 .\scripts\r2-corpus-vt-lookup.ps1
 ```
 
-Manuscript integration for Reviewer 3 still requires pasting the Overleaf snippets, removing any
-remaining AntiDebug “unvalidated” / “inconclusive” wording, inserting `tab:related-r3`, and a
-final language/formatting pass. See `ieee_access_revision/r3/AUDITORIA_R3_RIGOROSA.md`.
+Manuscript integration still requires: pasting revision snippets; removing any AntiDebug
+“unvalidated” / “inconclusive” / “future work” wording; aligning the abstract and timing
+table with fixed-N compensation rates; stating the prospective metric-validity rule; and a
+final language/formatting pass.
 
 ---
 

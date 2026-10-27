@@ -4,30 +4,38 @@
 
 Repository: [https://github.com/TOMWare-analises/TOMWare](https://github.com/TOMWare-analises/TOMWare)
 
+This tree is the pintool **and** the measured evidence. The tool was presented at the SBSeg 2026 Tools Fair. The tables under `experiment/results/` are the JCVHT 31-PE pack plus the 100-PE / 9 000-run campaign. Do not mix those cells.
+
 ---
 
 ## Reproduce
 
-One product; the same tree is what any reviewer runs. Hashes:
-`experiment/environment/build_manifest.json`.
+One git tree; **two binaries**. Published numbers were measured with the **campaign DLL**. That file is **not** in git (`x64/` is gitignored; there is no GitHub Release). Identity is the SHA-256, not a git hash. Catalog: `experiment/environment/build_manifest.json` and `experiment/results/oracles/build_id.json`.
 
-| Artifact | SHA-256 prefix |
-|----------|----------------|
-| Pin 3.28.98749 `pin/pin.exe` | `920A730A…B819` |
-| `x64/Release/TOMWare.dll` | `4BBC6270…F0E6` |
-| `x64/Release/EmptyPinTool.dll` | `804BE19B…53C8` |
+| Artifact | SHA-256 prefix | Role |
+|----------|----------------|------|
+| Pin 3.28.98749 `pin/pin.exe` | `920A730A…B819` | Same for both binaries |
+| Campaign `TOMWare.dll` | `4BBC6270…F0E6` | Table 6 N=30, N=10 oracles, 31-PE corpus, 9 000-run campaign |
+| `EmptyPinTool.dll` | `804BE19B…53C8` | `EMPTY` / `pin_empty` ladder |
+| Memcmp-fix `TOMWare.dll` | `D55EC952…C143` | `_memicmp_l` four-argument hook only. Source: `main` (`242f800`). `SkewMask.cpp` unchanged |
 
-Rebuilding the DLL is a **different** campaign. To check published numbers, use this binary.
+Candidate **source** for `4BBC6270` (not bit-reproducible): git tag `jcvht-dll-4bbc6270-candidate` = `a22e01d`. Do **not** cite git `3040df7`, `main`, or `242f800` as the campaign DLL. Do not rebuild only to tag.
 
-All measured tables are under **`experiment/results/`**:
+To check published numbers, copy the campaign DLL onto `x64\Release\TOMWare.dll` from guest snapshot `tomware_go` or from Drive `TOMWare.7z`. Rebuilding from `main` is a **different** SHA-256.
 
-| Folder | What |
-|--------|------|
-| `corpus/` | First published pack (17 benign + 14 infected) |
-| `oracles/` | N=30 timing, N=10 waits/memcmp/`-da`, identify, counters, `manuscript_values.json` |
-| `campaign/` | 9 000-run processed tables |
+Do not change `SkewMask.cpp`. Do not replace the N=30 table. Do not execute `samples/infected/` on a networked host.
 
-**Smoke (no malware):**  
+All measured tables are under **`experiment/results/`**. Two campaigns; **do not mix cells**:
+
+| Folder | What | Window / N | DLL |
+|--------|------|------------|-----|
+| `corpus/` | 17 benign + 14 infected pack (PDFs/CSV) | 10 s (Table 9 protocol) | `4BBC6270` |
+| `oracles/` | N=30 timing, N=10 waits/memcmp/`-da`, identify, counters, `manuscript_values.json` | matched oracles | `4BBC6270` |
+| `campaign/corpus_aligned_10k/` | 100 PE (50+50) × 9 conditions × 10 = 9 000 processed tables | 120 s short / 60 s persistent | `4BBC6270` |
+
+`oracles/collector/` is a **synthetic** 10 s PowerShell+PING smoke. It is not Table 9.
+
+**Smoke (no malware), after the campaign DLL is in place:**  
 `pin\pin.exe -t x64\Release\TOMWare.dll -q -- Resultados\Apps-Teste\TestOverhead.exe`
 
 **Re-run oracles (guest `tomware_go`, no malware):**  
@@ -36,7 +44,12 @@ If the VM dies: power on without reverting the snapshot; add `-Resume`.
 
 **9 000-run campaign:** `experiment/scripts/host/Run-HostCampaign.ps1` and `experiment/protocol/protocol.md`. Do not overwrite `experiment/results/campaign/` unless you accept a new campaign id.
 
-Do not cite git `3040df7` as this DLL. Do not change `SkewMask.cpp` and keep the old N=30 table. Do not execute `samples/infected/` on a networked host.
+**Limitations that still stand** (do not mark resolved):
+
+- `SleepEx(..., alertable)` under `-do` can hang until the collector timeout (180 s). Cause not confirmed. `SkewMask.cpp` not changed.
+- Campaign DLL: `_memicmp_l` was hooked as three-argument; that oracle `ACCESS_FAULT`s. Fixed on `main` / `D55EC952` only.
+- Identify: 31/31 `identified=false`. IAT/string hits are leads, not executed-branch case studies.
+- Resource cuts of about −87% peak working set / −38.5% CPU on cited persistent cells are **not** performance gains: those hashes complete with modules off and hit the observation timeout under `-do`.
 
 ---
 
@@ -85,9 +98,9 @@ This README is organized into the following main sections:
 3. **Basic information** — introduction, modules, architecture, and environment.
 4. **Dependencies** — host, build, and VM requirements (+ installers on Drive; samples in `samples/`).
 5. **Security** — mandatory isolation when running real samples.
-6. **Installation** — optional build and basic pintool syntax.
+6. **Installation** — clone does not include the campaign DLL; build from `main` is a new hash.
 7. **Minimal test** — quick validation with test apps (no malware).
-8. **Experiments** — baseline vs countermeasure, corpus, timing, and the single results tree (§8.6–8.7).
+8. **Experiments** — baseline vs countermeasure; 31-PE pack vs 9 000-run (§8.6–§8.7).
 9. **License** — terms of use.
 
 ## 1.2 Distributed artifacts
@@ -99,7 +112,8 @@ This README is organized into the following main sections:
 * Signatures for memory masking (`config/signatures.txt`).
 * Execution and benchmark scripts (`scripts/`).
 * Current execution-flow diagram (`imgs/tomware-fluxo-execucao-23072026.png`).
-* Measured tables under `experiment/results/` (corpus, oracles, campaign) — see **Reproduce** and §8.6.
+* Measured tables under `experiment/results/` (31-PE corpus, oracles, 9 000-run campaign) — see **Reproduce** and §8.6.
+* Compiled pintools (`x64/Release/*.dll`) are **gitignored**. Copy the campaign `4BBC6270` DLL from snapshot `tomware_go` or Drive `TOMWare.7z`; see **Reproduce**.
 * Installer package (Git, Visual Studio, 7-Zip, VMware, Pin, TOMWare, ISO) on [Google Drive — Installers](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing) — see §4.4.
 * Corpus of **benign** and **infected** samples in `samples/` in this repository — see §4.5.
   (Google Drive blocks public sharing of these files by policy; therefore the corpus is shipped via Git.)
@@ -123,11 +137,12 @@ TOMWare/                              ← repository root (this README)
 │   ├── r2-*.ps1                      ← older campaign path; prefer experiment/
 │   └── lib/TomwareBenchmark.ps1
 ├── experiment/                       ← campaign + oracles
-│   ├── results/                      ← **all** measured tables (corpus / oracles / campaign)
+│   ├── results/                      ← **all** measured tables (31-PE / oracles / 9 000-run)
 │   ├── protocol/ corpus/ config/
 │   ├── scripts/                      ← planner, runner, validators, analysis
 │   └── validation/scripts/           ← Run-Oracles.ps1
 ├── EmptyPinTool/                     ← empty pintool baseline (pin_empty ladder)
+├── x64/Release/                      ← compiled DLLs (**gitignored**; copy 4BBC6270)
 ├── FidelityProbe/                    ← behavioral fidelity probe helper
 ├── imgs/                             ← README / architecture figures
 ├── samples/                          ← experiment corpus (§4.5)
@@ -185,10 +200,10 @@ Badges from the SBSeg **Artifact Technical Committee (CTA)** ([official guidance
 |-------|-------------------------|----------------------------------|
 | **Available (SeloD)** | Code/data in a stable repository with a minimal README | Public GitHub; this README; corpus in `samples/`; [Installers](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing) and playlist on Drive; evidence under `experiment/results/` |
 | **Functional (SeloF)** | Runnable artifact; deps, environment, install, and minimal example | §3.5 / §4 (deps and versions), §6 (install), §7 (minimal test with apps in `Resultados/Apps-Teste/`) |
-| **Sustainable (SeloS)** | Modular, readable code mapped to paper claims | `TOMWare/` + `scripts/` layout; knobs `-dd/-dp/-de/-dm/-do`; diagram §3.3; evidence under `Resultados/` |
-| **Reproducible (SeloR)** | Reproduce the main paper claims | **Reproduce** above; §8; `experiment/results/`; playlist §1.4 as a flow demo |
+| **Sustainable (SeloS)** | Modular, readable code mapped to paper claims | `TOMWare/` + `scripts/` layout; knobs `-dd/-dp/-de/-dm/-do`; diagram §3.3; published tables under `experiment/results/` |
+| **Reproducible (SeloR)** | Reproduce the main paper claims | **Reproduce** above (campaign DLL `4BBC6270`, tag `jcvht-dll-4bbc6270-candidate`); §8; playlist §1.4 as a flow demo |
 
-Base work: SBSeg 2025 (TOMWare). Current extension (**TOMWare.M**, SBSeg 2026 Tools Fair): **AntiDebug** (`-dd`) and **ProcessEnum** (`-dp`) modules.
+Base work: SBSeg 2025 (TOMWare). Tool extension (**TOMWare.M**, SBSeg 2026 Tools Fair): **AntiDebug** (`-dd`) and **ProcessEnum** (`-dp`). Measured evidence in this repository also covers the JCVHT 31-PE pack and the 100-PE / 9 000-run campaign (same campaign DLL; do not mix cells).
 
 ---
 
@@ -228,7 +243,7 @@ Parameters (-da -dd -de -dm -do -dp)
 | `-dd` | **AntiDeb** | **AntiDebug** | PEB: `BeingDebugged`, `NtGlobalFlag` (`AntiDebugMask.cpp`) |
 | `-dp` | **ProcessE** | **ProcessEnum** | Filter on `Process32*` / `Module32*` / `GetModuleHandle*` |
 | `-de` | **SanitizePin** | **SanitizePinEnvVars** | Sanitize the PEB environment block (`PIN_*`) |
-| `-dm` | **InstMem** | **InstMemcmpMask** | `memcmp*` wrappers + **Signatures** (`-sf`) |
+| `-dm` | **InstMem** | **InstMemcmpMask** | `memcmp*` wrappers + **Signatures** (`-sf`). On `main`, `_memicmp_l` is four-argument; the campaign DLL still uses the three-argument hook |
 | `-do` | **SkewM** | **SkewMask** | Timing hooks + **Calibrate Mask** (Sleep/QPC…) |
 | `-da` | *(all modules)* | all five countermeasures | Equivalent to `-de -dm -do -dd -dp` (**does not** include `-go`) |
 
@@ -326,7 +341,7 @@ Recommended script for side-by-side output:
 ## 4.1 Runtime
 
 * **Intel Pin** 3.28 (x64, MSVC): [official download](https://software.intel.com/sites/landingpage/pintool/downloads/pin-3.28-98749-g6643ecee5-msvc-windows.zip) — repository `pin/` folder (when provided) or a local install.
-* **TOMWare.dll** — `x64\Release\TOMWare.dll` after building.
+* **TOMWare.dll** — not in git. For published numbers, copy the campaign binary (`4BBC6270…F0E6`) to `x64\Release\TOMWare.dll`. Building from `main` produces a different SHA-256 (see **Reproduce**).
 
 ## 4.2 Build (Windows host)
 
@@ -450,7 +465,9 @@ Samples and instructions are intended for **academic purposes**. The authors are
 
 # 6. Installation
 
-## 6.1 Build (optional, if `TOMWare.dll` does not already exist)
+## 6.1 Build (optional — a new SHA-256, not the campaign DLL)
+
+A `git clone` does **not** contain `x64\Release\TOMWare.dll`. Copy the campaign binary first if the goal is to check published numbers (**Reproduce**). Build from `main` only when you accept a different hash (`SkewMask.cpp` must stay unchanged; a rebuild still invalidates Table 6).
 
 ### 6.1.1 Get the code
 
@@ -479,6 +496,8 @@ Expected output:
 ```text
 x64\Release\TOMWare.dll
 ```
+
+That file will **not** hash to `4BBC6270`. Do not overwrite the campaign copy on the guest. The `_memicmp_l` four-argument fix lives on `main` (`242f800`); the focused-test binary that passed those oracles hashed to `D55EC952`.
 
 <details>
 <summary>Screenshots — building with VS 2022</summary>
@@ -570,7 +589,7 @@ Via wrapper:
 
 1. Create a Windows 10/11 x64 VM (clean snapshot).
 2. Copy the repository (or artifacts) to `C:\TOMWare`.
-3. Build or copy `x64\Release\TOMWare.dll`.
+3. Copy the campaign `4BBC6270` DLL to `x64\Release\TOMWare.dll` (or build from `main` only if you accept a new hash — **Reproduce**).
 4. Prepare samples from `samples/` (§4.5):
    - `C:\TOMWare\malwares\benign\<SHA256>.exe`
    - `C:\TOMWare\malwares\infected\<SHA256>.exe` (extract the `.zip` files with the password in `samples/infected/password.txt`)
@@ -637,18 +656,24 @@ Each report answers separately:
 A functional result may be `PASS` even when performance is inconclusive:
 the two conclusions use different evidence.
 
-By default, each sample gets a 10-second observation window
-(`-SampleObservationSeconds 10`). Applications that exit naturally keep
-outcome `complete`; GUI or persistent applications are terminated at the end
-of the window and receive outcome `observed`. During the window, the benchmark
-collects accumulated CPU, equivalent single-core utilization, average/peak
-working-set memory, and peak private memory for Pin and the sample. Persistent
-applications can therefore still get a valid paired **resource** comparison,
-even when total wall-time comparison is invalid because duration was capped.
+By default, `scripts/benchmark-*.ps1` uses a 10-second observation window
+(`-SampleObservationSeconds 10`). That is the JCVHT 31-PE / Table 9 **protocol**,
+not the 9 000-run campaign (120 s short-lived / 60 s persistent in
+`experiment/protocol/protocol.md`). `experiment/results/oracles/collector/` is a
+synthetic 10 s smoke (PowerShell+PING), not Table 9.
+
+Applications that exit naturally keep outcome `complete`; GUI or persistent
+applications are terminated at the end of the window and receive outcome
+`observed`. During the window, the benchmark collects accumulated CPU, equivalent
+single-core utilization, average/peak working-set memory, and peak private memory
+for Pin and the sample. Persistent applications can therefore still get a valid
+paired **resource** comparison, even when total wall-time comparison is invalid
+because duration was capped.
 
 These metrics represent startup plus the observed state during the window.
 They do not measure latency of a specific GUI action; that would require
-automating the same action in every run.
+automating the same action in every run. They also do not prove that a sample
+executed a hooked check: identify on the 31-PE pack is 31/31 `identified=false`.
 
 ## 8.4 Timing measurement (loop apps)
 
@@ -669,23 +694,26 @@ Measure-Command {
 
 ## 8.6 Published result evidence
 
-All published tables live in one place:
+All published tables live in one place. Two campaigns share the tree; **do not mix cells** (31-PE / 10 s is not the 100-PE / 9 000-run).
 
 ```text
 experiment/results/
-├── corpus/       17+14 pack (per-hash PDF/CSV + consolidations)
-├── oracles/      N=30 timing, N=10 waits/memcmp/-da, identify, counters,
-│                 manuscript_values.json
-└── campaign/     9 000-run processed tables
+├── corpus/                         17+14 pack (per-hash PDF/CSV + consolidations)
+├── oracles/                        N=30 timing, N=10 waits/memcmp/-da, identify,
+│                                   counters, manuscript_values.json, build_id.json
+└── campaign/corpus_aligned_10k/    100 PE × 9 × 10 processed tables
 ```
 
 | Content | Location |
 |---------|----------|
+| Campaign DLL / Pin / snapshot | `experiment/results/oracles/build_id.json` (`4BBC6270`, `tomware_go`) |
 | Per-sample report (PDF) | `experiment/results/corpus/benign/<SHA256>/` and `…/malign/<SHA256>/` |
 | Benign consolidated (17) | `experiment/results/corpus/benign/TOMWare-corpus-benigno-17-amostras.pdf` |
 | Infected consolidated (14) | `experiment/results/corpus/malign/TOMWare-corpus-maligno-14-amostras.pdf` |
 | Benign × infected | `experiment/results/corpus/comparativo/` |
-| Official figures | `experiment/results/oracles/manuscript_values.json` |
+| Official oracle figures | `experiment/results/oracles/manuscript_values.json` |
+| 9 000-run processed tables | `experiment/results/campaign/corpus_aligned_10k/` |
+| 100-PE catalog | `experiment/corpus/corpus.csv` |
 | Local VM dump (not published) | `Resultados\benchmarks\` |
 
 Samples: `samples/` (§4.5). How to re-run: **Reproduce** at the top of this README.
@@ -693,33 +721,34 @@ Samples: `samples/` (§4.5). How to re-run: **Reproduce** at the top of this REA
 ## 8.7 Experimental infrastructure
 
 `experiment/` is the campaign and oracle runner. `scripts/r2-*.ps1` is the older
-path and reuses the VM/snapshot discipline of §8.1. Pre-built DLLs
-(`TOMWare.dll`, `EmptyPinTool.dll`, `FidelityProbe.dll`) are copied to the VM —
-builds are done on the host, not inside the guest.
+path and reuses the VM/snapshot discipline of §8.1. Compiled DLLs are not in git.
+Copy `TOMWare.dll`, `EmptyPinTool.dll`, and `FidelityProbe.dll` to the VM from
+snapshot `tomware_go` or Drive `TOMWare.7z`. Builds are done on the host, not
+inside the guest.
 
 | Protocol | Script / artifact | Purpose |
 |----------|-------------------|---------|
 | Matched AntiDebug | manual `-gdb -q` vs `-gdb -dd -q` | Paired functional validation (do **not** label AntiDebug as unvalidated) |
 | Baseline ladder | `scripts/r2-baseline-ladder.ps1` | Native → `pin_empty` → disabled → enabled → `-da` |
 | Empty pintool | `EmptyPinTool/` + `scripts/r2-build-empty-pintool.ps1` | Isolate Pin overhead without TOMWare modules |
-| SkewMask fixed-N | `scripts/r2-skewmask-fixedN.ps1` | Fixed N (e.g. 30), retain **all** runs; compensation rate + median/IQR/CI |
+| SkewMask fixed-N | `scripts/r2-skewmask-fixedN.ps1` | Frozen N=30, retain **all** runs; do **not** re-run to refresh Table 6 |
+| Oracle re-run | `experiment/validation/scripts/Run-Oracles.ps1` | N=10 waits/memcmp/`-da` on guest `tomware_go` |
+| Host 9 000-run | `experiment/scripts/host/Run-HostCampaign.ps1` | 100 PE × 9 × 10; do not overwrite published `campaign/` tables |
 | Behavioral fidelity | `scripts/r2-behavioral-fidelity.ps1`, `r2-fidelity-one-sample-noshares.ps1` | Zero-share / one-sample-then-exit loops on a snapshot |
 | Fidelity probe | `FidelityProbe/` | BBL / image / API-watchlist counters for behavioural comparisons |
 | Corpus VT labels | `scripts/r2-corpus-vt-lookup.ps1` + `.env.example` | Hash-only VirusTotal `suggested_threat_label` (API key in `.env`, never committed) |
 
-**Reviewer 3 (minor)** — reuses matched AntiDebug, fixed-N timing (first-attempt 22/31 vs 9/31 re-exec
-under the old protocol), descriptive/IC wording, and an architectural related-systems table.
-No new VM campaign once those texts are in the manuscript.
+N=30 SkewMask compensation rates (all runs kept): baseline below-threshold **7/30**,
+treatment **30/30**. Large SkewMask resource deltas (about −87% peak working set /
+−38.5% CPU on cited persistent cells) are **not** performance gains: confirmatory
+Pin runs on the three benign hashes that drive those working-set cuts (`1128D0B4`,
+`16B45C2C`, `445E672D`) complete with modules off and hit the observation timeout
+under `-do`. Metric validity is stated a priori (profile → primary metric;
+ProcessEnum never uses wall-clock as effectiveness; fixed-N attempts; no
+outcome-selected exclusions).
 
-**Reviewer 4 (minor)** — same matched AntiDebug and fixed-N compensation rates
-(baseline below-threshold **7/30**, treatment **30/30**). Large SkewMask resource deltas
-(e.g. about −87% peak working set / −38.5% CPU on cited persistent cells) are **not**
-performance gains: confirmatory Pin runs on the three benign hashes that drive those
-working-set cuts (`1128D0B4`, `16B45C2C`, `445E672D`) complete with modules off and hit the
-observation timeout under `-do`. Metric validity is stated a priori (profile → primary metric;
-ProcessEnum never uses wall-clock as effectiveness; fixed-N attempts; no outcome-selected
-exclusions). Remaining work is manuscript paste (Abstract/Table 3 rates, Methods rule,
-Discussion interpretation), not a new VM campaign.
+Do not cite the superseded first-attempt re-exec fraction from the old 31-PE
+timing protocol. `SkewMask.cpp` stays as in the campaign source.
 
 **Matched AntiDebug (knobs):**
 
@@ -739,11 +768,6 @@ Discussion interpretation), not a new VM campaign.
 .\scripts\r2-corpus-vt-lookup.ps1
 ```
 
-Manuscript integration still requires: pasting revision snippets; removing any AntiDebug
-“unvalidated” / “inconclusive” / “future work” wording; aligning the abstract and timing
-table with fixed-N compensation rates; stating the prospective metric-validity rule; and a
-final language/formatting pass.
-
 ---
 
 # 9. License
@@ -759,6 +783,10 @@ TOMWare.M: A Tool for Mitigating Anti-Instrumentation Techniques
 in DBI Environments — Tools Fair, SBSeg 2026.
 https://github.com/TOMWare-analises/TOMWare
 ```
+
+Software identity for the measured tables: campaign DLL SHA-256 prefix `4BBC6270`;
+git tag `jcvht-dll-4bbc6270-candidate`. Do not cite git `3040df7` or `main` as that
+binary.
 
 ---
 

@@ -1,10 +1,19 @@
 # TOMWare.M — Infraestrutura experimental reprodutível
 
 Mede, de forma auditável e sem seleção por resultado, o custo e os efeitos das cinco
-contramedidas da TOMWare.M sobre 100 PE Windows (50 benignos + 50 maliciosos),
-separando: custo do Intel Pin, da Pintool vazia, da infraestrutura TOMWare.M
-(módulos off), de cada contramedida e da ativação conjunta — preservando evidências
-de compatibilidade, acionamento dos módulos e fidelidade comportamental.
+contramedidas da TOMWare.M, separando: custo do Intel Pin, da Pintool vazia, da
+infraestrutura TOMWare.M (módulos off), de cada contramedida e da ativação conjunta.
+
+Duas campanhas medidas neste tree — **não misturar células**:
+
+| Campanha | Amostras | Janela | Tabelas | DLL |
+|----------|----------|--------|---------|-----|
+| JCVHT 31-PE | 17 benignos + 14 infectados | 10 s | `experiment/results/corpus/` e `oracles/` | `4BBC6270` |
+| Access 9 000 | 100 PE (50+50) × 9 × 10 | 120 s curtas / 60 s persistentes | `experiment/results/campaign/corpus_aligned_10k/` | `4BBC6270` |
+
+Identidade: Pin 3.28.98749, snapshot `tomware_go`, tag `jcvht-dll-4bbc6270-candidate` (`a22e01d`).
+O `main` atual (`242f800`) só acrescenta o hook de 4 argumentos em `_memicmp_l`; `SkewMask.cpp`
+não muda. Como repetir: README da raiz, secção Reproduce.
 
 ## Decisões de desenho
 
@@ -15,8 +24,8 @@ de compatibilidade, acionamento dos módulos e fidelidade comportamental.
 2. **Stack:** **runner + coletores em PowerShell** (na VM, reusa `scripts/lib/TomwareBenchmark.ps1`);
    **plano + validadores + estatística + figuras em Python** (host). Separação: PowerShell
    executa/coleta; Python planeja/valida/analisa.
-3. **Corpus:** infra e `corpus.csv` parametrizáveis; **piloto** roda com as amostras já
-   presentes (5+5). As demais (até 50+50) entram na campanha definitiva.
+3. **Corpus:** `experiment/corpus/corpus.csv` é o catálogo dos **100 PE** da campanha
+   9 000. O pacote JCVHT 17+14 é outro recorte (10 s); não substituir um pelo outro.
 4. **Condição PIN:** probe tenta `pin.exe` sem tool, registra o erro; se inválida, usa
    `EMPTY` como baseline mínima de Pin (⇒ 9 condições). A decisão fica no manifesto da campanha.
 
@@ -30,7 +39,7 @@ de compatibilidade, acionamento dos módulos e fidelidade comportamental.
 | Estatística + figuras/tabelas | Python | `experiment/scripts/analysis/` |
 | Testes unitários e de integração | Python | `experiment/scripts/tests/` |
 | Contadores internos dos módulos | C++ (TOMWare.dll) | `TOMWare/*.cpp` (instrumentação opcional) |
-| Pintool vazia | C++ | `TOMWare/EmptyPinTool/` (já existente) |
+| Pintool vazia | C++ | `EmptyPinTool/` (raiz do repositório) |
 
 ## Fluxo
 
@@ -59,7 +68,7 @@ tomware-melhorias/                 ← workspace local
     TOMWare/                       ← fonte C++ da Pintool (.vcxproj)
     EmptyPinTool/  FidelityProbe/
     pin/                           ← Intel Pin 3.28
-    x64/Release/                   ← DLLs compiladas (TOMWare.dll, EmptyPinTool.dll)
+    x64/Release/                   ← DLLs compiladas (**fora do git**; copiar 4BBC6270)
     samples/benign|infected        ← corpus (exe benignos; zip maliciosos)
     experiment/                    ← campanha + oráculos (produto; não é pasta de artigo)
     Resultados/Apps-Teste/         ← oráculos funcionais

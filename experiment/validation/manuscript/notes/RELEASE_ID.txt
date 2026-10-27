@@ -1,26 +1,27 @@
-TOMWare JCVHT build identity -- 26/10/2026
+TOMWare JCVHT build identity -- 27/10/2026
 
-Identify this campaign by the DLL hash + Pin + snapshot.
-Do not identify it by git 3040df722967fb0e699be6f279837a0611c4ad38.
-That commit is stale (already said so in the letter).
+Two binaries. Do not mix them.
 
-pin:        3.28.98749
-pin.exe SHA-256:
-            920A730ABAC4E30D13F2ED75C92F0538FB53FD85273C40B64991A89DCE0BB819
-snapshot:   tomware_go
-TOMWare.dll SHA-256:
-            4BBC62707EE0B2EF922D4E8659A6392D92814EA0FC74F4682F1187562AE7F0E6
-prefix:     4BBC6270
-EmptyPinTool.dll SHA-256:
-            804BE19BF7924B641FE25F07EA89DEC26DC9DAA36C49638F407FF96E2AB153C8
-source:     results_parallel/build_id.json (guest 2026-10-26T19:15:40Z)
+1) Campaign (Table 6 N=30, t2_n10_v7b, v8 logs)
+   pin:        3.28.98749
+   pin.exe:    920A730ABAC4E30D13F2ED75C92F0538FB53FD85273C40B64991A89DCE0BB819
+   snapshot:   tomware_go
+   TOMWare.dll SHA-256:
+               4BBC62707EE0B2EF922D4E8659A6392D92814EA0FC74F4682F1187562AE7F0E6
+   prefix:     4BBC6270
+   EmptyPinTool:
+               804BE19BF7924B641FE25F07EA89DEC26DC9DAA36C49638F407FF96E2AB153C8
+   candidate source (NOT bit-reproducible):
+               git tag jcvht-dll-4bbc6270-candidate
+               commit a22e01d96ed81e75356c6bb0d92c4adc5e54dd29
+   3040df7 does not produce this DLL. Tag created without rebuilding.
 
-Do not rebuild TOMWare.dll to "make a release" or to create a git tag.
-3040df722967fb0e699be6f279837a0611c4ad38 does not produce this DLL. No tag.
-A new binary changes the SHA and invalidates N=30 / Table 6.
+2) Memcmp fix only (SkewMask unchanged)
+   commit:     242f800e4556e2ddcb52beac96fa3f845f145885
+   TOMWare.dll SHA-256:
+               D55EC952202F9E90C75FB5DDAEED1E2085242B5D9CDA0337DA0C704690DBC143
+   prefix:     D55EC952
+   validated:  oracle_t2_memcmp_v9b (MC3 4/4 exit 0)
+   SleepEx:    still hangs under -do (oracle_t2_wait1_v9 W3_DO exit -2)
 
-31 PE of this article: catalog_jcvht_31pe.csv
-  17 benign + 14 malicious, window 10 s (Table 9).
-  Origin and labels: experiment/corpus/corpus.csv.
-  Do not invent VirusTotal families.
-  IEEE 50+50 at 60 s is a different campaign.
+Guest restored 4BBC6270 after the focused tests.

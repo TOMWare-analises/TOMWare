@@ -4,6 +4,10 @@
 **Artigo:** IEEE Access (Access-2026-38745)  
 **Projeto:** TOMWare.M — Avaliação Experimental Rigorosa e Auditável
 
+> **Âmbito:** este documento é o protocolo da campanha **100 PE / 9 000 execuções**.
+> O pacote JCVHT 17+14 / 10 s e os oráculos N=30 são outra campanha (mesma DLL
+> `4BBC6270`). Identidade e hashes: README da raiz, secção Reproduce. Não misturar células.
+
 ---
 
 ## 1. Objetivos Científicos e Questões de Pesquisa

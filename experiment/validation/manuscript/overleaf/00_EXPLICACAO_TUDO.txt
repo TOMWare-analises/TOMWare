@@ -1,0 +1,197 @@
+TOMWare.M / JCVHT c05a1271 -- EXPLICACAO DO PACOTE v5
+26/10/2026
+
+PACOTE PARA VALIDACAO. Nao iniciar o Plano B ate esta v5 ser aceite.
+
+Leia este ficheiro primeiro. Depois:
+  amigo Overleaf  -> 00_PARA_O_AMIGO.txt + 08_INSERCOES_REVISOR.tex
+  outro autor     -> este texto + 09 a 12 + pasta plano_b_tarefas/
+  jornal          -> artigo ja editado + 01 (carta EN). So depois do Overleaf.
+                    Nao enviar este zip ao jornal.
+
+
+1. O QUE E A v5
+---------------
+Junta, para uma unica validacao:
+  - Plano A (Overleaf + cartas + regras de insercao);
+  - todas as respostas ao coautor (09 a 12);
+  - as tarefas do Plano B com criterio DONE/FAIL e a matriz
+    evidencia->comentario;
+  - esta explicacao.
+
+Nao ha experiencia nova. Os numeros sao os da v1. O Plano B esta
+ESCRITO, nao EXECUTADO. A VM so arranca depois desta validacao.
+
+
+2. DOIS TRILHOS (nao misturar)
+------------------------------
+Plano A -- envio, este zip
+  Responder ao parecer com o que os CSV aguentam. Conceder o que
+  nao aguentam. Nao alterar o SkewMask. Nao repetir o N=30.
+
+Plano B -- extra, corte 02/11/2026, SO DEPOIS DA VALIDACAO DA v5
+  T1 casos praticos (Major 2+3) e T2 testes complementares
+  (Major 1+4). T2 nao depende de malware. T1 so fecha com a cadeia
+  completa. Se o SkewMask mudar, o N=30 cai e repe-te-se nesse build.
+
+
+3. HISTORICO
+------------
+v1  Pacote inicial. Instrucoes contraditorias sobre a Table 6.
+v2  Tabelas novas sem apagar as antigas. TMW0 = "ordinary Pin".
+    Carta com "Required manuscript change".
+v3  N=30 no corpo; Table 6 antiga no apendice (confundida).
+    Substituir 49% e "-da nao avaliado". TMW0 = Pin+TOMWare, knobs
+    off. Carta com localizacao, sem nota interna.
+v4  Explicacao + respostas 09/10. Carta separa CPU e WS.
+v4b Resposta 11: concessao do Major 3 nao fecha o pedido;
+    poucos casos bastam; os mesmos leem o Major 2.
+v5  Este zip. Resposta 12 + tarefas T1/T2 com DONE/FAIL +
+    matriz + candidatos. Plano B congelado ate validar.
+
+
+4. O QUE OS CSV SUSTENTAM (nao inventar)
+----------------------------------------
+Software: Pin 3.28.98749; DLL prefixo 4BBC6270; snapshot tomware_go.
+Sem o commit 3040df7.
+
+Timing N=30 (TestOverhead.exe, nada descartado)
+  TMW0    -q           2433.285   30/30  <= 3000
+  GO      -go -q       3083.210   11/30  Wilson [21.9%, 54.5%]
+  GO_DO   -go -do -q   2104.770   30/30  Wilson [88.6%, 100%]
+  Celula antiga -go vs -do (4080 vs 2081 / ~49%) = confundida,
+  vai para o apendice. TMW0 nao e Pin comum.
+
+Esperas N=5, sem -go, 20/20 exit 0
+  NAT Join-wall 213.678 < seq 406.218; WaitOne ~45.867
+  EMPTY / TMW0 / -do: Join-wall 571.867 / 553.862 / 517.802
+  Sleep ainda se intersectam (~207 / 212 / 196 ms).
+  Falha = Join-wall < seq, nao serializacao. WaitOne nao e SleepEx.
+  EMPTY = Pin + EmptyPinTool. Timeout -go = SimulateOverhead.
+
+Recursos
+  Table 9 = 10 s / 31 PE. WS ~87%/74%; CPU ~38%/29%. Nao sao ganho.
+  (A carta v3 misturava -87% e -38% como WS; a v4+ separa.)
+  50+50 a 60 s (outra tabela): +55.452 / +37.387 ms.
+
+Module32 / ProcessEnum / memcmp / -da
+  Dummy pinvm = copia de version.dll. NAT 1/32; TMW0 1/31; -dp/-da 0/30.
+  pin.exe 0 / 3 / 0 / 0.
+  Exercitados: memcmp, _memicmp, RtlCompareMemory.
+  NOT_EXERCISED: RtlEqualMemory, wmemcmp.
+  -da smoke 5/5. Nao e campanha 3.100.
+
+Major 3 -- quatro tentativas, nao sao case studies
+  MAL_03 / MAL_07 / MAL_10 / BEN_06: new_files=0, stdout vazio,
+  check no PE nao localizado. SkewMask "fired" no dump de
+  contadores (outra DLL) nao e identificacao.
+
+
+5. O QUE O REVISOR PEDE E O QUE NAO PEDE
+----------------------------------------
+Comentario 3: poucos casos bem explicados, nao os cinco checks
+nas 14 amostras. Cadeia no mesmo PE e entrada:
+  nativo / Pin sem knob / Pin com knob
+  checagem localizada -> ramo que desvia -> knob a atuar ->
+  artefacto extra verificavel (protegidos servem).
+Os mesmos casos leem o comentario 2 (marcos, CPU, WS, arvore).
+
+A concessao no artigo torna o texto preciso e deixa o pedido
+experimental aberto. Isso e correcto. Nao e T1 DONE.
+
+
+6. TAREFAS DO PLANO B (escritas; nao iniciar)
+---------------------------------------------
+Detalhe: pasta plano_b_tarefas/ neste zip.
+
+T1  Major 2 + Major 3 -- casos praticos
+    DONE so com as quatro pecas + recursos no mesmo PE.
+    FAIL aceite: procura feita, cadeia incompleta.
+    "Ainda vivo aos 60 s" = FAIL.
+    BLOQUEADO hoje: zero PE com check identificado.
+    P0 = preencher cases/<ID>/check.md ANTES de correr.
+
+T2  Major 1 + Major 4 -- testes complementares
+    Independente de T1. Kit: plano_b_tarefas/jcvht_parallel/
+    SleepEx (nao so WaitOne), 1000 leituras de relogio,
+    pass-through memcmp n=8, exports ABSENT = NOT_EXERCISED,
+    build_id com SHA-256 completo.
+    DONE por interface. FAIL aceite numa linha ABSENT.
+
+Entrega T1/T2: scripts, logs, brutos, traces, hashes,
+build_id.json, evidence_matrix.csv. Ver ENTREGA.md.
+
+Ordem se a v5 for aceite e houver tempo ate 02/11:
+  Hash -> Memcmp -> Waits -> identificacao estatica T1 ->
+  so entao escada NAT/TMW0/knob -> DaSmoke.
+
+
+7. AS SEIS ENTREGAS DE "ATENDIMENTO INTEGRAL"
+---------------------------------------------
+  1 Major 3   NAO ATENDIDO. T1, depois da validacao.
+  2 Major 2   PARCIAL. Fecha no mesmo caso que T1.
+  3 Major 4   PARCIAL. T2.
+  4 Major 1   M1.1 FEITO. Resto T2 (SleepEx, rajada).
+  5 Minor 1   PARCIAL. T2 Hash da o SHA-256 completo.
+              Falta tag/commit e catalogo 17+14.
+  6 Editorial BLOQUEADO NO OVERLEAF. Amigo aplica o 08.
+
+
+8. FICHEIROS DESTE ZIP
+----------------------
+00_EXPLICACAO_TUDO.txt      este texto
+00_PARA_O_AMIGO.txt         regra unica Overleaf
+00_VALIDACAO_PEDIDA.txt     o que validar antes do Plano B
+LEIA_PRIMEIRO.md            indice
+01_...Reviewers.pdf         carta EN (CPU/WS separados)
+02_...Revisores.pdf         carta PT (nao enviar ao jornal)
+03 a 07                     guias, proibicoes, valores
+08_INSERCOES_REVISOR.tex    o que o amigo cola
+09  resposta ao diagnostico da v2
+10  resposta as seis entregas
+11  ressalva Major 3: concessao != caso positivo
+12  tarefas T1/T2 com criterio
+plano_b_tarefas/            TAREFAS_CRITERIOS, CANDIDATOS,
+                            evidence_matrix, ENTREGA, kit paralelo
+                            NAO CORRER ate validar esta v5
+
+
+9. PARA QUEM ENVIAR
+-------------------
+Ao outro autor (validacao agora)
+  Este zip v5. Pedir aceite ou correcao de T1/T2/matriz
+  ANTES de qualquer restore da VM.
+
+Ao amigo (Overleaf, independente da validacao do Plano B)
+  00_PARA_O_AMIGO + 08 + 05. Devolver o PDF.
+
+Ao jornal (depois do PDF do amigo)
+  Artigo + 01. Nao enviar este zip nem a carta PT.
+
+
+10. FRASES PROIBIDAS
+--------------------
+155/155
+9/31 como sucesso
+-87% ou -38% como ganho
+TMW0 / -q como "ordinary Pin"
+EMPTY = Pin sem tool
+o Pin serializa as esperas
+o SkewMask restaura a geometria
+o malware usou os cinco checks
+case study MAL_03 / MAL_07 / MAL_10 / BEN_06
+superioridade sobre Arancino
+49% / 4080 vs 2081 como resultado desta revisao
+"-da nao foi avaliado" no corpo
+3040df7
+misturar 10 s / 31 PE com 60 s / 50+50
+T1 DONE sem artefacto com hash
+
+
+11. PROXIMO PASSO
+-----------------
+1. Validar esta v5 (outro autor / agente).
+2. Amigo aplica o 08 e devolve o PDF (Plano A).
+3. SO DEPOIS do aceite da v5: iniciar Plano B na VM.
+4. Se T1 exigir mudar o SkewMask, repetir o N=30 nesse build.
+   O envio do Plano A nao espera pelo Plano B.

@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "campaign_id": "pilot_study_01",
+  "pilot_mode": true,
+  "created_at_utc": "2026-10-13T06:38:17.683165+00:00",
+  "random_seed": 211873179,
+  "repetitions": 20,
+  "pin_condition_valid": false,
+  "conditions_included": [
+    "NAT",
+    "EMPTY",
+    "TMW0",
+    "TMW_DD",
+    "TMW_DP",
+    "TMW_DE",
+    "TMW_DM",
+    "TMW_DO",
+    "TMW_ALL"
+  ],
+  "samples_count": 10,
+  "samples": [
+    {
+      "sample_id": "BEN_03",
+      "sha256": "17F1BB08868C363EE23600C2C51A2BB97296ED8251A294293F435862EFBB7E3E",
+      "group": "benign",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "BEN_04",
+      "sha256": "38A1D8F77A9D0CC4FF783583B6401CE59E8EF3DC07ED875FCA712CE81FE496BF",
+      "group": "benign",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "BEN_01",
+      "sha256": "1128D0B41456073E0B22E328CE4A89D0877F7D18147DF6B339A4CCE758A1DAAB",
+      "group": "benign",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "BEN_02",
+      "sha256": "16B45C2C51D45CA4AE42B4251430113100142A5898F9B22D059F03456963BC2D",
+      "group": "benign",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "BEN_05",
+      "sha256": "445E672DB08239BA38527A27208DD104D2889CD29A68DC65DC0676F3252ED347",
+      "group": "benign",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "MAL_01",
+      "sha256": "0e3e95ee6649238171fb409c143c8a944bc54332f0ce85b94c651b5d0bf95343",
+      "group": "malicious",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "MAL_08",
+      "sha256": "6e89b763cd4dd79f0c3082f09813efbd3dac4374a95455fe86ed27c363309a45",
+      "group": "malicious",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "MAL_02",
+      "sha256": "166ffce34fd49a69076a31cc5c7eb23584b47c153f744936e240f871144990be",
+      "group": "malicious",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "MAL_03",
+      "sha256": "1693df9d970e011cf1c827fceaf49a3724f4478bc0ed7dc50f2d90ea417b6d38",
+      "group": "malicious",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "MAL_04",
+      "sha256": "17c7986320e427a1106f3bbed1e122bcb0d9d38611d159c120df11d9689f4ec4",
+      "group": "malicious",
+      "execution_profile": "persistent"
+    }
+  ],
+  "total_planned_runs": 1800,
+  "plan_sha256": "f4c0d9e996db8bae48fc8d6026fe44822959377c98fb891f78537176ba0d6512",
+  "sampling_interval_ms": 200,
+  "isolation_restore_unit": "block"
+}

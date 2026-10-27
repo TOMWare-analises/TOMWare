@@ -1,0 +1,45 @@
+Resposta ao pedido de passar as tarefas com criterio de conclusao.
+
+Concordamos com os dois blocos. Eles podem sanar as lacunas centrais
+so se a evidencia for verificavel. A parte incerta continua a ser
+encontrar um executavel que demonstre o beneficio pratico.
+
+Estado actual, sem overclaim
+----------------------------
+Nao ha candidato com checagem ja identificada no codigo.
+MAL_03, MAL_07, MAL_10 e BEN_06 tiveram o modulo SkewMask a disparar
+num dump de contadores (outra DLL). Isso nao localiza a checagem,
+nao mostra o ramo e nao produz artefacto extra. Esses quatro ja
+correram NAT / TMW0 / -do: new_files=0, stdout vazio. Nao repetir
+o mesmo protocolo a espera de um drop.
+
+Prioridade: primeiro identificar a checagem (imports, strings, RVA,
+API). So depois a escada nativo / instrumentado sem knob / com knob.
+Poucos casos bastam. Os mesmos casos leem o Major 2. Nao pedimos
+os cinco checks nas 14 amostras.
+
+Os testes complementares (Major 1 e 4) nao dependem desse caso.
+O kit paralelo ja tem SleepEx (nao so WaitOne), rajada de 1000
+leituras de relogio, pass-through memcmp com n=8, e procura de
+export. Isso e T2, nao T1.
+
+Criterio de conclusao (resumo)
+------------------------------
+T1 DONE  so com as quatro pecas no mesmo PE e entrada:
+         checagem localizada, ramo evasivo observado, contramedida
+         a atuar, comportamento adicional com hash. Mais marcos,
+         CPU, WS e filhos nomeados nesse mesmo caso.
+T1 FAIL  aceite e documentado: procura feita, cadeia incompleta.
+         "Ainda vivo aos 60 s" = FAIL, nao DONE.
+T2 DONE  cada interface PASS / MASKED / NOT_EXERCISED; SleepEx
+         exercitado; enumeracao termina; relogio em rajada;
+         build_id com SHA-256 completo; matriz preenchida.
+T2 FAIL  aceite nas rotinas ABSENT, desde que fiquem NOT_EXERCISED.
+
+Entrega obrigatoria do agente: scripts, logs, brutos, traces,
+hashes, build_id, e evidence_matrix.csv ligando cada ficheiro
+ao comentario. Modelo no mesmo zip.
+
+Plano A / v4b nao espera por isto. Corte do Plano B: 02/11/2026.
+Se o SkewMask mudar para obter T1, o N=30 cai e repe-te-se nesse
+build -- e so nessa altura.

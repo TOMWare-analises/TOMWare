@@ -1,0 +1,55 @@
+{
+  "campaign": "jcvht_plano_a_2026-10-26",
+  "pin": "3.28.98749",
+  "dll_prefix": "4BBC6270",
+  "snapshot": "tomware_go",
+  "submission_id": "c05a1271-d18d-468d-8c50-9dc8b6c10952",
+  "timing": {
+    "n": 30,
+    "file_sha256": "76208218f71b37b8bf3411c0a74932752b96dd133d4db102eebbec25c65b9827",
+    "median_conventional": {"TMW0": 2433.285, "GO": 3083.210, "GO_DO": 2104.770},
+    "below_3000": {"TMW0": "30/30", "GO": "11/30", "GO_DO": "30/30"},
+    "wilson_go": [0.219, 0.545],
+    "wilson_go_do": [0.886, 1.0],
+    "do_not_use": "matched_timing_summary.csv lower-of-pair"
+  },
+  "waits_logged_n5": {
+    "n": 5,
+    "exit0": "20/20",
+    "median_ms": {
+      "NAT": {"seq": 406.218, "par_wall": 213.678, "tick": 62, "alert": 45.867},
+      "EMPTY": {"seq": 433.421, "par_wall": 571.867, "tick": 62, "alert": 445.610},
+      "TMW0": {"seq": 441.209, "par_wall": 553.862, "tick": 78, "alert": 441.411},
+      "DO": {"seq": 414.809, "par_wall": 517.802, "tick": 56, "alert": 383.428}
+    },
+    "sleep_intersection_median_ms": {"EMPTY": 206.895, "TMW0": 212.045, "DO": 196.430},
+    "note": "Join-wall longer under Pin is not Sleep serialization. EMPTY is Pin+EmptyPinTool."
+  },
+  "module32_fixture": {
+    "dummy": "version.dll copied as %TEMP%\\\\pinvm.dll",
+    "NAT": "fixture_pinvm=1 count=32",
+    "TMW0": "fixture_pinvm=1 count=31",
+    "DP": "fixture_pinvm=0 count=30",
+    "DA": "fixture_pinvm=0 count=30"
+  },
+  "processenum": {"NAT": 0, "TMW0": 3, "DP": 0, "DA": 0},
+  "memcmp_v2": {
+    "exercised": ["memcmp", "_memicmp", "RtlCompareMemory"],
+    "not_exercised": ["RtlEqualMemory", "wmemcmp"],
+    "passthrough": "n=7 of AAAAAAAA vs AAAAAAAB is equal by construction"
+  },
+  "windows": {"jcvht_table9_s": 10, "ieee_50_50_persistent_s": 60},
+  "wall_50_50_ms": {
+    "benign_persistent_TMW_DO_minus_TMW0": 55452,
+    "malicious_persistent_TMW_DO_minus_TMW0": 37387
+  },
+  "forbid": [
+    "155/155",
+    "9/31 as success",
+    "-87% as gain",
+    "malware used the five checks",
+    "case study MAL_03/07/10 BEN_06",
+    "Arancino superiority",
+    "Pin serializes concurrent Sleeps"
+  ]
+}

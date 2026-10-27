@@ -1,0 +1,2 @@
+GetModuleHandle ascii=3 utf16=0
+FindWindow ascii=3 utf16=0

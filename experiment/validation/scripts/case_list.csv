@@ -1,0 +1,5 @@
+sample_id,sha256,group,profile,knob,reason
+MAL_03,04e4e646de39b18d7a9b4fe567dfdc986e21e469813f0069220649d26aed862d,malicious,short_lived,-do,Etapa5 SkewMask 10/10
+MAL_07,153e11471f85de3df5135b0445014698333ff40a9d6c488d291d6517eb19800d,malicious,short_lived,-do,Etapa5 SkewMask 10/10
+MAL_10,1b5a4745d994e662ce897ae63f48f465cce8498c3605119ac9d8979318e43a71,malicious,short_lived,-do,Etapa5 SkewMask 9/10
+BEN_06,0436f44255d26e463fe9554d30f5f681bec9aaec14fb8ef53acbdea838b1f39d,benign,short_lived,-do,Etapa5 SkewMask 10/10

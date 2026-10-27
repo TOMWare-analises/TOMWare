@@ -1,0 +1,46 @@
+Piloto t2_pilot_v7 -- validacao
+Pasta exclusiva: C:\TOMWare\jcvht_t2_pilot_v7
+Pin 3.28.98749  DLL 4BBC6270...F0E6  snapshot tomware_go
+SHA256SUMS.txt presente.
+
+run_id (mesmo valor em CSV, run_id.txt, run_meta.json, events.jsonl)
+  W3_NAT   59f3ce38ab0445659dc9490a821ca316  exit 0   1.1 s
+  W3_EMPTY 93c090bb333d4bc7a853ce05aa52d8fa  exit 0  14.7 s
+  W3_TMW0  7f3fb59c46a84bba86a7070567d5079a  exit 0  13.8 s
+  W3_DO    21a07f29c6b54512b30c41cd28183dfb  exit -2 180.5 s (timeout 180)
+  MC3_* e DA3_* : cada um com run_id proprio + stdout/stderr/run_meta
+
+Tempo
+  qpc_freq=10000000 em todos os EV
+  qpc_start / qpc_end brutos presentes
+  clock_during_overlap reads=256 no_sleep2=1 qpc_regress=0
+  barrier t1+t2 antes dos Sleep
+  ns positivos
+
+APC NAT / EMPTY / TMW0
+  openthread_ok=True gle=0
+  queueuserapc_rv=1 gle=0
+  apc_callback=1 (o DummyApc correu)
+  SleepEx alertavel rv=192 (~45 / 230 / 152 ms)
+
+APC -do
+  OpenThread e QueueUserAPC OK (rv=1) ANTES do hang
+  SleepEx nao alertavel rv=0 (~221 ms) ja tinha acabado
+  timeout aos 180 s no Join do SleepEx(500, alertable)
+  Conclusao: nao e falha de OpenThread/APC queue.
+  Sob -do o SleepEx alertavel nao regressa em 180 s
+  (SkewMask a esticar, nao crash). Conservar como limite.
+
+Memcmp
+  NAT/TMW0: PIN PASS; pass-through DIFF_OK; _memicmp_l PASS+same+passthrough
+  DM/DA: PIN MASKED; _memicmp_l MASKED; stdout corta apos essa linha
+  exit 2 em DM/DA (nao timed_out). Valores MASKED usaveis.
+  ABSENT = NOT_EXERCISED
+  MC3_DA 76.8 s exit 2 -- NAO timeout do coletor
+
+-da smoke 5/5 exit 0
+  Overhead 2039.17 < 3000
+
+T1 / coletor 10 s: nao exercitado (identified=false).
+N=10: ainda nao. Piloto validado; proximo e pasta NOVA.
+N=30: nao repetir.

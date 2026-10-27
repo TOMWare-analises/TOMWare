@@ -1,0 +1,378 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tomware.org/schemas/run_record.schema.json",
+  "title": "TOMWare.M Experimental Run Record",
+  "description": "Registro completo, auditável e estruturado de uma execução experimental individual sob a infraestrutura TOMWare.M.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "identification",
+    "operational_outcome",
+    "timing_and_cpu",
+    "memory",
+    "io",
+    "processes_threads_modules",
+    "behavioral_fidelity",
+    "artifacts"
+  ],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+
+    "identification": {
+      "type": "object",
+      "required": [
+        "campaign_id",
+        "run_id",
+        "sample_id",
+        "sha256",
+        "block_id",
+        "repetition",
+        "condition",
+        "modules_enabled",
+        "run_order",
+        "random_seed",
+        "host_id",
+        "vm_id",
+        "snapshot_id",
+        "restore_completed",
+        "start_timestamp_utc",
+        "end_timestamp_utc",
+        "monotonic_duration_ms",
+        "configuration_hash"
+      ],
+      "properties": {
+        "campaign_id": { "type": "string" },
+        "run_id": { "type": "string" },
+        "sample_id": { "type": "string" },
+        "sha256": { "type": "string", "pattern": "^[0-9A-Fa-f]{64}$" },
+        "block_id": { "type": "string" },
+        "repetition": { "type": "integer", "minimum": 1 },
+        "condition": {
+          "type": "string",
+          "enum": ["NAT", "PIN", "EMPTY", "TMW0", "TMW_DD", "TMW_DP", "TMW_DE", "TMW_DM", "TMW_DO", "TMW_ALL"]
+        },
+        "modules_enabled": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "run_order": { "type": "integer", "minimum": 1 },
+        "random_seed": { "type": "integer" },
+        "host_id": { "type": "string" },
+        "vm_id": { "type": "string" },
+        "snapshot_id": { "type": "string" },
+        "restore_unit": { "type": "string", "enum": ["execution", "block", "sample", "none"] },
+        "restore_completed": { "type": "boolean" },
+        "start_timestamp_utc": { "type": "string", "format": "date-time" },
+        "end_timestamp_utc": { "type": "string", "format": "date-time" },
+        "monotonic_duration_ms": { "type": "number", "minimum": 0 },
+        "tool_build_id": { "type": "string" },
+        "tomware_sha256": { "type": "string" },
+        "empty_tool_sha256": { "type": "string" },
+        "pin_version": { "type": "string" },
+        "collector_version": { "type": "string" },
+        "configuration_hash": { "type": "string" }
+      }
+    },
+
+    "operational_outcome": {
+      "type": "object",
+      "required": [
+        "launch_success",
+        "pid",
+        "parent_pid",
+        "natural_completion",
+        "timeout",
+        "still_active_at_window_end",
+        "controlled_termination",
+        "crash",
+        "termination_reason",
+        "collector_failure"
+      ],
+      "properties": {
+        "launch_success": { "type": "boolean" },
+        "pid": { "type": "integer" },
+        "parent_pid": { "type": "integer" },
+        "natural_completion": { "type": "boolean" },
+        "timeout": { "type": "boolean" },
+        "still_active_at_window_end": { "type": "boolean" },
+        "controlled_termination": { "type": "boolean" },
+        "crash": { "type": "boolean" },
+        "exception_code": { "type": ["string", "null"] },
+        "exit_code": { "type": ["integer", "null"] },
+        "termination_reason": {
+          "type": "string",
+          "enum": [
+            "natural_exit",
+            "timeout_expired",
+            "window_controlled_termination",
+            "exception_crash",
+            "launch_failed",
+            "collector_failed",
+            "residual_cleaned"
+          ]
+        },
+        "observation_duration_ms": { "type": "number", "minimum": 0 },
+        "time_to_first_activity_ms": { "type": ["number", "null"] },
+        "collector_failure": { "type": "boolean" },
+        "missing_reason": { "type": ["string", "null"] }
+      }
+    },
+
+    "timing_and_cpu": {
+      "type": "object",
+      "required": [
+        "wall_clock_ms",
+        "cpu_user_ms",
+        "cpu_kernel_ms",
+        "cpu_total_ms",
+        "cpu_percent_mean",
+        "cpu_percent_max",
+        "logical_processors"
+      ],
+      "properties": {
+        "wall_clock_ms": { "type": "number", "minimum": 0 },
+        "cpu_user_ms": { "type": "number", "minimum": 0 },
+        "cpu_kernel_ms": { "type": "number", "minimum": 0 },
+        "cpu_total_ms": { "type": "number", "minimum": 0 },
+        "cpu_percent_mean": { "type": "number", "minimum": 0 },
+        "cpu_percent_max": { "type": "number", "minimum": 0 },
+        "context_switches": { "type": ["integer", "null"] },
+        "logical_processors": { "type": "integer", "minimum": 1 },
+        "cpu_affinity_mask": { "type": ["string", "null"] }
+      }
+    },
+
+    "memory": {
+      "type": "object",
+      "required": [
+        "peak_working_set_bytes",
+        "average_working_set_bytes",
+        "peak_private_bytes",
+        "average_private_bytes",
+        "sample_count"
+      ],
+      "properties": {
+        "current_working_set_bytes": { "type": "integer", "minimum": 0 },
+        "peak_working_set_bytes": { "type": "integer", "minimum": 0 },
+        "average_working_set_bytes": { "type": "number", "minimum": 0 },
+        "private_working_set_bytes": { "type": ["integer", "null"] },
+        "private_bytes": { "type": "integer", "minimum": 0 },
+        "peak_private_bytes": { "type": "integer", "minimum": 0 },
+        "average_private_bytes": { "type": "number", "minimum": 0 },
+        "commit_bytes": { "type": ["integer", "null"] },
+        "peak_commit_bytes": { "type": ["integer", "null"] },
+        "page_faults": { "type": ["integer", "null"] },
+        "child_processes_memory_bytes": { "type": "integer", "minimum": 0 },
+        "aggregate_tree_memory_bytes": { "type": "integer", "minimum": 0 },
+        "sample_count": { "type": "integer", "minimum": 0 },
+        "sampling_interval_ms": { "type": "number", "minimum": 0 }
+      }
+    },
+
+    "io": {
+      "type": "object",
+      "required": [
+        "bytes_read",
+        "bytes_written",
+        "read_operations",
+        "write_operations"
+      ],
+      "properties": {
+        "bytes_read": { "type": "integer", "minimum": 0 },
+        "bytes_written": { "type": "integer", "minimum": 0 },
+        "read_operations": { "type": "integer", "minimum": 0 },
+        "write_operations": { "type": "integer", "minimum": 0 },
+        "files_created": { "type": "array", "items": { "type": "string" } },
+        "files_modified": { "type": "array", "items": { "type": "string" } },
+        "files_deleted": { "type": "array", "items": { "type": "string" } },
+        "output_artifacts_hashes": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    },
+
+    "processes_threads_modules": {
+      "type": "object",
+      "required": [
+        "peak_tracked_processes",
+        "peak_tracked_threads",
+        "child_pids",
+        "loaded_modules_count"
+      ],
+      "properties": {
+        "process_tree": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "pid": { "type": "integer" },
+              "parent_pid": { "type": "integer" },
+              "name": { "type": "string" },
+              "start_time_utc": { "type": "string" },
+              "exit_time_utc": { "type": ["string", "null"] },
+              "exit_code": { "type": ["integer", "null"] }
+            }
+          }
+        },
+        "child_pids": { "type": "array", "items": { "type": "integer" } },
+        "peak_tracked_processes": { "type": "integer", "minimum": 0 },
+        "peak_tracked_threads": { "type": "integer", "minimum": 0 },
+        "threads_created_count": { "type": ["integer", "null"] },
+        "peak_handle_count": { "type": ["integer", "null"] },
+        "loaded_modules_count": { "type": "integer", "minimum": 0 },
+        "loaded_modules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "path": { "type": "string" },
+              "base_address": { "type": "string" },
+              "sha256": { "type": ["string", "null"] }
+            }
+          }
+        }
+      }
+    },
+
+    "registry_and_network": {
+      "type": "object",
+      "properties": {
+        "registry_keys_queried": { "type": "array", "items": { "type": "string" } },
+        "registry_keys_modified": { "type": "array", "items": { "type": "string" } },
+        "registry_values_modified": { "type": "array", "items": { "type": "string" } },
+        "dns_queries_attempted": { "type": "array", "items": { "type": "string" } },
+        "connections_attempted": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "destination_ip": { "type": "string" },
+              "destination_port": { "type": "integer" },
+              "protocol": { "type": "string" },
+              "bytes_sent": { "type": "integer" },
+              "bytes_received": { "type": "integer" },
+              "blocked": { "type": "boolean" }
+            }
+          }
+        },
+        "external_network_blocked_count": { "type": "integer", "minimum": 0 }
+      }
+    },
+
+    "behavioral_fidelity": {
+      "type": "object",
+      "required": [
+        "stdout_sha256",
+        "stderr_sha256",
+        "stdout_bytes",
+        "stderr_bytes"
+      ],
+      "properties": {
+        "stdout_sha256": { "type": "string" },
+        "stderr_sha256": { "type": "string" },
+        "stdout_bytes": { "type": "integer", "minimum": 0 },
+        "stderr_bytes": { "type": "integer", "minimum": 0 },
+        "basic_block_count": { "type": ["integer", "null"] },
+        "instruction_count": { "type": ["integer", "null"] },
+        "image_count": { "type": ["integer", "null"] },
+        "watched_api_hits": {
+          "type": "object",
+          "additionalProperties": { "type": "integer" }
+        },
+        "api_categories_frequency": {
+          "type": "object",
+          "additionalProperties": { "type": "integer" }
+        },
+        "application_validator": {
+          "type": "object",
+          "properties": {
+            "validator_name": { "type": "string" },
+            "passed": { "type": "boolean" },
+            "actual_value": { "type": ["string", "number", "null"] },
+            "expected_value": { "type": ["string", "number", "null"] },
+            "details": { "type": "string" }
+          }
+        }
+      }
+    },
+
+    "module_counters": {
+      "type": "object",
+      "properties": {
+        "counters_enabled": { "type": "boolean" },
+        "antidebug": {
+          "type": "object",
+          "properties": {
+            "initializations": { "type": "integer" },
+            "sanitizations": { "type": "integer" },
+            "being_debugged_before": { "type": ["integer", "null"] },
+            "being_debugged_after": { "type": ["integer", "null"] },
+            "ntglobalflag_before": { "type": ["integer", "null"] },
+            "ntglobalflag_after": { "type": ["integer", "null"] },
+            "access_faults": { "type": "integer" }
+          }
+        },
+        "process_enum": {
+          "type": "object",
+          "properties": {
+            "calls_intercepted": { "type": "integer" },
+            "processes_examined": { "type": "integer" },
+            "processes_filtered": { "type": "integer" },
+            "modules_examined": { "type": "integer" },
+            "modules_filtered": { "type": "integer" },
+            "unmodified_calls": { "type": "integer" }
+          }
+        },
+        "sanitize_env": {
+          "type": "object",
+          "properties": {
+            "entries_examined": { "type": "integer" },
+            "pin_entries_found": { "type": "integer" },
+            "entries_sanitized": { "type": "integer" },
+            "access_faults": { "type": "integer" }
+          }
+        },
+        "memcmp_mask": {
+          "type": "object",
+          "properties": {
+            "comparisons_intercepted": { "type": "integer" },
+            "signatures_matched": { "type": "integer" },
+            "responses_modified": { "type": "integer" },
+            "forwarded_to_original": { "type": "integer" }
+          }
+        },
+        "skew_mask": {
+          "type": "object",
+          "properties": {
+            "sleep_calls_intercepted": { "type": "integer" },
+            "time_queries_intercepted": { "type": "integer" },
+            "requested_delay_ms_total": { "type": "number" },
+            "observed_delay_ms_total": { "type": "number" },
+            "accumulated_skew_ticks": { "type": "integer" },
+            "corrections_applied": { "type": "integer" },
+            "regressions_detected": { "type": "integer" }
+          }
+        }
+      }
+    },
+
+    "artifacts": {
+      "type": "object",
+      "required": [
+        "raw_record_json_path",
+        "stdout_path",
+        "stderr_path"
+      ],
+      "properties": {
+        "raw_record_json_path": { "type": "string" },
+        "stdout_path": { "type": "string" },
+        "stderr_path": { "type": "string" },
+        "resource_time_series_path": { "type": ["string", "null"] },
+        "behavior_log_path": { "type": ["string", "null"] },
+        "module_events_path": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

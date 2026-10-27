@@ -1,0 +1,77 @@
+Resposta ao pedido de correcao -- pacote fechado v8
+26/10/2026
+
+Piloto N=1 (jcvht_t2_pilot_v7/) e campanha N=10 (jcvht_t2_n10_v7b/)
+ja correram com os scripts novos. A recorreç?o jcvht_t2_rerun/
+usou scripts velhos -- arquivo so. Nao misturar com t2_n10_v7
+(corrida interrompida pela VM).
+
+
+1. Scripts T2
+   Um run_id so: jsonl, run_id.txt, run_meta.json, CSV.
+   Pasta exclusiva; -Resume continua a mesma pasta se a VM cair.
+   stdout/stderr/run_meta em Waits, Memcmp e DaSmoke.
+   SHA256SUMS.txt no fim.
+   N=10: 40 run_id unicos; NAT01 e DO01 conferidos nos 4 sitios.
+   SHA256SUMS n=245. campaign complete Part=All.
+
+
+2. Teste de tempo
+   Sleep(2) removido. 256 leituras QPC+TickCount em spin.
+   JSON com qpc_freq, qpc_start, qpc_end brutos.
+   N=10: 40/40 reads=256 no_sleep2=1 qpc_freq=10000000
+   qpc_regress=0; barreira t1+t2; ns positivos.
+
+
+3. Teste APC
+   OpenThread + QueueUserAPC rv/GLE + flag DummyApc.
+   NAT/EMPTY/TMW0 N=10: 30/30 openthread_ok, queueuserapc_rv=1,
+   apc_callback=1, rv=192.
+   -do N=10: 10/10 OpenThread+QueueUserAPC OK no stdout;
+   SleepEx alertavel nao regressa em 180 s (exit -2, ~180.4 s).
+   12 eventos; ultimo = sleepex_nonalert rv=0.
+   Nao e crash. Nao e falha de OpenThread.
+   Hipotese: SkewMask estica SleepEx(500, alertable).
+   Nao repetimos N=30.
+
+
+4. Interfaces de comparacao
+   N=10: NAT/TMW0 PASS + _memicmp_l PASS+same+passthrough.
+   DM/DA MASKED (memcmp, memicmp, RtlCompareMemory, _memicmp_l).
+   MC3_DA 40.2 s exit 2 -- NAO timeout. Conservar MASKED.
+   ABSENT = NOT_EXERCISED (RtlEqualMemory, wmemcmp, memcmp_s, bcmp).
+   DA smoke 5/5 exit 0; Overhead 2042.56 < 3000.
+
+
+5. Coletor de recursos
+   Janela 10 s (Table 9). Segue filhos depois do pai sair.
+   PID, PPID, nome, path, CPU, WS, pico.
+   milestone: alive / parent_exited / file_created.
+   Exercitado no guest: jcvht_coletor_fumo_v7/
+     75 linhas, 4 PIDs, window_s=10
+     parent_exited + file_created + PING vivo apos o pai sair
+   NAO e case study. NAO e T1 DONE.
+
+
+6. Versao
+   Pin 3.28.98749 -- SIM (build_id, run_meta, RELEASE_ID).
+   SHA-256 DLL -- SIM
+     4BBC62707EE0B2EF922D4E8659A6392D92814EA0FC74F4682F1187562AE7F0E6
+   pin.exe 920A730A...B819  EmptyPinTool 804BE19B...53C8
+   31 PE -- catalog_jcvht_31pe.csv. Sem familias VirusTotal.
+   Commit/tag/release -- NAO.
+     git 3040df7 esta desactualizado.
+     Nao recompilamos a DLL: muda o SHA e cai o N=30.
+     Identidade = Pin + snapshot tomware_go + SHA da DLL.
+
+
+Ordem do amigo
+  1-4. Scripts + piloto + validacao + T2 N=10: FEITO (t2_n10_v7b).
+  5. T1 estatico: JA FEITO nos 31. identified=false.
+     Pistas (nao abrir escada): MAL_08/13 Toolhelp, MAL_12 FindWindowA,
+     MAL_14 NtQuerySystemInformation.
+  6. NAT/TMW0/knob so com check.md identified=true.
+
+Major 3 continua parcialmente nao atendido. Sem cadeia
+check -> ramo -> knob -> artefacto extra, a concessao no artigo
+mantem-se. T2 e o coletor-fumo nao substituem esse caso.

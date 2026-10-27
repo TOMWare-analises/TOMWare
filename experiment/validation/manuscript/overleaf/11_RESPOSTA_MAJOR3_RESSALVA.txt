@@ -1,0 +1,47 @@
+Resposta a ressalva sobre a v4 -- comentario 3 (Major 3).
+
+Concordamos. A concessao no artigo e na carta torna o texto preciso.
+Nao fecha o pedido experimental. O comentario 3 continua aberto.
+
+O que o revisor pede (e o que nao pede)
+---------------------------------------
+Pede demonstracao concreta, em poucos casos bem explicados:
+  1. localizar a checagem de instrumentacao no codigo;
+  2. observar o ramo que bloqueia ou desvia;
+  3. ligar a contramedida;
+  4. mostrar comportamento adicional (trace, artefacto ou operacao
+     verificavel).
+
+Compara o mesmo executavel e a mesma entrada em:
+  nativo / instrumentado sem a contramedida / instrumentado com ela.
+
+Nao pede os cinco checks nas 14 amostras. A tabela 14 x 5 PASS e
+oraculo/compatibilidade, nao essa demonstracao. Executaveis protegidos
+servem, se a cadeia acima ficar visivel.
+
+Os mesmos casos tambem servem ao comentario 2 (Major 2): marcos de
+progresso, CPU, memoria e arvore no mesmo PE, na janela certa, para
+ver se o trabalho e comparavel e para ler a Table 9 sem tratar
+queda de WS/CPU como ganho.
+
+O que a v4 ja diz (e mantemos)
+------------------------------
+Beneficio pratico nao demonstrado.
+MAL_03, MAL_07, MAL_10 e BEN_06 nao sao case studies:
+new_files=0, stdout vazio, check no PE nao localizado.
+"Ainda vivo aos 60 s" nao e unpack, drop nem C2.
+
+Isso e a resposta honesta com a evidencia actual. Nao e o caso
+positivo que o revisor pediu.
+
+O que falta para tirar a ressalva
+---------------------------------
+Pelo menos um caso (dois e melhor) com as quatro pecas acima, no
+mesmo binario e entrada. Esse caso pode entrar como tabela nova
+sem retirar a case_attempt. Sem essa cadeia, o Major 3 permanece
+concedido e o Major 2 permanece parcial.
+
+Isso e Plano B (VM, corte 02/11). A v4 nao inventa o caso. Se o
+SkewMask tiver de mudar para o obter, o N=30 deixa de valer e
+repete-se nesse build. Se o Plano B nao acabar, o envio do Plano A
+segue com a concessao -- precisa, mas com o comentario 3 aberto.

@@ -1,6 +1,7 @@
 #include "AntiDebugMask.h"
 #include "TomwareLog.h"
 #include "utils.h"
+#include "ModuleCounters.h"
 
 #if defined(TARGET_IA32E) || defined(_WIN64)
 #define TOMWARE_PEB_OFFSET_NTGLOBALFLAG 0xBC
@@ -18,12 +19,28 @@ static void SanitizePeb(PPEB peb)
     if (!peb)
         return;
 
+    int bdBefore = peb->BeingDebugged;
     peb->BeingDebugged = 0;
+    int bdAfter = peb->BeingDebugged;
+
+    unsigned long ntgBefore = 0;
+    unsigned long ntgAfter = 0;
+    bool fault = false;
 
     PULONG ntGlobalFlag = reinterpret_cast<PULONG>(
         reinterpret_cast<PUCHAR>(peb) + TOMWARE_PEB_OFFSET_NTGLOBALFLAG);
     if (PIN_CheckWriteAccess(ntGlobalFlag))
+    {
+        ntgBefore = *ntGlobalFlag;
         *ntGlobalFlag = 0;
+        ntgAfter = *ntGlobalFlag;
+    }
+    else
+    {
+        fault = true;
+    }
+
+    ModuleCounters_AntiDebug_OnSanitize(bdBefore, bdAfter, ntgBefore, ntgAfter, fault);
 }
 
 static void SimulateDebugPeb(PPEB peb)
@@ -59,6 +76,7 @@ VOID AntiDebugMask_OnMainExecutable()
 
 VOID AntiDebugMask_Init()
 {
+    ModuleCounters_AntiDebug_OnInit();
     PIN_AddApplicationStartFunction(AntiDebugMask_ApplicationStart, 0);
 }
 

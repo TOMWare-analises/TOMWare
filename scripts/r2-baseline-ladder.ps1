@@ -143,8 +143,8 @@ if ($Mode -eq "oracles" -or $Mode -eq "both") {
 }
 
 if ($Mode -eq "corpus" -or $Mode -eq "both") {
-    $benRoot = Join-Path $RepoRoot "Resultados/evidencias_VM/benign"
-    $malRoot = Join-Path $RepoRoot "Resultados/evidencias_VM/malign"
+    $benRoot = Join-Path $RepoRoot "experiment/results/corpus/benign"
+    $malRoot = Join-Path $RepoRoot "experiment/results/corpus/malign"
     $sampleDirs = @()
     if (Test-Path $benRoot) { $sampleDirs += Get-ChildItem $benRoot -Directory }
     if (Test-Path $malRoot) { $sampleDirs += Get-ChildItem $malRoot -Directory }

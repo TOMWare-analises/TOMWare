@@ -1,0 +1,32 @@
+{
+  "n_json": 9000,
+  "n_unique_triples": 9000,
+  "n_expected": 9000,
+  "duplicate_or_missing": 0,
+  "host_closeout_or_missing_reason": 251,
+  "conditions": {
+    "EMPTY": 1000,
+    "NAT": 1000,
+    "TMW0": 1000,
+    "TMW_ALL": 1000,
+    "TMW_DD": 1000,
+    "TMW_DE": 1000,
+    "TMW_DM": 1000,
+    "TMW_DO": 1000,
+    "TMW_DP": 1000
+  },
+  "groups": {
+    "benign": 4500,
+    "malicious": 4500
+  },
+  "profiles": {
+    "short_lived": 4500,
+    "persistent": 4500
+  },
+  "outcomes": {
+    "crash_exit": 6517,
+    "launch_failed": 251,
+    "timeout": 877,
+    "controlled_window": 1355
+  }
+}

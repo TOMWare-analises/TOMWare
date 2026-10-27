@@ -1,0 +1,17 @@
+Host Intel Pin IPC is wedged on this machine as of 2026-10-19.
+
+Even `pin.exe -version` (no tool, no target) fails:
+
+  SYSCALL_INSPECTOR: NTDLL module is rebased
+  ipc_server_windows.cpp StartServer assertion: res == TRUE
+
+No host pin.exe process remains after killing leftover TestModule32/TestOverhead/TestConcurrentWaits
+from an earlier overlapping run. Named pipes list has no Pin IPC entry.
+
+The IEEE campaign guest currently has pin.exe + a malware sample running
+(VMX D:\VMware\Windows 10 x64-tomware.vmx). Do not reboot the host and do not
+inject JCVHT jobs into that guest until the block finishes.
+
+Matched N=30 and Pin-instrumented Module32/waits must run either:
+  (a) inside the JCVHT clone guest (see CLONE_VM.md), or
+  (b) on this host after a reboot once the IEEE orchestrator is idle.

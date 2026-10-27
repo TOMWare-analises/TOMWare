@@ -3,14 +3,23 @@ tomware.out*
 tmp/*
 pin.log
 *.log
+*.pyc
+DispDiag-*.dat
 
 # Build outputs (pintool)
 TOMWare/x32/Debug/
 TOMWare/x64/
+TOMWare/Win32/
+TOMWare/TOMWare/
 x64/
+Win32/
 Win32/Debug/
 Debug/*.obj
 TOMWare/Debug
+experiment/__pycache__/
+experiment/**/__pycache__/
+experiment/campaigns/*/raw/
+experiment/campaigns/*/logs/
 
 # PoC project build artifacts
 Resultados/Apps-Teste-src/**/x64/
@@ -38,3 +47,15 @@ docs/**
 
 # Local drafts (not part of upstream)
 dist/
+
+# Generated oracle traces (re-run experiment/validation/scripts)
+experiment/validation/**/*.exe
+experiment/validation/**/ev_*/
+experiment/validation/**/pintool.log
+experiment/validation/**/tomware-envvars.log
+
+# Duplicate Access PDFs at repo root (canonical copies live under experiment/ieee_access_revision/)
+/Access-2026-*.pdf
+
+# Analysis zips (copies of evidence packs; kept on disk, not versioned)
+experiment/validation/manuscript/letters/*.zip

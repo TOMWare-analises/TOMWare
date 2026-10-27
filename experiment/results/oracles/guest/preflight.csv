@@ -1,0 +1,8 @@
+"item","path","exists"
+"pin.exe","C:\TOMWare\pin\pin.exe","True"
+"TOMWare.dll","C:\TOMWare\x64\Release\TOMWare.dll","True"
+"EmptyPinTool.dll","C:\TOMWare\x64\Release\EmptyPinTool.dll","True"
+"TestAntiDebug","C:\TOMWare\Resultados\Apps-Teste\TestAntiDebug.exe","True"
+"timeout_sec_declared","90","True"
+"TestModule32","C:\TOMWare\experiment\jcvht_revision\TestModule32.exe","True"
+"TestConcurrentWaits","C:\TOMWare\experiment\jcvht_revision\TestConcurrentWaits.exe","True"

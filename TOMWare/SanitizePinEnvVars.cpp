@@ -1,6 +1,7 @@
-﻿#include "SanitizePinEnvVars.h"
+#include "SanitizePinEnvVars.h"
 #include "TomwareLog.h"
 #include "utils.h"
+#include "ModuleCounters.h"
 
 #include <string>
 #include <fstream>
@@ -75,24 +76,37 @@ static int SanitizeEnvironmentBlock()
 {
     PPEB peb = reinterpret_cast<PPEB>(WindowsAPI::NtCurrentTeb()->ProcessEnvironmentBlock);
     if (!peb)
+    {
+        ModuleCounters_Env_OnFault();
         return -1;
+    }
 
     PRTL_USER_PROCESS_PARAMETERS pp = peb->ProcessParameters;
     if (!pp)
+    {
+        ModuleCounters_Env_OnFault();
         return -2;
+    }
 
     wchar_t* env = reinterpret_cast<wchar_t*>(pp->Environment);
     if (!env)
+    {
+        ModuleCounters_Env_OnFault();
         return -3;
+    }
 
     int masked = 0;
     for (wchar_t* p = env; *p; )
     {
         const size_t len = wcslen(p) + 1;
+        ModuleCounters_Env_OnExamined();
 
         // Diagnostico: qualquer entrada que contenha "PIN" no nome.
         if (ContainsPinCI(p))
+        {
+            ModuleCounters_Env_OnPinFound();
             LogEvent("[SanitizePinEnvVars]   (scan) entrada com 'PIN' no nome: " + EnvNameAscii(p));
+        }
 
         if (StartsWithPinW(p) && PIN_CheckWriteAccess(p))
         {
@@ -101,6 +115,11 @@ static int SanitizeEnvironmentBlock()
             p[1] = L'Z';
             p[2] = L'Z';
             ++masked;
+            ModuleCounters_Env_OnSanitized();
+        }
+        else if (StartsWithPinW(p))
+        {
+            ModuleCounters_Env_OnFault();
         }
         p += len;
     }

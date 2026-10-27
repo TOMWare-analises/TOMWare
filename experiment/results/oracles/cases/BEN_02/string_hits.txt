@@ -1,0 +1,6 @@
+IsDebuggerPresent ascii=1 utf16=0
+QueryPerformanceCounter ascii=1 utf16=0
+WaitForSingleObject ascii=3 utf16=0
+GetModuleHandle ascii=1 utf16=0
+memcmp ascii=1 utf16=0
+OutputDebugString ascii=1 utf16=0

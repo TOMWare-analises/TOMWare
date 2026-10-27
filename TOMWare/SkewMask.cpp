@@ -1,5 +1,6 @@
-﻿#include "SkewMask.h"
+#include "SkewMask.h"
 #include "TomwareLog.h"
+#include "ModuleCounters.h"
 
 #include <string>
 
@@ -92,6 +93,10 @@ static DWORD CalibratedSleep(DWORD ms, BOOL alertable)
     {
         pQPC(&t1);
         MeasureAndAccumulateSkew(t0, t1, static_cast<double>(ms));
+        double observedMs = 0.0;
+        if (g_qpcFreqHz > 0.0)
+            observedMs = (t1.QuadPart - t0.QuadPart) * 1000.0 / g_qpcFreqHz;
+        ModuleCounters_Skew_OnSleep(static_cast<double>(ms), observedMs);
     }
 
     return rv;
@@ -109,7 +114,9 @@ static DWORD WINAPI Hook_SleepEx(DWORD ms, BOOL alert) {
 static BOOL WINAPI Hook_QPC(WindowsAPI::LARGE_INTEGER* out)
 {
     BOOL ok = pQPC(out);
-    out->QuadPart -= CurrentSkewTicks();
+    WindowsAPI::LONG skew = CurrentSkewTicks();
+    out->QuadPart -= skew;
+    ModuleCounters_Skew_OnTimeQuery(skew);
     return ok;
 }
 static DWORD WINAPI Hook_GTC()

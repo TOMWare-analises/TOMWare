@@ -1,0 +1,11 @@
+{
+  "frozen_at_utc": "2026-10-27T12:49:07.673472+00:00",
+  "n_manifest_rows": 66,
+  "n_raw_json": 0,
+  "raw_merkle_sha256": "not_recomputed_raws_omitted",
+  "guest_tomware_sha256_values": [],
+  "guest_empty_tool_sha256_values": [],
+  "guest_pin_version_values": [],
+  "host_tomware_dll_present": true,
+  "note": "Campaign DLL is the guest 4BBC6270 hash in build_id.json. Do not rebuild to tag. raw/runs omitted from disk."
+}

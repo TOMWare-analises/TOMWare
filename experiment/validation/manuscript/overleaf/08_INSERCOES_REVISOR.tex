@@ -1,0 +1,293 @@
+% =============================================================================
+% TOMWare.M / JCVHT c05a1271 -- reviewer insertions (Plan A, v3)
+% RULES FOR THE OVERLEAF EDITOR
+%   1. Do NOT delete numbers, rows, or figures already in the article.
+%   2. MOVE the originally submitted timing table (old Table 6 / -go vs -do)
+%      to a new appendix. Keep every number. Label it as confounded.
+%   3. PUT the matched N=30 table in the body as the main timing result.
+%   4. All other existing tables stay in the body. After each related old
+%      table, INSERT the new table with a new label.
+%   5. REPLACE the old prose listed below (49% / -go-vs-do conclusion;
+%      "-da was not evaluated"). A caption note alone is not enough.
+%   6. Figures are optional: attach the PDF/PNG separately (Springer).
+%      Uncomment the figure block if you add a file.
+%   7. Do not invent numbers. Pin 3.28.98749; DLL prefix 4BBC6270.
+%   8. TMW0 = Pin + TOMWare.dll loaded, all five knobs off (-q).
+%      It is NOT ordinary / bare Pin. EMPTY = Pin + EmptyPinTool.dll.
+% =============================================================================
+
+% -----------------------------------------------------------------------------
+% A) ABSTRACT -- REPLACE the \abstract{...} body.
+% -----------------------------------------------------------------------------
+\abstract{Dynamic Binary Instrumentation (DBI) provides fine-grained runtime visibility but exposes artifacts that evasive software may use to identify the analysis environment. This article presents TOMWare.M, an open-source Intel Pin-based \textit{Pintool} implementing five selectively activated countermeasures for debugging indicators, process and module enumeration, Pin-related environment variables, memory-signature comparisons, and timing deviations. Each module was validated with its own controlled detector. A matched timing experiment on \texttt{TestOverhead.exe} ($N=30$, all attempts retained; Table~\ref{tab:timing_matched_n30}) compared Pin with TOMWare loaded and all countermeasures off (TMW0, \texttt{-q}), the same configuration plus artificial overhead (\texttt{-go -q}), and that same overhead with \texttt{SkewMask} (\texttt{-go -do -q}). Conventional medians were $2433.285$, $3083.210$, and $2104.770$ ticks; the fraction of runs at or below the oracle threshold of $3000$ was $30/30$, $11/30$, and $30/30$, respectively. Operational compatibility and resource measurements on $31$ Windows PE binaries remain those of the submitted $10\,\mathrm{s}$ protocol and are kept in the original tables; those working-set and CPU percentages are not a performance gain. Combined activation (\texttt{-da}) was smoke-tested on the five detectors. Practical recovery of malware behavior suppressed by an identified anti-instrumentation check is not demonstrated. These findings show selective, module-level mitigation of the supported Intel Pin artifacts, with the limitations stated in the evaluation.}
+
+% -----------------------------------------------------------------------------
+% B) INTRODUCTION -- INSERT after the existing 31-PE / 3,100-run paragraph.
+%    Do not delete that paragraph. REPLACE any sentence that treats the
+%    old -go vs -do reduction (including a 49\% figure) as the SkewMask result.
+% -----------------------------------------------------------------------------
+Compatibility in that 3{,}100-run campaign means that the profile-specific launch outcome was preserved. It does not mean that each malware sample implemented the corresponding check, nor that enabling a module recovered hidden behavior. The quantitative \texttt{SkewMask} claim used in this revision is the matched $N=30$ experiment (Table~\ref{tab:timing_matched_n30}). The originally submitted \texttt{-go} versus \texttt{-do} comparison confounds the artificial-load generator with \texttt{SkewMask} and is retained only in Appendix~\ref{app:timing_confounded}.
+
+% INSERT this extra contribution bullet (keep the existing bullets):
+\item A revision addendum with matched timing ($N=30$), wait-model measurements, a Module32 fixture, and an explicit statement that practical malware-behavior recovery was not demonstrated.
+
+% -----------------------------------------------------------------------------
+% C) TIMING -- ONE rule, no contradiction.
+%    Body: matched N=30 is the MAIN result.
+%    Appendix: originally submitted table, numbers kept, labelled confounded.
+% -----------------------------------------------------------------------------
+
+% REPLACE every body sentence that reads the old -go vs -do cell (for
+% example 4080 to 2081, or a 49\% reduction) as a SkewMask gain with:
+The originally submitted \texttt{-go} versus \texttt{-do} cell confounds the artificial-load generator with \texttt{SkewMask}. It is not the quantitative claim of this revision. That table is preserved, with its original numbers, in Appendix~\ref{app:timing_confounded}. The claim used here is the matched comparison at fixed workload (Table~\ref{tab:timing_matched_n30}): $11/30$ versus $30/30$ runs at or below $3000$ ticks.
+
+% PUT this table in the evaluation body where the old Table 6 stood:
+\begin{table}[t]
+\caption{Matched timing oracle, \texttt{TestOverhead.exe}, fixed $N=30$, every attempt retained. Conventional median (mean of the two central values). Anomaly if the score exceeds $3000$. TMW0 is Pin with \texttt{TOMWare.dll} loaded and all five knobs off, not bare Pin.}
+\label{tab:timing_matched_n30}
+\centering
+\small
+\begin{tabular}{llrrll}
+\toprule
+\textbf{Arm} & \textbf{Knobs} & $\mathbf{N}$ & \textbf{Median (ticks)} & \textbf{Min--max} & $\boldsymbol{\le 3000}$ \\
+\midrule
+TMW0 & \texttt{-q} & 30 & 2433.285 & 2168--2750 & $30/30$ \\
+GO (baseline) & \texttt{-go -q} & 30 & 3083.210 & 2722--3845 & $11/30$ \\
+GO\_DO (treatment) & \texttt{-go -do -q} & 30 & 2104.770 & 2073--2146 & $30/30$ \\
+\bottomrule
+\end{tabular}
+\vspace{3pt}
+\parbox{\columnwidth}{\footnotesize
+Wilson 95\% intervals: GO $[21.9\%,54.5\%]$; TMW0 and GO\_DO $[88.6\%,100\%]$. Evaluated build: Pin $3.28.98749$, DLL prefix \texttt{4BBC6270}.
+}
+\end{table}
+
+% Optional figure (attach timing_n30.pdf separately):
+% \begin{figure}[t]
+% \centering
+% \includegraphics[width=0.92\columnwidth]{timing_n30.pdf}
+% \caption{Optional plot of the $N=30$ matched scores (TMW0, GO, GO\_DO). Companion to Table~\ref{tab:timing_matched_n30}.}
+% \label{fig:timing_n30}
+% \end{figure}
+
+% MOVE the EXISTING old timing table (do not delete its numbers) to this
+% new appendix. Keep the original tabular. Add the note under its caption.
+% \appendix
+% \section{Originally submitted timing comparison}
+% \label{app:timing_confounded}
+%
+% \textit{Note (revision).} This is the originally submitted protocol. The
+% \texttt{-go} versus \texttt{-do} contrast confounds the artificial-load
+% generator with \texttt{SkewMask}. It is retained for traceability and is
+% not the quantitative claim of this revision. The matched comparison is
+% Table~\ref{tab:timing_matched_n30}.
+%
+% [PASTE THE OLD TABLE ENVIRONMENT HERE -- same numbers, same rows]
+
+% -----------------------------------------------------------------------------
+% D) WAITS -- NEW table + paragraph. Insert in Section 5.5 / SkewMask.
+%    Do not remove any existing timing figure.
+% -----------------------------------------------------------------------------
+A wait-model oracle (\texttt{TestConcurrentWaitsLogged}, $N=5$, no \texttt{-go}; Table~\ref{tab:wait_model_n5}) recorded sequential $2\times 200\,\mathrm{ms}$ sleeps, two concurrent sleeps, a \texttt{TickCount} pair, and an early-returning \texttt{WaitOne}($500\,\mathrm{ms}$). All 20 runs exited 0. The two Sleep intervals still intersected under Pin (median intersection $\sim 207/212/196\,\mathrm{ms}$). The failed predicate is Join-wall $<$ sequential, not serialization of the sleeps. \texttt{WaitOne} does not demonstrate \texttt{SleepEx}. \texttt{SkewMask} does not restore Join-wall $<$ sequential. We do not claim a globally coherent clock under Pin. Timeouts of the same oracle under \texttt{-go} are $10{,}000$ \texttt{\_\_nop} insertions per instruction, not a tool crash.
+
+\begin{table}[t]
+\caption{Wait model, \texttt{TestConcurrentWaitsLogged}, $N=5$, no \texttt{-go}. Conventional medians in milliseconds. EMPTY is Pin with an empty pintool, not Pin without a tool. TMW0 is Pin with TOMWare loaded and knobs off.}
+\label{tab:wait_model_n5}
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Arm} & \textbf{seq $2\times200$} & \textbf{Join wall} & \textbf{Tick+$50$} & \textbf{WaitOne($500$)} \\
+\midrule
+Native & 406.218 & 213.678 & 62 & 45.867 \\
+EMPTY & 433.421 & 571.867 & 62 & 445.610 \\
+TMW0 (\texttt{-q}) & 441.209 & 553.862 & 78 & 441.411 \\
+\texttt{-do -q} & 414.809 & 517.802 & 56 & 383.428 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% Optional figure:
+% \begin{figure}[t]
+% \centering
+% \includegraphics[width=0.92\columnwidth]{wait_join_vs_seq.pdf}
+% \caption{Optional plot of Join-wall versus sequential medians (Table~\ref{tab:wait_model_n5}).}
+% \label{fig:wait_model}
+% \end{figure}
+
+% -----------------------------------------------------------------------------
+% E) PROCESSENUM -- keep the existing pin.exe table in the body.
+%    INSERT note + two NEW tables after it.
+% -----------------------------------------------------------------------------
+\textit{Note (revision).} Table~\ref{tab:processenum_validation} remains the original \texttt{TestProcessEnum} oracle. The following two tables add a Module32 fixture and a dedicated \texttt{pin.exe} hide/show series; they do not withdraw the original counts.
+
+\begin{table}[t]
+\caption{Module32 fixture. A copy of \texttt{version.dll} was loaded as \texttt{\%TEMP\%\textbackslash pinvm.dll} (dummy name, not a real Pin module).}
+\label{tab:module32_fixture}
+\centering
+\small
+\begin{tabular}{llcccc}
+\toprule
+\textbf{Arm} & \textbf{Knobs} & \textbf{count} & \texttt{fixture\_pinvm} & \texttt{kernel32} & \textbf{terminated} \\
+\midrule
+Native & --- & 32 & 1 & 1 & yes \\
+TMW0 & \texttt{-q} & 31 & 1 & 1 & yes \\
+\texttt{-dp} & \texttt{-dp -q} & 30 & 0 & 1 & yes \\
+\texttt{-da} & \texttt{-da -q} & 30 & 0 & 1 & yes \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\caption{\texttt{TestProcessEnum} \texttt{pin.exe} counts on the revision guest (one Pin instance at a time). TMW0 is Pin with TOMWare loaded and knobs off.}
+\label{tab:processenum_pin_counts}
+\centering
+\small
+\begin{tabular}{lcc}
+\toprule
+\textbf{Arm} & \textbf{Knobs} & \texttt{pin.exe} \\
+\midrule
+Native & --- & 0 \\
+TMW0 & \texttt{-q} & 3 \\
+\texttt{-dp} & \texttt{-dp -q} & 0 \\
+\texttt{-da} & \texttt{-da -q} & 0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% -----------------------------------------------------------------------------
+% F) MEMCMP -- keep the existing TestMemoryScan table in the body.
+%    INSERT note + NEW table. Do not claim 12 routines.
+% -----------------------------------------------------------------------------
+\textit{Note (revision).} The original \texttt{memcmp}-only oracle is unchanged. Table~\ref{tab:memcmp_family} adds the C\# family check.
+
+\begin{table}[t]
+\caption{Additional comparison exports. \texttt{PASS} = probe reported a match; \texttt{MASKED} = non-match under the hook; \texttt{NOT\_EXERCISED} = symbol not exported on this guest.}
+\label{tab:memcmp_family}
+\centering
+\small
+\begin{tabular}{llll}
+\toprule
+\textbf{Interface} & \textbf{Native / TMW0} & \texttt{-dm} / \texttt{-da} & \textbf{Status} \\
+\midrule
+\texttt{memcmp} & PASS & MASKED & exercised \\
+\texttt{\_memicmp} & PASS & MASKED & exercised \\
+\texttt{RtlCompareMemory} & PASS & MASKED & exercised \\
+\texttt{RtlEqualMemory} & --- & --- & NOT\_EXERCISED \\
+\texttt{wmemcmp} & --- & --- & NOT\_EXERCISED \\
+\bottomrule
+\end{tabular}
+\vspace{3pt}
+\parbox{\columnwidth}{\footnotesize
+A seven-byte comparison of \texttt{AAAAAAAA} versus \texttt{AAAAAAAB} is equal by construction and is not listed as a tool defect.
+}
+\end{table}
+
+% -----------------------------------------------------------------------------
+% G) -da -- REPLACE the architecture / methods sentence that said -da was
+%    not evaluated. Do not leave that sentence in place with only a note.
+%    Keep the architecture figure.
+% -----------------------------------------------------------------------------
+% REPLACE "-da was not evaluated" (or equivalent) with:
+Combined activation (\texttt{-da}) was smoke-tested on the five controlled detectors (Table~\ref{tab:da_smoke}). Every detector exited 0. This is not a $3{,}100$-run corpus campaign and does not enable \texttt{-go}.
+
+\begin{table}[t]
+\caption{Combined \texttt{-da} smoke test on the five controlled detectors (exit code 0 in every row).}
+\label{tab:da_smoke}
+\centering
+\small
+\begin{tabular}{lll}
+\toprule
+\textbf{Detector} & \textbf{Knobs} & \textbf{Observed} \\
+\midrule
+\texttt{TestAntiDebug} & \texttt{-gdb -da -q} & PEB/API indicators 0 \\
+\texttt{TestProcessEnum} & \texttt{-da -q} & \texttt{pin.exe}=0 \\
+\texttt{TestGetEnvironments} & \texttt{-da -q} & \texttt{PIN\_*}=0 \\
+\texttt{TestMemoryScan} & \texttt{-da -q} & \texttt{PIN\_}/pin names 0 \\
+\texttt{TestOverhead} & \texttt{-da -q} & $2040.7<3000$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% -----------------------------------------------------------------------------
+% H) TABLE 9 / RESOURCES -- KEEP the existing table and percentages in the body.
+%    REPLACE any sentence that reads those percentages as a performance gain.
+% -----------------------------------------------------------------------------
+% REPLACE any "87% / 74% / 38% / 29% as improvement" sentence with:
+The working-set and CPU percentages in the original resource table belong to the submitted $10\,\mathrm{s}$ / 31-PE protocol. Remaining alive at a fixed window is not equivalent work, and those percentages are not a performance gain. A later $60\,\mathrm{s}$ 50+50 campaign (Table~\ref{tab:wall_60s_5050}) is a different protocol and must not replace that table.
+
+\textit{Note (revision).} Percentages in this table belong to the $10\,\mathrm{s}$ / 31-PE protocol of the submitted manuscript. They are not a performance gain.
+
+\begin{table}[t]
+\caption{Later 50+50 campaign (persistent window $60\,\mathrm{s}$; same Pin $3.28.98749$, DLL prefix \texttt{4BBC6270}). Median wall-clock difference TMW\_DO minus TMW0. Not a substitute for the $10\,\mathrm{s}$ resource table.}
+\label{tab:wall_60s_5050}
+\centering
+\small
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Stratum} & \textbf{Median (ms)} & \textbf{95\% CI} & $\mathbf{n_{\mathrm{pairs}}}$ \\
+\midrule
+Benign persistent & $+55{,}452$ & $[30{,}685,\ 57{,}031]$ & 25 \\
+Malicious persistent & $+37{,}387$ & $[26{,}146,\ 42{,}770]$ & 23 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% Optional figure:
+% \begin{figure}[t]
+% \centering
+% \includegraphics[width=0.92\columnwidth]{wall_60s.pdf}
+% \caption{Optional plot of the $60\,\mathrm{s}$ wall-clock stretch (Table~\ref{tab:wall_60s_5050}).}
+% \label{fig:wall_60s}
+% \end{figure}
+
+% -----------------------------------------------------------------------------
+% I) MAJOR 3 -- INSERT in Discussion. NEW table. Keep the 14-sample table.
+% -----------------------------------------------------------------------------
+\textit{Note (revision).} The 14-sample $\times$ 5-module table remains an oracle/compatibility table. It does not show that those binaries implemented the five checks.
+
+\begin{table}[t]
+\caption{Case-study attempt (knob \texttt{-do}, window $60\,\mathrm{s}$). Every row had \texttt{new\_files}=0 and empty stdout. These four binaries are not claimed as successful case studies.}
+\label{tab:case_attempt}
+\centering
+\small
+\begin{tabular}{llll}
+\toprule
+\textbf{Sample} & \textbf{Native} & \textbf{TMW0 (\texttt{-q})} & \texttt{-do -q} \\
+\midrule
+MAL\_03 & timeout $60\,\mathrm{s}$ & access violation $0\mathrm{xC}0000005$ & timeout \\
+MAL\_07 & exit 0 ($\sim 1.4\,\mathrm{s}$) & access violation $0\mathrm{xC}0000005$ & timeout \\
+MAL\_10 & timeout $60\,\mathrm{s}$ & timeout & timeout \\
+BEN\_06 & exit 3 ($\sim 1.0\,\mathrm{s}$) & exit 3 ($\sim 3.8\,\mathrm{s}$) & timeout \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Practical recovery of suppressed malware behavior is \textbf{not demonstrated}. A later successful case (identified check $\rightarrow$ diverted baseline branch $\rightarrow$ countermeasure acting $\rightarrow$ additional recovered artifact) may be added as another table without removing Table~\ref{tab:case_attempt}.
+
+% -----------------------------------------------------------------------------
+% J) METHODS -- INSERT once. Strike any 3040df7 mention.
+% -----------------------------------------------------------------------------
+Evaluated software for the revision measurements: Intel Pin $3.28.98749$; \texttt{TOMWare.dll} SHA-256 prefix \texttt{4BBC6270}; guest snapshot \texttt{tomware\_go}. Identify that build by the Pin version and DLL prefix. TMW0 denotes Pin with that DLL loaded and the five knobs off (\texttt{-q}), not bare Pin.
+
+% -----------------------------------------------------------------------------
+% K) TABLE 8 -- editorial wrap of the TestProcessEnum column only.
+%    One limitations subsection is enough.
+% -----------------------------------------------------------------------------
+
+% -----------------------------------------------------------------------------
+% Label index
+%   Body (main timing result):  tab:timing_matched_n30
+%   Appendix (old Table 6):     app:timing_confounded
+%   New body tables:            tab:wait_model_n5
+%                               tab:module32_fixture
+%                               tab:processenum_pin_counts
+%                               tab:memcmp_family
+%                               tab:da_smoke
+%                               tab:wall_60s_5050
+%                               tab:case_attempt
+% Optional figures (files attached separately):
+%   fig:timing_n30   timing_n30.pdf
+%   fig:wait_model   wait_join_vs_seq.pdf
+%   fig:wall_60s     wall_60s.pdf
+% -----------------------------------------------------------------------------

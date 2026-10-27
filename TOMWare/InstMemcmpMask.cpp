@@ -1,8 +1,9 @@
-﻿/********************************************************************************
+/********************************************************************************
  *  InstMemcmpMask.cpp – contramedida para varreduras de assinaturas na memória *
  ********************************************************************************/
 #include "InstMemcmpMask.h"
 #include "TomwareLog.h"
+#include "ModuleCounters.h"
 
 #include <cctype>
 #include <cstring>
@@ -153,16 +154,28 @@ void InstMemcmpMask_LoadSignatures(const char* path)
 
 WRAP(wMemcmpA)(const void* a, const void* b, size_t n, AFUNPTR orig)->int
 {
+    ModuleCounters_Memcmp_OnIntercept();
     if (ShouldMaskAnsiNeedle(b, n, false))
+    {
+        ModuleCounters_Memcmp_OnSignatureMatched();
+        ModuleCounters_Memcmp_OnModified();
         return 1;
+    }
+    ModuleCounters_Memcmp_OnForwarded();
     using fn = int(__cdecl*)(const void*, const void*, size_t);
     return reinterpret_cast<fn>(orig)(a, b, n);
 }
 
 WRAP(wMemcmpI)(const void* a, const void* b, size_t n, AFUNPTR orig)->int
 {
+    ModuleCounters_Memcmp_OnIntercept();
     if (ShouldMaskAnsiNeedle(b, n, true))
+    {
+        ModuleCounters_Memcmp_OnSignatureMatched();
+        ModuleCounters_Memcmp_OnModified();
         return 1;
+    }
+    ModuleCounters_Memcmp_OnForwarded();
     using fn = int(__cdecl*)(const void*, const void*, size_t);
     return reinterpret_cast<fn>(orig)(a, b, n);
 }
@@ -170,20 +183,30 @@ WRAP(wMemcmpI)(const void* a, const void* b, size_t n, AFUNPTR orig)->int
 WRAP(wMemcmpS)(const void* a, size_t as, const void* b, size_t bs,
     int* out, AFUNPTR orig)->errno_t
 {
+    ModuleCounters_Memcmp_OnIntercept();
     if (ShouldMaskAnsiNeedle(b, bs, false))
     {
+        ModuleCounters_Memcmp_OnSignatureMatched();
+        ModuleCounters_Memcmp_OnModified();
         if (out)
             *out = 1;
         return 0;
     }
+    ModuleCounters_Memcmp_OnForwarded();
     using fn = errno_t(__cdecl*)(const void*, size_t, const void*, size_t, int*);
     return reinterpret_cast<fn>(orig)(a, as, b, bs, out);
 }
 
 WRAP(wWmemcmp)(const wchar_t* a, const wchar_t* b, size_t n, AFUNPTR orig)->int
 {
+    ModuleCounters_Memcmp_OnIntercept();
     if (ShouldMaskWideNeedle(b, n))
+    {
+        ModuleCounters_Memcmp_OnSignatureMatched();
+        ModuleCounters_Memcmp_OnModified();
         return 1;
+    }
+    ModuleCounters_Memcmp_OnForwarded();
     using fn = int(__cdecl*)(const wchar_t*, const wchar_t*, size_t);
     return reinterpret_cast<fn>(orig)(a, b, n);
 }
@@ -191,28 +214,44 @@ WRAP(wWmemcmp)(const wchar_t* a, const wchar_t* b, size_t n, AFUNPTR orig)->int
 WRAP(wWmemcmpS)(const wchar_t* a, size_t as, const wchar_t* b, size_t bs,
     int* out, AFUNPTR orig)->errno_t
 {
+    ModuleCounters_Memcmp_OnIntercept();
     if (ShouldMaskWideNeedle(b, bs))
     {
+        ModuleCounters_Memcmp_OnSignatureMatched();
+        ModuleCounters_Memcmp_OnModified();
         if (out)
             *out = 1;
         return 0;
     }
+    ModuleCounters_Memcmp_OnForwarded();
     using fn = errno_t(__cdecl*)(const wchar_t*, size_t, const wchar_t*, size_t, int*);
     return reinterpret_cast<fn>(orig)(a, as, b, bs, out);
 }
 
 WRAP(wRtlCmpMem)(const void* a, const void* b, SIZE_T n, AFUNPTR orig)->SIZE_T
 {
+    ModuleCounters_Memcmp_OnIntercept();
     if (ShouldMaskAnsiNeedle(b, static_cast<size_t>(n), false))
+    {
+        ModuleCounters_Memcmp_OnSignatureMatched();
+        ModuleCounters_Memcmp_OnModified();
         return 0;
+    }
+    ModuleCounters_Memcmp_OnForwarded();
     using fn = SIZE_T(NTAPI*)(const void*, const void*, SIZE_T);
     return reinterpret_cast<fn>(orig)(a, b, n);
 }
 
 WRAP(wRtlEqMem)(const void* a, const void* b, SIZE_T n, AFUNPTR orig)->WindowsAPI::BOOLEAN
 {
+    ModuleCounters_Memcmp_OnIntercept();
     if (ShouldMaskAnsiNeedle(b, static_cast<size_t>(n), false))
+    {
+        ModuleCounters_Memcmp_OnSignatureMatched();
+        ModuleCounters_Memcmp_OnModified();
         return FALSE;
+    }
+    ModuleCounters_Memcmp_OnForwarded();
     using fn = WindowsAPI::BOOLEAN(NTAPI*)(const void*, const void*, SIZE_T);
     return reinterpret_cast<fn>(orig)(a, b, n);
 }

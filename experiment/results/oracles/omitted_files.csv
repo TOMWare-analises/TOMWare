@@ -1,0 +1,10 @@
+path,role,on_disk_here,why_omitted,where_to_find,sha256_or_catalog
+experiment/campaigns/corpus_aligned_10k/raw/runs/*.json,campaign_raw_9000,false,Removed after hashing to keep the repo small,experiment/results/oracles/raw_runs_sha256.csv (9000 rows),catalog merkle see freeze_meta / raw_runs_sha256.csv
+C:/Users/marge/Downloads/jcvht_t2_n10_v7b/ev_*,t2_n10_raw_traces,false,Guest traces stay in Downloads not in git,C:/Users/marge/Downloads/jcvht_t2_n10_v7b/SHA256SUMS.txt,see SHA256SUMS.txt
+C:/Users/marge/Downloads/jcvht_t2_pilot_v7/,t2_pilot,false,Pilot N=1 kept as prior attempt,Downloads/jcvht_t2_pilot_v7,
+C:/Users/marge/Downloads/jcvht_t2_n10_v7/,t2_n10_incomplete,false,Incomplete leftover do not use,Downloads/jcvht_t2_n10_v7,do_not_use
+C:/Users/marge/Downloads/JCVHT_ANALISE_T2_2026-10-26_v8.zip,friend_pack,false,Analysis zip not sent to the journal,Downloads/JCVHT_ANALISE_T2_2026-10-26_v8.zip,do_not_send_to_journal
+C:/Users/marge/Downloads/jcvht_identify/,t1_static_scan,false,Full identify tree on Downloads; summary copied,experiment/results/oracles/identify_summary.csv + cases/,
+C:/Users/marge/Downloads/jcvht_coletor_fumo_v7/,collector_smoke,false,Synthetic 10 s smoke not a case study,experiment/results/oracles/collector/,
+x64/Release/TOMWare.dll rebuilt-for-tag,dll,false,Do not rebuild only to create a git tag. Identity is the guest hash.,experiment/results/oracles/build_id.json,4BBC62707EE0B2EF922D4E8659A6392D92814EA0FC74F4682F1187562AE7F0E6
+git tag for 3040df7,release_tag,false,3040df7 does not produce this DLL. No tag created.,git HEAD 3040df722967fb0e699be6f279837a0611c4ad38,no_tag

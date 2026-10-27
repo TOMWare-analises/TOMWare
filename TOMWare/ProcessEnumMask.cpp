@@ -1,6 +1,7 @@
 #include "ProcessEnumMask.h"
 #include "TomwareLog.h"
 #include "utils.h"
+#include "ModuleCounters.h"
 
 #include <algorithm>
 #include <cctype>
@@ -88,13 +89,16 @@ static BOOL WINAPI Hook_Process32First(
     WindowsAPI::HANDLE snapshot,
     WindowsAPI::LPPROCESSENTRY32 entry)
 {
+    ModuleCounters_ProcessEnum_OnCall();
     while (pProcess32First(snapshot, entry))
     {
 #ifdef UNICODE
-        if (!IsHiddenProcessNameW(entry->szExeFile))
+        bool hidden = IsHiddenProcessNameW(entry->szExeFile);
 #else
-        if (!IsHiddenProcessNameA(entry->szExeFile))
+        bool hidden = IsHiddenProcessNameA(entry->szExeFile);
 #endif
+        ModuleCounters_ProcessEnum_OnProcessExamined(hidden);
+        if (!hidden)
             return TRUE;
     }
     return FALSE;
@@ -104,13 +108,16 @@ static BOOL WINAPI Hook_Process32Next(
     WindowsAPI::HANDLE snapshot,
     WindowsAPI::LPPROCESSENTRY32 entry)
 {
+    ModuleCounters_ProcessEnum_OnCall();
     while (pProcess32Next(snapshot, entry))
     {
 #ifdef UNICODE
-        if (!IsHiddenProcessNameW(entry->szExeFile))
+        bool hidden = IsHiddenProcessNameW(entry->szExeFile);
 #else
-        if (!IsHiddenProcessNameA(entry->szExeFile))
+        bool hidden = IsHiddenProcessNameA(entry->szExeFile);
 #endif
+        ModuleCounters_ProcessEnum_OnProcessExamined(hidden);
+        if (!hidden)
             return TRUE;
     }
     return FALSE;
@@ -120,9 +127,12 @@ static BOOL WINAPI Hook_Process32FirstW(
     WindowsAPI::HANDLE snapshot,
     WindowsAPI::LPPROCESSENTRY32W entry)
 {
+    ModuleCounters_ProcessEnum_OnCall();
     while (pProcess32FirstW(snapshot, entry))
     {
-        if (!IsHiddenProcessNameW(entry->szExeFile))
+        bool hidden = IsHiddenProcessNameW(entry->szExeFile);
+        ModuleCounters_ProcessEnum_OnProcessExamined(hidden);
+        if (!hidden)
             return TRUE;
     }
     return FALSE;
@@ -132,9 +142,12 @@ static BOOL WINAPI Hook_Process32NextW(
     WindowsAPI::HANDLE snapshot,
     WindowsAPI::LPPROCESSENTRY32W entry)
 {
+    ModuleCounters_ProcessEnum_OnCall();
     while (pProcess32NextW(snapshot, entry))
     {
-        if (!IsHiddenProcessNameW(entry->szExeFile))
+        bool hidden = IsHiddenProcessNameW(entry->szExeFile);
+        ModuleCounters_ProcessEnum_OnProcessExamined(hidden);
+        if (!hidden)
             return TRUE;
     }
     return FALSE;
@@ -144,13 +157,16 @@ static BOOL WINAPI Hook_Module32First(
     WindowsAPI::HANDLE snapshot,
     WindowsAPI::LPMODULEENTRY32 entry)
 {
+    ModuleCounters_ProcessEnum_OnCall();
     while (pModule32First(snapshot, entry))
     {
 #ifdef UNICODE
-        if (!IsHiddenModuleNameW(entry->szModule))
+        bool hidden = IsHiddenModuleNameW(entry->szModule);
 #else
-        if (!IsHiddenModuleNameA(entry->szModule))
+        bool hidden = IsHiddenModuleNameA(entry->szModule);
 #endif
+        ModuleCounters_ProcessEnum_OnModuleExamined(hidden);
+        if (!hidden)
             return TRUE;
     }
     return FALSE;
@@ -160,13 +176,16 @@ static BOOL WINAPI Hook_Module32Next(
     WindowsAPI::HANDLE snapshot,
     WindowsAPI::LPMODULEENTRY32 entry)
 {
+    ModuleCounters_ProcessEnum_OnCall();
     while (pModule32Next(snapshot, entry))
     {
 #ifdef UNICODE
-        if (!IsHiddenModuleNameW(entry->szModule))
+        bool hidden = IsHiddenModuleNameW(entry->szModule);
 #else
-        if (!IsHiddenModuleNameA(entry->szModule))
+        bool hidden = IsHiddenModuleNameA(entry->szModule);
 #endif
+        ModuleCounters_ProcessEnum_OnModuleExamined(hidden);
+        if (!hidden)
             return TRUE;
     }
     return FALSE;
@@ -176,9 +195,12 @@ static BOOL WINAPI Hook_Module32FirstW(
     WindowsAPI::HANDLE snapshot,
     WindowsAPI::LPMODULEENTRY32W entry)
 {
+    ModuleCounters_ProcessEnum_OnCall();
     while (pModule32FirstW(snapshot, entry))
     {
-        if (!IsHiddenModuleNameW(entry->szModule))
+        bool hidden = IsHiddenModuleNameW(entry->szModule);
+        ModuleCounters_ProcessEnum_OnModuleExamined(hidden);
+        if (!hidden)
             return TRUE;
     }
     return FALSE;
@@ -188,9 +210,12 @@ static BOOL WINAPI Hook_Module32NextW(
     WindowsAPI::HANDLE snapshot,
     WindowsAPI::LPMODULEENTRY32W entry)
 {
+    ModuleCounters_ProcessEnum_OnCall();
     while (pModule32NextW(snapshot, entry))
     {
-        if (!IsHiddenModuleNameW(entry->szModule))
+        bool hidden = IsHiddenModuleNameW(entry->szModule);
+        ModuleCounters_ProcessEnum_OnModuleExamined(hidden);
+        if (!hidden)
             return TRUE;
     }
     return FALSE;

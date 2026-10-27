@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "description": "Configuração central da infraestrutura experimental TOMWare.M. Caminhos relativos à raiz do repositório TOMWare/ salvo indicação. Nenhum valor experimental fica codificado nos scripts.",
+
+  "paths": {
+    "pin_exe": "pin/pin.exe",
+    "tomware_dll": "x64/Release/TOMWare.dll",
+    "empty_tool_dll": "x64/Release/EmptyPinTool.dll",
+    "fidelity_probe_dll": "x64/Release/FidelityProbe.dll",
+    "oracles_dir": "Resultados/Apps-Teste",
+    "conditions_csv": "experiment/protocol/conditions.csv",
+    "corpus_csv": "experiment/corpus/corpus.csv",
+    "campaigns_dir": "experiment/campaigns",
+    "signature_file": "config/signatures.txt"
+  },
+
+  "campaigns": {
+    "pilot": {
+      "campaign_id_prefix": "pilot",
+      "repetitions": 20,
+      "samples_per_group": { "benign": 5, "malicious": 5 },
+      "require_profiles": ["short_lived", "persistent"],
+      "merge_into_definitive": false
+    },
+    "definitive": {
+      "campaign_id_prefix": "corpus",
+      "repetitions": 10,
+      "samples_per_group": { "benign": 50, "malicious": 50 },
+      "target_profile_split": { "short_lived": 25, "persistent": 25 }
+    },
+    "oracle": {
+      "campaign_id_prefix": "oracle",
+      "repetitions": 30,
+      "independent_of_corpus": true
+    }
+  },
+
+  "observation": {
+    "short_lived": { "timeout_seconds": 120 },
+    "persistent":  { "window_seconds": 60, "controlled_termination": true }
+  },
+
+  "sampling": {
+    "resource_interval_ms": 200,
+    "allowed_range_ms": [100, 250]
+  },
+
+  "randomization": {
+    "method": "per_block_independent_shuffle",
+    "seed": null,
+    "seed_note": "null => planner gera semente criptográfica e a registra em randomization_seeds.csv; informe um inteiro para reproduzir uma ordem exata."
+  },
+
+  "isolation": {
+    "restore_unit": "block",
+    "restore_unit_note": "Snapshot revertido por bloco (amostra+repetição). Condições do mesmo bloco compartilham o estado limpo inicial; ordem randomizada dentro do bloco.",
+    "policy_by_group": {
+      "malicious": { "restore": "snapshot_revert_per_block", "network": "disabled_or_host_only", "shared_folders_during_run": false },
+      "benign":    { "restore": "snapshot_revert_per_block", "network": "disabled_or_host_only", "shared_folders_during_run": false }
+    },
+    "residual_process_check": true,
+    "vmware": {
+      "vmrun_exe": null,
+      "vmx_path": null,
+      "snapshot_name": "tomware_ready",
+      "guest_user": null,
+      "guest_password": null,
+      "note": "Orquestrar no HOST com experiment/scripts/host/Run-HostCampaign.ps1. Snapshot deve conter C:\\TOMWare ja copiado e amostras extraidas. Resultados sao copiados para o host antes de cada revert."
+    },
+    "host_orchestrator": {
+      "enabled": true,
+      "revert_scope": "every_block",
+      "block_timeout_minutes": 30,
+      "max_retries": 1,
+      "note": "A campanha nao deve correr so numa janela interativa da VM. Malware que mata PowerShell ou pinta o desktop e revertido no host a cada bloco."
+    }
+  },
+
+  "pin_condition_probe": {
+    "enabled": true,
+    "note": "Tenta executar pin.exe sem -t. Se falhar, PIN é marcada inválida e EMPTY vira a baseline mínima de Pin; registrado em campaign.json."
+  },
+
+  "module_counters": {
+    "enabled": false,
+    "note": "Contadores internos opcionais da TOMWare.M (knob dedicado). Desligados por padrão: não alteram o funcionamento normal."
+  },
+
+  "safety": {
+    "never_auto_rerun": true,
+    "failures_and_timeouts_are_valid_results": true,
+    "rerun_only_as_separate_diagnostic_campaign": true,
+    "never_overwrite_existing_run": true
+  }
+}

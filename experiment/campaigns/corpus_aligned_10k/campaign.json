@@ -1,0 +1,627 @@
+{
+  "schema_version": 1,
+  "campaign_id": "corpus_aligned_10k",
+  "pilot_mode": false,
+  "created_at_utc": "2026-10-14T20:18:00.139593+00:00",
+  "random_seed": 705851366,
+  "repetitions": 10,
+  "pin_condition_valid": false,
+  "conditions_included": [
+    "NAT",
+    "EMPTY",
+    "TMW0",
+    "TMW_DD",
+    "TMW_DP",
+    "TMW_DE",
+    "TMW_DM",
+    "TMW_DO",
+    "TMW_ALL"
+  ],
+  "samples_count": 100,
+  "samples": [
+    {
+      "sample_id": "BEN_01",
+      "sha256": "005d8b80ed17c1b374ad8d4dd121cd240506da55cae4977a8b9eae42436034a3",
+      "group": "benign",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "BEN_02",
+      "sha256": "01a604553bc43d44a39f7ed7e910f3485c5805af65036c1aadf027ef5d2d5158",
+      "group": "benign",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "BEN_03",
+      "sha256": "01b7fb5bbcbfcd9b5db2444a35ce92dcfc8196a216de4273f87d38cca098a458",
+      "group": "benign",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "BEN_04",
+      "sha256": "02157472592f01a01af87d5495d2520993ebcc7f2f3d39cfb1a88f2a991a573a",
+      "group": "benign",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "BEN_05",
+      "sha256": "0244aa8269c39e74663920ca738fec27bde0a1bb6667feb24299903864337f12",
+      "group": "benign",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "BEN_06",
+      "sha256": "0436f44255d26e463fe9554d30f5f681bec9aaec14fb8ef53acbdea838b1f39d",
+      "group": "benign",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "BEN_07",
+      "sha256": "0528568f4ead8fc3ac7eeac119eab8de7186fdfafe67adab8f610478b9a6b54a",
+      "group": "benign",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "BEN_08",
+      "sha256": "05d9189362107c05acf2a5e422829eb5a74fccc2b7f663d7ddc8959eb916be96",
+      "group": "benign",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "BEN_09",
+      "sha256": "06084d89d2ec270b7d550423b53c4df2c60c432462be9ab322f8d4d806554480",
+      "group": "benign",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "BEN_10",
+      "sha256": "064181108cd8d7f110cc11b84dbf2d7f18fd5f52a2ee989985d88a969f093dbe",
+      "group": "benign",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "BEN_11",
+      "sha256": "0706893c0c4262ecb4d8bfa38f1a90ebd0b6f61d332319e124f56f98c7317231",
+      "group": "benign",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "BEN_12",
+      "sha256": "070a98b4f7c03f99048a10f490d5916a9a98417e0d0de2c414c76b3dd00cb35e",
+      "group": "benign",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "BEN_13",
+      "sha256": "070b43c6e5dfb7a92fafa30206fa4dd6361c3bad52e7d533a2827c3918c73d93",
+      "group": "benign",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "BEN_14",
+      "sha256": "0785c9b642c2b7fc0a09d9df0fd90c9cd6766fcb1cfcc0b08d194bb28e31a030",
+      "group": "benign",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "BEN_15",
+      "sha256": "07976cd85c285b58015867aa84cbe0611c7c801d9be0232b03cda3b886c5c331",
+      "group": "benign",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "BEN_16",
+      "sha256": "07c1f3b3ddc138d037acad8ee6eaa54488b4918861bdaff3fc4ae9796ae79d1c",
+      "group": "benign",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "BEN_17",
+      "sha256": "096473a4a449d224ac737fd6bb0f326c0aa7f6d713c57f6a728a1bd362671ebc",
+      "group": "benign",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "BEN_18",
+      "sha256": "0982622f86bd2d3293c8e80bf5cfaed73ffef4461eca3febc4317acddde49244",
+      "group": "benign",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "BEN_19",
+      "sha256": "09b5bb71284cb130ce70d1d9b63a8182839c25c1d51529ed2ae35c1e991ca488",
+      "group": "benign",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "BEN_20",
+      "sha256": "0b1029ad4b71140a7ec31cc0a1f6495264cdb380cef4fbc91701e431c703d525",
+      "group": "benign",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "BEN_21",
+      "sha256": "0c26c9da6efa3615610cd7fde014013964eab072affb01861dae96649a1bb893",
+      "group": "benign",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "BEN_22",
+      "sha256": "0c2c6c2141e1a54b526bcc3e426719651ccdc16790a7734bd7f6ab6a8d635c1f",
+      "group": "benign",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "BEN_23",
+      "sha256": "0cadef5a7709eecc6f315b3f70168ab299822501edf46f1674cd3078fe519aad",
+      "group": "benign",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "BEN_24",
+      "sha256": "0cd44601e6d6558c01cf9b19f2782ef2e425d21e2039c5b013de9cc2b72f4857",
+      "group": "benign",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "BEN_25",
+      "sha256": "0ce621e2643d9e623648dba7f8eff4016809db8f2a30ea3165898ba78f31799c",
+      "group": "benign",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "BEN_26",
+      "sha256": "00714100343b0d24aa6faf57affe7a8cde0368ce8ecd57eae08d5e5abbefd8bf",
+      "group": "benign",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "BEN_27",
+      "sha256": "00eb3d5e6092e1246bd0956ff0a341c2afa6f96bb805b93d36a7192a9c29e475",
+      "group": "benign",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "BEN_28",
+      "sha256": "0111d485351ef0deffd9403a0f8e123759a04a928fbd055b901de18164c4fa39",
+      "group": "benign",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "BEN_29",
+      "sha256": "018d381ae16f42237b0ef439eacaae038a52da0214894777465f45066943d49e",
+      "group": "benign",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "BEN_30",
+      "sha256": "01e174532b1a79405fcf398331a9937418999381a4970e43af04febad422499b",
+      "group": "benign",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "BEN_31",
+      "sha256": "02bd4dea03c4cc533e97d6cbbd4f95de60ff5fd6bcdc83230e840007b8a56694",
+      "group": "benign",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "BEN_32",
+      "sha256": "03d739b71359808d06c7580b584c9a5cd20454853acdf72e97c9c398a1cb6615",
+      "group": "benign",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "BEN_33",
+      "sha256": "03ec017c1d0370947c4977452c13f989d59715a7e8a4f4ae211356a16a57e718",
+      "group": "benign",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "BEN_34",
+      "sha256": "0402afd1e3231da4841a093040f861b1af321f3dd6740c879de9d1e3d600d95e",
+      "group": "benign",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "BEN_35",
+      "sha256": "042f0641c7339eff2f6795228d0a0a7566361e3a1e4d48b7a5e20e244ed3322d",
+      "group": "benign",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "BEN_36",
+      "sha256": "0453ad9bd34c6906406e5b1901dbb7b5798c0f7cd7fe6b6963116bba92fcd98b",
+      "group": "benign",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "BEN_37",
+      "sha256": "04a8c51f632bae0796e2d15e13a466b3a39763cdfc41bce1e3f1a2e1aa2ad5e7",
+      "group": "benign",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "BEN_38",
+      "sha256": "04c23776c6e2ae916e692ef033570aca8d2def8d17610f92cb1c9f4fdab9f328",
+      "group": "benign",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "BEN_39",
+      "sha256": "05c381129c496b6fa7b70caaa9f65143b4281c025ad3673c6953629f103bcfe4",
+      "group": "benign",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "BEN_40",
+      "sha256": "05e99983fecba92d46cf880f6ba1895e54ad09200bed26a94038f1d9d2088b0c",
+      "group": "benign",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "BEN_41",
+      "sha256": "071b0d3a08503a8b88aeeda1d20f371a563377028f6e252dc66cce60ab8f823e",
+      "group": "benign",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "BEN_42",
+      "sha256": "07caef626368efdb15896bfa029a3ee9e8372e341cfcc46e88767cef31f54422",
+      "group": "benign",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "BEN_43",
+      "sha256": "087c808efb51e5f1a0f0b2a1da3de15399151781412da941ea412b4ad4ea988e",
+      "group": "benign",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "BEN_44",
+      "sha256": "09bbff0b52fcf7095cad74057667923fe054ab64230676f5562fe87a653b2453",
+      "group": "benign",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "BEN_45",
+      "sha256": "0a2e602e0ec5d00d64acf93a447e3e2f5039c455d311bd96a15f5791cc4f2607",
+      "group": "benign",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "BEN_46",
+      "sha256": "0ab9f2923dac072716a8380ec909ea9f74b9f1755f149c2a41f61b49d93633a2",
+      "group": "benign",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "BEN_47",
+      "sha256": "0abd30c5a4a6f17c9f1f718da42435ed05927a3c0ee5430a8ff337027f875dfd",
+      "group": "benign",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "BEN_48",
+      "sha256": "0cb5543430ff67d0ee10cacc2efca29b22821e35b7569fc99c7803663d12613d",
+      "group": "benign",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "BEN_49",
+      "sha256": "0ccb25ee369a566d3425cabeafa48e9d5c1106d025521188a5cbdd5911cadb95",
+      "group": "benign",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "BEN_50",
+      "sha256": "0e3852f51370828c7ad190289fde134b4a961c767ddb839f3413a63bb68dd853",
+      "group": "benign",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "MAL_01",
+      "sha256": "022066efc497ee51fc55bfbac818f0c8c0194b4fcd6dc89815c30b6ca11d286c",
+      "group": "malicious",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "MAL_02",
+      "sha256": "02ab409a3fa69005878bcd00d41f32330073e5606d60b7635fd970e92acdead0",
+      "group": "malicious",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "MAL_03",
+      "sha256": "04e4e646de39b18d7a9b4fe567dfdc986e21e469813f0069220649d26aed862d",
+      "group": "malicious",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "MAL_04",
+      "sha256": "0cd6ef1c6fe1438ae173b70ded86ffbf634eaec341b788e23ae74e0e2f3323da",
+      "group": "malicious",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "MAL_05",
+      "sha256": "0fcc376c2edc128ecccba45376cdcdadf26e6f63134a0eff7d86be57775c891e",
+      "group": "malicious",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "MAL_06",
+      "sha256": "10c12ffde56d43a4f999b96abfe7b1d95ca91366a0fa83094bf23d02f9fc03e5",
+      "group": "malicious",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "MAL_07",
+      "sha256": "153e11471f85de3df5135b0445014698333ff40a9d6c488d291d6517eb19800d",
+      "group": "malicious",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "MAL_08",
+      "sha256": "1693df9d970e011cf1c827fceaf49a3724f4478bc0ed7dc50f2d90ea417b6d38",
+      "group": "malicious",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "MAL_09",
+      "sha256": "1979b3e9366928d0774a41e8bd5e7610a0302cdf62e9a533d2ff6c5ff7c346e9",
+      "group": "malicious",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "MAL_10",
+      "sha256": "1b5a4745d994e662ce897ae63f48f465cce8498c3605119ac9d8979318e43a71",
+      "group": "malicious",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "MAL_11",
+      "sha256": "1df0c1d9e2deef45b585fefd1a03865a24b0ca98a4f997d2158dae8b480970b6",
+      "group": "malicious",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "MAL_12",
+      "sha256": "2378b573c7799fac6884657f5df6d524f47aed4e5348c9104a4943ce6276653b",
+      "group": "malicious",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "MAL_13",
+      "sha256": "2a2b6b75359f4b74de136bc2c3c3a31633d3fcc169f2e2789e4d3f776ebb9e24",
+      "group": "malicious",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "MAL_14",
+      "sha256": "308af6a404d8a91387ddab482a38fdf266e5f903d0e7ff4cac59ebc137ec288c",
+      "group": "malicious",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "MAL_15",
+      "sha256": "3621c6a555e79fd6640b3073b245d4e3b225d7a73403e2529d13a82a2b228c7f",
+      "group": "malicious",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "MAL_16",
+      "sha256": "3adf56d36779c583cbeb6e95ce137146681a25ca032f912a79f9d018bce33c03",
+      "group": "malicious",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "MAL_17",
+      "sha256": "3b77275d167df06f11fc1faef1faf6b76dd4bb3cf161caec0c8fa520cbaf6bed",
+      "group": "malicious",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "MAL_18",
+      "sha256": "3e9b442995fc472566f6689c275b24bb9d2a0244bd002671d471654d0b0893b0",
+      "group": "malicious",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "MAL_19",
+      "sha256": "3f0dea5783c2deb7a9686accab4b1e17953f4babefbcc2668428a9fc00a1c4ea",
+      "group": "malicious",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "MAL_20",
+      "sha256": "4220480ad9c8e85d6bc41b32f81bbbb28feaf688faecbcf8bdbf04f329ffae29",
+      "group": "malicious",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "MAL_21",
+      "sha256": "4644d296b810ceeb381f5d28cf9f5fb2cefde13e5446b6cd0bdd81949f2dba91",
+      "group": "malicious",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "MAL_22",
+      "sha256": "4722f54e39225ef98a285b6c6ae422f412f4852cd1a482f5571eb24f2c2a8875",
+      "group": "malicious",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "MAL_23",
+      "sha256": "4f30db298f99fc45d153f6568529228c98e1ad173249c1f76424977bd0b373c2",
+      "group": "malicious",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "MAL_24",
+      "sha256": "5337242447876bc309591f6489f1313e42d4eeb4b0f710f5fdc796c8099a9d89",
+      "group": "malicious",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "MAL_25",
+      "sha256": "60477891a177629200ba4f8039b5b42351dccdfd9bc404c0a004a8a387a4de82",
+      "group": "malicious",
+      "execution_profile": "short_lived"
+    },
+    {
+      "sample_id": "MAL_26",
+      "sha256": "01c644aa76c644e78f559f2b4b8d1580c2334d821c79e0de222da56d5a96ecaa",
+      "group": "malicious",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "MAL_27",
+      "sha256": "01d56e9f4bfc02d3b968b1cea2f4ed8870df97ac4caba245e528ee5ddbe1d8c8",
+      "group": "malicious",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "MAL_28",
+      "sha256": "01ec79ca328f90e03dd0c9ab0c115bacc279fa5eccea4cc03e4676dc9da78399",
+      "group": "malicious",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "MAL_29",
+      "sha256": "024dfa6ea07d68814dfceb237548715e1c08aa446e75da00ade8ee97ec9e1f4e",
+      "group": "malicious",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "MAL_30",
+      "sha256": "04c9688d45188ee977bb3ab1073802ef3b3b19fb5176d0d302eb1aa6116ef2b0",
+      "group": "malicious",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "MAL_31",
+      "sha256": "051baaebf1cf899c16f6e66ca43d441a87cf037c3dd2e30ace10172e93386ae2",
+      "group": "malicious",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "MAL_32",
+      "sha256": "06007a21dae67e90762433e5c3a42852f49b55029af6220a954f215793e6c223",
+      "group": "malicious",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "MAL_33",
+      "sha256": "06f42fa9e9d8f0c01a7c560490ea71e4cc582069527a5336cdfc299ed1e67c32",
+      "group": "malicious",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "MAL_34",
+      "sha256": "07b702e023cc57f4cf63f292fb58bfcbf03952036c968d3f8ce4ef11b0aa1e8b",
+      "group": "malicious",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "MAL_35",
+      "sha256": "084b23135a3ea779716490827bd69864d1f66cae60f8456e87e78dbd58241a04",
+      "group": "malicious",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "MAL_36",
+      "sha256": "08d03a5ca6fdddddfc982bb4ecbf0d977eb8f50e7e19342b0cf3c41ef0069a3e",
+      "group": "malicious",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "MAL_37",
+      "sha256": "08efd83b4e438b8e6c0911111d90bf30eb2164ffdb89c27d37e63ed80125179b",
+      "group": "malicious",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "MAL_38",
+      "sha256": "0a0bb00159b1e32ee075cc3bf08e9176a5f2c83dec1f0ce151662e2b2f0c478d",
+      "group": "malicious",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "MAL_39",
+      "sha256": "0b3c09f4cc67e07536c9c77900edf5905e81d1747931c5983e84ce233f35c164",
+      "group": "malicious",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "MAL_40",
+      "sha256": "0b4e63a6488eb8c648abfa376bcaa46eb1596628ced030180441b678d314a935",
+      "group": "malicious",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "MAL_41",
+      "sha256": "0bff11bb3bf1c34493d7185fc47b738d302d63a1b740d751de2eabfc1bc173c7",
+      "group": "malicious",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "MAL_42",
+      "sha256": "0d220f40f67c34c15c0fd885a32228c6ae0602216215c1c55df03b7195545369",
+      "group": "malicious",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "MAL_43",
+      "sha256": "0e9afeeac20392cbc350e18b90a0a445d535a04c1b5c3e8defe8a5f57dd07864",
+      "group": "malicious",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "MAL_44",
+      "sha256": "0edcc9061d88c6f0c24ff35d0a2e22387636461db707020d3a70b23cbd523579",
+      "group": "malicious",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "MAL_45",
+      "sha256": "0fc8bf35e3e8d8eff112712fd09081d95b1bb9c388e417aa0ae57754a54cb383",
+      "group": "malicious",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "MAL_46",
+      "sha256": "10f87101da792e5d4276553e22e45aae4123340ab7ce203007cdaa98715f6ecb",
+      "group": "malicious",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "MAL_47",
+      "sha256": "1208c47943cf76a050ee8376cde139d7f2e9ce306af04a986a41ad8d7366b5d5",
+      "group": "malicious",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "MAL_48",
+      "sha256": "12d1b3cfd5b410cc39cd4b74a699c4d31846f551fae776a542f4d26d45c61808",
+      "group": "malicious",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "MAL_49",
+      "sha256": "1490105c73976217f35fe31d65939d1d9711d370c61f3d7d892afbb07eaaec63",
+      "group": "malicious",
+      "execution_profile": "persistent"
+    },
+    {
+      "sample_id": "MAL_50",
+      "sha256": "14a0b7d57f22378472a4e1d20fc50d38db5dab72d46007b472d466049181ab0b",
+      "group": "malicious",
+      "execution_profile": "persistent"
+    }
+  ],
+  "total_planned_runs": 9000,
+  "plan_sha256": "3e86fdd4fef0083002eb26a59f233746eef31c6a208f4cf2b259e982b2d2da8c",
+  "sampling_interval_ms": 200,
+  "isolation_restore_unit": "block"
+}

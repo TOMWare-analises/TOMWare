@@ -1,0 +1,10 @@
+"name","mode","knobs","exe","timeout_sec","exit_code","timed_out","excerpt"
+"M32_NAT","native","","TestModule32.exe","90","0","False","module_count=29 | enum_steps=29 | terminated=True | kernel32=1 | pinish=0 | PASS_MASK_OR_CLEAN"
+"M32_EMPTY","empty","","TestModule32.exe","90","0","False","module_count=29 | enum_steps=29 | terminated=True | kernel32=1 | pinish=0 | PASS_MASK_OR_CLEAN"
+"M32_TMW0","tomware","-q","TestModule32.exe","90","0","False","module_count=29 | enum_steps=29 | terminated=True | kernel32=1 | pinish=0 | PASS_MASK_OR_CLEAN"
+"M32_DP","tomware","-dp -q","TestModule32.exe","90","0","False","module_count=29 | enum_steps=29 | terminated=True | kernel32=1 | pinish=0 | PASS_MASK_OR_CLEAN"
+"WAIT_NAT","native","","TestConcurrentWaits.exe","90","0","False","seq_ms=411 | par_ms=203 | tick_delta_ms=63 | monotonic=True | alertable_ms=46 | WAIT_MODEL_OK"
+"WAIT_EMPTY","empty","","TestConcurrentWaits.exe","90","0","False","seq_ms=436 | par_ms=468 | tick_delta_ms=63 | monotonic=True | alertable_ms=400 | WAIT_MODEL_CHECK"
+"WAIT_TMW0","tomware","-q","TestConcurrentWaits.exe","90","0","False","seq_ms=438 | par_ms=505 | tick_delta_ms=63 | monotonic=True | alertable_ms=436 | WAIT_MODEL_CHECK"
+"WAIT_GO","tomware","-go -q","TestConcurrentWaits.exe","90","-2","True",""
+"WAIT_GO_DO","tomware","-go -do -q","TestConcurrentWaits.exe","90","-2","True",""

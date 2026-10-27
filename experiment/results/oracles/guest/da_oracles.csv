@@ -1,0 +1,6 @@
+"name","knobs","exe","timeout_sec","exit_code","timed_out","excerpt"
+"DA_AD","-gdb -da -q","TestAntiDebug.exe","90","0","False","Ocorrências: | Resumo de ocorrências: | IsDebuggerPresent          : 0 | CheckRemoteDebuggerPresent : 0 | ProcessDebugPort           : 0 | ProcessDebugObjectHandle   : 0 | PEB.BeingDebugged          : 0 | PEB.NtGlobalFlag           : 0 | OK - nenhuma anomalia | -------------------------------"
+"DA_PE","-da -q","TestProcessEnum.exe","90","0","False","Ocorrências: | Resumo de ocorrências: | pin.exe     : 0 | pinvm.dll   : 0 | pinipc.dll  : 0 | TOMWare.dll : 0 | OK - nenhuma anomalia | -------------------------------"
+"DA_EV","-da -q","TestGetEnvironments.exe","90","0","False","Ocorrências: | Resumo de ocorrências: | PIN_APP_LD_LIBRARY_PATH : 0 | PIN_VM_LD_LIBRARY_PATH  : 0 | PIN_CRT_TZDATA          : 0 | OK - nenhuma anomalia | -------------------------------"
+"DA_MS","-da -q","TestMemoryScan.exe","90","0","False","Ocorrências: | Resumo de ocorrências: | PIN_     : 0 | pin.exe  : 0 | pinvm.dll : 0 | pinipc.dll : 0"
+"DA_SK","-da -q","TestOverhead.exe","90","0","False","Sleep invocado | Ticks + Latencia: 2040.7, Limite: 3000 | OK - nenhuma anomalia | -------------------------------"

@@ -1,0 +1,45 @@
+Campanha t2_n10_v7b -- validacao N=10
+Pasta exclusiva: C:\TOMWare\jcvht_t2_n10_v7b
+Pin 3.28.98749  DLL 4BBC6270...F0E6  snapshot tomware_go
+SHA256SUMS.txt n=245. 49 pastas ev_*. campaign complete Part=All.
+
+Waits 40/40 (4 bracos x 10), run_id unico por linha
+  W3_NAT   10/10 exit 0    ~1.07 s
+  W3_EMPTY 10/10 exit 0    ~12.9 s
+  W3_TMW0  10/10 exit 0    ~12.9 s
+  W3_DO    10/10 exit -2   ~180.4 s (timeout 180)
+run_id igual em events.jsonl, run_id.txt, run_meta.json e CSV
+  exemplo NAT01 66260f44469b4b2d9310515a9dbf2368
+  exemplo DO01  6ddc4ccd787d4824ae09c1ee7c0653c3
+
+Tempo 40/40
+  qpc_freq=10000000, qpc_start/qpc_end brutos
+  clock_during_overlap reads=256 no_sleep2=1 qpc_regress=0
+  barrier t1+t2; ns positivos
+
+APC NAT/EMPTY/TMW0 30/30
+  openthread_ok=True gle=0
+  queueuserapc_rv=1 gle=0
+  apc_callback=1  rv=192
+
+APC -do 10/10
+  stdout: openthread_ok=True queueuserapc_rv=1 ANTES do hang
+  events.jsonl para em sleepex_nonalert (12 ev; rv=0)
+  SleepEx(500, alertable) nao regressa em 180 s
+  Nao e falha de OpenThread. Conservar como limite.
+
+Memcmp
+  NAT/TMW0: PIN PASS; _memicmp_l PASS+same+passthrough
+  DM/DA: PIN MASKED; memicmp_l_PIN=MASKED; exit 2 (nao timed_out)
+  MC3_DA 40.2 s -- NAO timeout do coletor
+  ABSENT = NOT_EXERCISED
+
+-da smoke 5/5 exit 0
+  DA3_SK Overhead 2042.56 < 3000
+
+Coletor (jcvht_coletor_fumo_v7) -- NAO e case study
+  window_s=10  rows=75  tracked=4
+  PID/PPID/image/CPU/WS/peak
+  parent_exited + file_created + filho PING vivo depois do pai sair
+
+T1: identified=false. Sem escada. Sem N=30.

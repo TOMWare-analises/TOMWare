@@ -1,0 +1,4 @@
+GetTickCount ascii=2 utf16=0
+QueryPerformanceCounter ascii=2 utf16=0
+WaitForSingleObject ascii=2 utf16=0
+GetModuleHandle ascii=2 utf16=0

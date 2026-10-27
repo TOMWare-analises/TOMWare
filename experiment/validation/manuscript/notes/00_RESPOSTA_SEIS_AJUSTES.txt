@@ -1,0 +1,63 @@
+Resposta aos 6 ajustes da v5
+26/10/2026, DLL 4BBC62707EE0B2EF922D4E8659A6392D92814EA0FC74F4682F1187562AE7F0E6
+
+A recorreção T2 (jcvht_t2_rerun/) e o scan P1 (results_identify/)
+ja correram. waits_retry/ e a corrida antiga; nao a apagar.
+
+1. Relogio durante esperas + ambas as threads na barreira
+   FEITO na recorreção. 40/40 pastas: barrier_arrived t1+t2
+   ANTES dos Sleep; clock_during_overlap DURANTE (reads 13-14
+   em NAT/EMPTY/TMW0; ~100 em -do). qpc_regress=0 nesses tres
+   bracos. Em -do ha regressoes no sampler (documentado).
+
+2. APC / SleepEx + timestamps
+   FEITO, com o limite -do ja conhecido.
+   NAT/EMPTY/TMW0 10/10 exit 0, 14 eventos: SleepEx nao
+   alertavel rv=0; alertavel rv=192 apc=True.
+   -do 10/10 exit -2 aos 90 s no SleepEx alertavel (12 eventos).
+   start_reference_ns POSITIVO em todas as linhas (0 negativos).
+
+3. Serializar; stdout/stderr; ID unico
+   FEITO. Lock no log. 40/40 com stdout.txt + stderr.txt +
+   run_id.txt + run_meta.json + events.jsonl.
+   run_id do jsonl e unico por pasta. run_meta.run_id e o
+   tag do coletor (outro Guid) -- nao misturar.
+
+4. Controlos das APIs -- FOUND nao e funcionamento
+   FEITO o que o export permite.
+   Exercitadas (PASS vs MASKED + pass-through n=8):
+     memcmp, _memicmp, RtlCompareMemory, _memicmp_l
+     (agora CHAMADA: NAT/TMW0 PASS; -dm/-da MASKED).
+   ABSENT = NOT_EXERCISED: RtlEqualMemory, wmemcmp,
+   memcmp_s, bcmp. Isso e linha completa, nao mascara.
+
+5. Marcos / CPU / WS / arvore
+   PROCURA FEITA nos 31; T1 FAIL ACEITE.
+   17 BEN + 14 MAL scanned, hash bate, identified=false.
+   IAT de IsDebuggerPresent+QPC e CRT MSVC (igual BEN_06).
+   Pistas (ainda nao case study, sem ramo/artefacto):
+     MAL_08 e MAL_13 -- Toolhelp Process32* no IAT
+     MAL_12 -- FindWindowA
+     MAL_14 -- ntdll!NtQuerySystemInformation
+     BEN_17 -- strings PIN_/Module32 (140 MB; sem IAT disso)
+     MAL_01/05/06/10/11 -- IAT vazio ou stub (empacotado)
+   Escada NAT/TMW0/knob NAO aberta. Major 3 concedido.
+   Major 2 parcial. Collect-CaseResources.ps1 e so coletor.
+
+6. Commit/release + hash DLL + 31 PE
+   PARCIAL. Hash + Pin + snapshot + catalogo: SIM.
+   Tag git: NAO (3040df7 desactualizado; sem rebuild).
+   RELEASE_ID.txt. Identificar pelo SHA da DLL.
+
+Medianas ms da recorreção (observed_wait_ms)
+            NAT      EMPTY    TMW0     -do
+seq 2x200   406.151  432.940  434.853  413.928
+Join apos barreira
+            211.537  409.891  398.385  284.815
+SleepEx na  216.080  229.914  230.089  221.336
+SleepEx al   45.790  139.625  141.016  timeout
+APC 10/10   sim      sim      sim      0/10
+
+Join < seq so no nativo. Sleeps ainda se intersectam sob Pin.
+-do nao restaura SleepEx alertavel antecipado.
+WaitOne nao e SleepEx. Nao repetir N=30. Nao alterar SkewMask.

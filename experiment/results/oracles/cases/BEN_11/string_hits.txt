@@ -1,0 +1,3 @@
+IsDebuggerPresent ascii=1 utf16=0
+QueryPerformanceCounter ascii=1 utf16=0
+GetModuleHandle ascii=1 utf16=0

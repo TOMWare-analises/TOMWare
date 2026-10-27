@@ -180,6 +180,23 @@ WRAP(wMemcmpI)(const void* a, const void* b, size_t n, AFUNPTR orig)->int
     return reinterpret_cast<fn>(orig)(a, b, n);
 }
 
+/* _memicmp_l(buf1, buf2, count, locale) — four arguments. The 3-arg
+   wMemcmpI replacement left locale as 0xffffffffffffffff and faulted
+   on the pass-through after MASKED (MC3_DM/DA, exit 2). */
+WRAP(wMemcmpIL)(const void* a, const void* b, size_t n, void* locale, AFUNPTR orig)->int
+{
+    ModuleCounters_Memcmp_OnIntercept();
+    if (ShouldMaskAnsiNeedle(b, n, true))
+    {
+        ModuleCounters_Memcmp_OnSignatureMatched();
+        ModuleCounters_Memcmp_OnModified();
+        return 1;
+    }
+    ModuleCounters_Memcmp_OnForwarded();
+    using fn = int(__cdecl*)(const void*, const void*, size_t, void*);
+    return reinterpret_cast<fn>(orig)(a, b, n, locale);
+}
+
 WRAP(wMemcmpS)(const void* a, size_t as, const void* b, size_t bs,
     int* out, AFUNPTR orig)->errno_t
 {
@@ -264,7 +281,7 @@ static const Hook gTable[] = {
     { "bcmp",              (AFUNPTR)wMemcmpA,   3 },
     { "memicmp",           (AFUNPTR)wMemcmpI,   3 },
     { "_memicmp",          (AFUNPTR)wMemcmpI,   3 },
-    { "_memicmp_l",        (AFUNPTR)wMemcmpI,   3 },
+    { "_memicmp_l",        (AFUNPTR)wMemcmpIL,  4 },
     { "memcmp_s",          (AFUNPTR)wMemcmpS,   5 },
     { "wmemcmp",           (AFUNPTR)wWmemcmp,   3 },
     { "wmemcmp_s",         (AFUNPTR)wWmemcmpS,  5 },
@@ -291,6 +308,16 @@ VOID InstMemcmpMask::InstrumentFunction(RTN rtn, VOID*)
                 IARG_FUNCARG_ENTRYPOINT_VALUE, 0,
                 IARG_FUNCARG_ENTRYPOINT_VALUE, 1,
                 IARG_FUNCARG_ENTRYPOINT_VALUE, 2,
+                IARG_PTR, orig,
+                IARG_END);
+        }
+        else if (h->argc == 4)
+        {
+            RTN_ReplaceSignature(rtn, h->wrap,
+                IARG_FUNCARG_ENTRYPOINT_VALUE, 0,
+                IARG_FUNCARG_ENTRYPOINT_VALUE, 1,
+                IARG_FUNCARG_ENTRYPOINT_VALUE, 2,
+                IARG_FUNCARG_ENTRYPOINT_VALUE, 3,
                 IARG_PTR, orig,
                 IARG_END);
         }

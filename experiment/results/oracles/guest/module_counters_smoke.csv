@@ -1,0 +1,2 @@
+"name","knobs","exit_code","timed_out","counters_file_exists","counters_bytes","excerpt"
+"MC_SMOKE","-dp -mc -mcf <out> -q","0","False","True","999","Ocorrências: | Resumo de ocorrências: | pin.exe     : 0 | pinvm.dll   : 0 | pinipc.dll  : 0 | TOMWare.dll : 0 | OK - nenhuma anomalia | -------------------------------"

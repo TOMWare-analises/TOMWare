@@ -1,0 +1,51 @@
+Resposta ao retorno sobre a v2 -- o que a v3 faz e o que nao faz.
+
+Concordamos com o diagnostico da v2. A v3 e so editorial. Numeros, CSVs e
+experiencias sao os da v1/v2. Nao ha caso positivo novo, nem ferramenta
+corrigida, nem campanha nova.
+
+Os quatro ajustes:
+
+1. Timing -- uma unica regra.
+   N=30 (carga mantida) e o resultado principal no corpo.
+   A tabela antiga -go vs -do vai para apendice, com os numeros intactos,
+   rotulada como confundida. Nao se apaga. Nao se deixam duas tabelas
+   de timing a competir no corpo.
+
+2. Paragrafos antigos -- substituir, nao so anotar.
+   Qualquer conclusao da diferenca ~49% / 4080 vs 2081 e substituida:
+   aquela celula e confundida; o claim desta revisao e 11/30 vs 30/30.
+   A frase "-da nao foi avaliado" e substituida pelo smoke test 5/5
+   (nao e campanha 3.100 e nao liga -go).
+
+3. TMW0 no resumo.
+   -q = Pin com TOMWare.dll carregado e os cinco knobs desligados.
+   Nao e "ordinary Pin" / Pin comum / Pin nu.
+   EMPTY (Pin + EmptyPinTool) continua a ser o braco vazio, nas esperas.
+
+4. Carta.
+   (c) passou de "Required manuscript change" para localizacao aplicada
+   (Abstract, Avaliacao / tabela N=30, Apendice da Table 6 antiga,
+   seccao 5.5, caption da Table 9, Discussao / case_attempt, Metodos).
+   Enviar a carta so depois do Overleaf aplicar o 08_INSERCOES_REVISOR.tex.
+
+Lacunas experimentais -- iguais as que apontou:
+
+Pedido                              Situacao apos a v3
+Major 2  recursos / marcos          Continua parcial; sem marcos novos
+                                    nem WS/CPU por processo.
+Major 3  comportamento recuperado   Continua nao atendido.
+Major 4  caminhos suportados        Continua parcial; as tabelas mostram
+                                    os controlos ja existentes.
+
+A tabela case_attempt continua a documentar quatro tentativas sem
+beneficio. Para fechar Major 3 ainda falta a cadeia:
+
+  checagem identificada
+  -> ramo evasivo observado
+  -> contramedida a atuar
+  -> comportamento adicional comprovado.
+
+Isso e Plano B (VM, ate 02/11), nao esta v3. A v3 so organiza o que
+ja existe para o Overleaf, sem contradicao entre guias, sem "ordinary
+Pin", e com carta alinhada ao manuscrito que o amigo vai aplicar.

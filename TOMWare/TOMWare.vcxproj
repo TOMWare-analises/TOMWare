@@ -241,6 +241,7 @@
     <ClCompile Include="Instrumentation.cpp" />
     <ClCompile Include="InstrumentationUtils.cpp" />
     <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="ModuleCounters.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AntiDebugMask.h" />
@@ -254,6 +255,7 @@
     <ClInclude Include="SkewMask.h" />
     <ClInclude Include="TomwareLog.h" />
     <ClInclude Include="Utils.h" />
+    <ClInclude Include="ModuleCounters.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

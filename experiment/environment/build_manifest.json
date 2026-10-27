@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "environment": {
+    "host_os": "Windows",
+    "host_release": "11",
+    "host_version": "10.0.26200",
+    "host_machine": "AMD64",
+    "python_version": "3.14.4"
+  },
+  "tools": {
+    "pin_exe": {
+      "path": "pin/pin.exe",
+      "sha256": "920a730abac4e30d13f2ed75c92f0538fb53fd85273c40b64991a89dce0bb819"
+    },
+    "tomware_dll": {
+      "path": "x64/Release/TOMWare.dll",
+      "sha256": "4bbc62707ee0b2ef922d4e8659a6392d92814ea0fc74f4682f1187562ae7f0e6"
+    },
+    "empty_tool_dll": {
+      "path": "x64/Release/EmptyPinTool.dll",
+      "sha256": "804be19bf7924b641fe25f07ea89dec26dc9daa36c49638f407ff96e2ab153c8"
+    },
+    "fidelity_probe_dll": {
+      "path": "x64/Release/FidelityProbe.dll",
+      "sha256": "a739881fdf0087ee998de800dde909d29c09a3bfe722c4b989b7df96bf684bc9"
+    }
+  },
+  "oracles": {
+    "TestAntiDebug": "3b25069eebc099593905f6075af210e9dae53ad405a5d98c3bb0dfcc0ce1cecd",
+    "TestProcessEnum": "6c22713456857f1fef00c19befcc2b109c65297ab0afe53ca08b7a6d5559469a",
+    "TestGetEnvironments": "93548c5abae9c75df82a2cb81de00b45a746e13754de0c285d7c8b34c0232ae9",
+    "TestMemoryScan": "6c8038c7d88c481a4552befa77976936e9b7ee91d67186d249794be1080d9ae0",
+    "TestOverhead": "ad3ac9bde7f3730410831892bbad02ecd1eea0e034c4388def163afa84c660f9"
+  }
+}

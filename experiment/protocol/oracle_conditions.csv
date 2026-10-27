@@ -1,0 +1,11 @@
+oracle,pair_id,arm,knobs,stimulus,countermeasure,module,in_coverage,oracle_exe,expected_baseline,expected_treatment,notes
+TestAntiDebug,AD,baseline,-gdb -q,-gdb,,AntiDebug,true,TestAntiDebug.exe,indicators_detected,,Estimulo -gdb mantido nos dois bracos
+TestAntiDebug,AD,treatment,-gdb -dd -q,-gdb,-dd,AntiDebug,true,TestAntiDebug.exe,,indicators_suppressed,Unica diferenca funcional: -dd
+TestOverhead,SK,baseline,-go -q,-go,,SkewMask,true,TestOverhead.exe,above_threshold,,Estimulo -go mantido nos dois bracos; N fixo; reter tudo
+TestOverhead,SK,treatment,-go -do -q,-go,-do,SkewMask,true,TestOverhead.exe,,below_threshold,Unica diferenca funcional: -do
+TestProcessEnum,PE,baseline,-q,,,ProcessEnum,true,TestProcessEnum.exe,pin_visible,,Tool Help (coberto)
+TestProcessEnum,PE,treatment,-dp -q,,-dp,ProcessEnum,true,TestProcessEnum.exe,,pin_hidden,Tool Help (coberto)
+TestGetEnvironments,EV,baseline,-q,,,SanitizePinEnvVars,true,TestGetEnvironments.exe,pin_vars_visible,,
+TestGetEnvironments,EV,treatment,-de -q,,-de,SanitizePinEnvVars,true,TestGetEnvironments.exe,,pin_vars_masked,
+TestMemoryScan,MS,baseline,-q,,,InstMemcmpMask,true,TestMemoryScan.exe,signature_found,,memcmp (coberto)
+TestMemoryScan,MS,treatment,-dm -q,,-dm,InstMemcmpMask,true,TestMemoryScan.exe,,signature_masked,memcmp (coberto)

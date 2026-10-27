@@ -1,0 +1,11 @@
+condition,uses_pin,tool,knobs,modules_enabled,contrast_reference,purpose,command_template
+NAT,false,none,,none,,Referencia original sem Intel Pin,"{sample} {args}"
+PIN,true,none,,none,NAT,Custo do motor Pin sem tool (validado por probe; pode ser invalida),"{pin_exe} -- {sample} {args}"
+EMPTY,true,empty_tool,,none,PIN,Custo minimo de carregar uma Pintool,"{pin_exe} -t {empty_tool_dll} -- {sample} {args}"
+TMW0,true,tomware,-q,none,EMPTY,Custo da infraestrutura TOMWare.M com modulos off,"{pin_exe} -t {tomware_dll} -q -- {sample} {args}"
+TMW_DD,true,tomware,-dd -q,AntiDebug,TMW0,Efeito incremental do AntiDebug,"{pin_exe} -t {tomware_dll} -dd -q -- {sample} {args}"
+TMW_DP,true,tomware,-dp -q,ProcessEnum,TMW0,Efeito incremental do ProcessEnum,"{pin_exe} -t {tomware_dll} -dp -q -- {sample} {args}"
+TMW_DE,true,tomware,-de -q,SanitizePinEnvVars,TMW0,Efeito incremental do SanitizePinEnvVars,"{pin_exe} -t {tomware_dll} -de -q -- {sample} {args}"
+TMW_DM,true,tomware,-dm -q,InstMemcmpMask,TMW0,Efeito incremental do InstMemcmpMask,"{pin_exe} -t {tomware_dll} -dm -q -- {sample} {args}"
+TMW_DO,true,tomware,-do -q,SkewMask,TMW0,Efeito incremental do SkewMask,"{pin_exe} -t {tomware_dll} -do -q -- {sample} {args}"
+TMW_ALL,true,tomware,-da -q,AntiDebug;ProcessEnum;SanitizePinEnvVars;InstMemcmpMask;SkewMask,TMW0,Efeito da ativacao conjunta (-da),"{pin_exe} -t {tomware_dll} -da -q -- {sample} {args}"

@@ -4,6 +4,7 @@
 #include "AntiDebugMask.h"
 #include "ProcessEnumMask.h"
 #include "TomwareLog.h"
+#include "ModuleCounters.h"
 
 #include <sstream>
 
@@ -22,6 +23,8 @@ KNOB<BOOL> KnobSimulateOverhead(KNOB_MODE_WRITEONCE, "pintool", "go", "0", "Gera
 KNOB<BOOL> KnobSimulateDebug(KNOB_MODE_WRITEONCE, "pintool", "gdb", "0", "Simula indicadores anti-debug no PEB (apenas demonstracoes; use com -dd no benchmark)");
 KNOB<BOOL> KnobQuiet(KNOB_MODE_WRITEONCE, "pintool", "q", "0", "Modo silencioso (suprime logs informativos das contramedidas)");
 KNOB<UINT32> KnobMaxExceptions(KNOB_MODE_WRITEONCE, "pintool", "me", "0", "Limite de excecoes antes de abortar (0 = ilimitado, continua execucao)");
+KNOB<BOOL> KnobModuleCounters(KNOB_MODE_WRITEONCE, "pintool", "mc", "0", "Ativa contadores internos de ativacao dos modulos");
+KNOB<std::string> KnobModuleCountersFile(KNOB_MODE_WRITEONCE, "pintool", "mcf", "module_events.json", "Arquivo de saida para os contadores dos modulos");
 
 static volatile WindowsAPI::LONG g_exceptionCount = 0;
 
@@ -170,6 +173,8 @@ int InitInstrumentation()
     // Iniciar o PIN e instrumenta��o
     PIN_InitLock(&lock);
     PIN_InitSymbols();
+
+    ModuleCounters_Init();
 
     IMG_AddInstrumentFunction(InstrumentFunctions, 0);
 

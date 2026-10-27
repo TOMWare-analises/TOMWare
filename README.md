@@ -6,6 +6,40 @@ Repository: [https://github.com/TOMWare-analises/TOMWare](https://github.com/TOM
 
 ---
 
+## Reproduce
+
+One product; the same tree is what any reviewer runs. Hashes:
+`experiment/environment/build_manifest.json`.
+
+| Artifact | SHA-256 prefix |
+|----------|----------------|
+| Pin 3.28.98749 `pin/pin.exe` | `920A730A…B819` |
+| `x64/Release/TOMWare.dll` | `4BBC6270…F0E6` |
+| `x64/Release/EmptyPinTool.dll` | `804BE19B…53C8` |
+
+Rebuilding the DLL is a **different** campaign. To check published numbers, use this binary.
+
+All measured tables are under **`experiment/results/`**:
+
+| Folder | What |
+|--------|------|
+| `corpus/` | First published pack (17 benign + 14 infected) |
+| `oracles/` | N=30 timing, N=10 waits/memcmp/`-da`, identify, counters, `manuscript_values.json` |
+| `campaign/` | 9 000-run processed tables |
+
+**Smoke (no malware):**  
+`pin\pin.exe -t x64\Release\TOMWare.dll -q -- Resultados\Apps-Teste\TestOverhead.exe`
+
+**Re-run oracles (guest `tomware_go`, no malware):**  
+`powershell -ExecutionPolicy Bypass -File experiment\validation\scripts\Run-Oracles.ps1 -Part All -WaitN 10 -CampaignId n10 -DoTimeoutSec 180`  
+If the VM dies: power on without reverting the snapshot; add `-Resume`.
+
+**9 000-run campaign:** `experiment/scripts/host/Run-HostCampaign.ps1` and `experiment/protocol/protocol.md`. Do not overwrite `experiment/results/campaign/` unless you accept a new campaign id.
+
+Do not cite git `3040df7` as this DLL. Do not change `SkewMask.cpp` and keep the old N=30 table. Do not execute `samples/infected/` on a networked host.
+
+---
+
 ## Abstract
 
 TOMWare.M is a modular DBI pintool built on Intel Pin to mitigate anti-instrumentation techniques. It implements five selectively activatable countermeasures targeting debugging indicators, process enumeration, environment variables, memory signatures, and execution-time discrepancies. The five modules were validated through controlled test applications; execution times were recorded before and after activation. Results indicate that the countermeasures reduce the corresponding instrumentation indicators in the evaluated scenarios, while temporal impact varies according to the intercepted mechanism and its activation frequency.
@@ -16,6 +50,7 @@ TOMWare.M implements five selectively activatable countermeasures (`-dd`, `-dp`,
 
 ## Table of Contents
 
+* [Reproduce](#reproduce)
 * [1. Structure of this README](#1-structure-of-this-readme)
   * [1.1 Organization](#11-organization)
   * [1.2 Distributed artifacts](#12-distributed-artifacts)
@@ -34,7 +69,7 @@ TOMWare.M implements five selectively activatable countermeasures (`-dd`, `-dp`,
 * [7. Minimal test](#7-minimal-test)
 * [8. Experiments](#8-experiments)
   * [8.6 Published result evidence](#86-published-result-evidence)
-  * [8.7 IEEE Access revision protocols](#87-ieee-access-revision-protocols)
+  * [8.7 Experimental infrastructure](#87-experimental-infrastructure)
 * [9. License](#9-license)
 
 ---
@@ -52,7 +87,7 @@ This README is organized into the following main sections:
 5. **Security** — mandatory isolation when running real samples.
 6. **Installation** — optional build and basic pintool syntax.
 7. **Minimal test** — quick validation with test apps (no malware).
-8. **Experiments** — baseline vs countermeasure, corpus, timing, published evidence (§8.6), and IEEE Access revision protocols (§8.7).
+8. **Experiments** — baseline vs countermeasure, corpus, timing, and the single results tree (§8.6–8.7).
 9. **License** — terms of use.
 
 ## 1.2 Distributed artifacts
@@ -64,7 +99,7 @@ This README is organized into the following main sections:
 * Signatures for memory masking (`config/signatures.txt`).
 * Execution and benchmark scripts (`scripts/`).
 * Current execution-flow diagram (`imgs/tomware-fluxo-execucao-23072026.png`).
-* Experiment captures and results (`Resultados/`), including consolidated evidence under `Resultados/evidencias_VM/` — see §8.6.
+* Measured tables under `experiment/results/` (corpus, oracles, campaign) — see **Reproduce** and §8.6.
 * Installer package (Git, Visual Studio, 7-Zip, VMware, Pin, TOMWare, ISO) on [Google Drive — Installers](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing) — see §4.4.
 * Corpus of **benign** and **infected** samples in `samples/` in this repository — see §4.5.
   (Google Drive blocks public sharing of these files by policy; therefore the corpus is shipped via Git.)
@@ -79,14 +114,19 @@ TOMWare/                              ← repository root (this README)
 ├── TOMWare/                          ← pintool source (.cpp/.h)
 ├── pin/                              ← Intel Pin 3.28 (x64, MSVC)
 ├── config/                           ← signatures (-sf), corpus, mappings
-├── scripts/                          ← execution and benchmarks
+├── scripts/                          ← original VM helpers (used by experiment/ too)
 │   ├── run-sample.ps1
-│   ├── run-baseline-dm-one.ps1/.cmd  ← baseline vs one countermeasure (same print)
+│   ├── run-baseline-dm-one.ps1/.cmd
 │   ├── benchmark-poc.ps1
 │   ├── benchmark-corpus.ps1
 │   ├── benchmark-infected.ps1
-│   ├── r2-*.ps1                      ← IEEE Access revision campaigns (§8.7)
+│   ├── r2-*.ps1                      ← older campaign path; prefer experiment/
 │   └── lib/TomwareBenchmark.ps1
+├── experiment/                       ← campaign + oracles
+│   ├── results/                      ← **all** measured tables (corpus / oracles / campaign)
+│   ├── protocol/ corpus/ config/
+│   ├── scripts/                      ← planner, runner, validators, analysis
+│   └── validation/scripts/           ← Run-Oracles.ps1
 ├── EmptyPinTool/                     ← empty pintool baseline (pin_empty ladder)
 ├── FidelityProbe/                    ← behavioral fidelity probe helper
 ├── imgs/                             ← README / architecture figures
@@ -99,11 +139,7 @@ TOMWare/                              ← repository root (this README)
 │   ├── Apps-Teste-src/               ← test-app sources
 │   ├── Capturas-Tela/                ← experiment screenshots
 │   ├── Avaliacao/                    ← benchmark outputs (when generated)
-│   ├── benchmarks/                   ← per-run CSV/JSON (generated on the VM)
-│   └── evidencias_VM/                ← published evidence (PDF/CSV/JSON) — §8.6
-│       ├── benign/                   ← benign corpus (per hash + consolidated)
-│       ├── malign/                   ← infected corpus (per hash + consolidated)
-│       └── comparativo/              ← benign vs infected
+│   └── benchmarks/                   ← local VM dumps (generated; not the published tables)
 ├── TOMWare.sln
 ├── .env.example                      ← VT_API_KEY template (never commit `.env`)
 ├── LICENSE
@@ -147,10 +183,10 @@ Badges from the SBSeg **Artifact Technical Committee (CTA)** ([official guidance
 
 | Badge | Criterion (CTA summary) | How this repository addresses it |
 |-------|-------------------------|----------------------------------|
-| **Available (SeloD)** | Code/data in a stable repository with a minimal README | Public GitHub; this README; corpus in `samples/`; [Installers](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing) and playlist on Drive; evidence under `Resultados/evidencias_VM/` |
+| **Available (SeloD)** | Code/data in a stable repository with a minimal README | Public GitHub; this README; corpus in `samples/`; [Installers](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing) and playlist on Drive; evidence under `experiment/results/` |
 | **Functional (SeloF)** | Runnable artifact; deps, environment, install, and minimal example | §3.5 / §4 (deps and versions), §6 (install), §7 (minimal test with apps in `Resultados/Apps-Teste/`) |
 | **Sustainable (SeloS)** | Modular, readable code mapped to paper claims | `TOMWare/` + `scripts/` layout; knobs `-dd/-dp/-de/-dm/-do`; diagram §3.3; evidence under `Resultados/` |
-| **Reproducible (SeloR)** | Reproduce the main paper claims | §8 (VM/snapshot protocol, scripts, corpus); evidence under `Resultados/evidencias_VM/` (§8.6); playlist §1.4 as a flow demo |
+| **Reproducible (SeloR)** | Reproduce the main paper claims | **Reproduce** above; §8; `experiment/results/`; playlist §1.4 as a flow demo |
 
 Base work: SBSeg 2025 (TOMWare). Current extension (**TOMWare.M**, SBSeg 2026 Tools Fair): **AntiDebug** (`-dd`) and **ProcessEnum** (`-dp`) modules.
 
@@ -633,32 +669,33 @@ Measure-Command {
 
 ## 8.6 Published result evidence
 
-Besides CSV/JSON generated on the VM under `Resultados\benchmarks\` (§8.3 / video 13), the repository publishes consolidated run evidence under:
+All published tables live in one place:
 
 ```text
-Resultados/evidencias_VM/
-├── benign/          ← per sample (hash) + consolidated benign corpus
-├── malign/          ← per sample (hash) + consolidated infected corpus
-└── comparativo/     ← benign vs infected comparison
+experiment/results/
+├── corpus/       17+14 pack (per-hash PDF/CSV + consolidations)
+├── oracles/      N=30 timing, N=10 waits/memcmp/-da, identify, counters,
+│                 manuscript_values.json
+└── campaign/     9 000-run processed tables
 ```
 
 | Content | Location |
 |---------|----------|
-| Per-sample report (PDF) | `evidencias_VM/benign/<SHA256>/` and `evidencias_VM/malign/<SHA256>/` |
-| Benign consolidated (17 samples) | `evidencias_VM/benign/TOMWare-corpus-benigno-17-amostras.pdf` (+ CSV/JSON) |
-| Infected consolidated (14 samples) | `evidencias_VM/malign/TOMWare-corpus-maligno-14-amostras.pdf` (+ CSV/JSON) |
-| Benign × infected comparison | `evidencias_VM/comparativo/TOMWare-comparativo-benigno-vs-maligno.pdf` (+ CSV) |
-| Raw outputs of a local run | `Resultados\benchmarks\benchmark-<type>-<cm>-<hash8>-<date>.{csv,json}` |
+| Per-sample report (PDF) | `experiment/results/corpus/benign/<SHA256>/` and `…/malign/<SHA256>/` |
+| Benign consolidated (17) | `experiment/results/corpus/benign/TOMWare-corpus-benigno-17-amostras.pdf` |
+| Infected consolidated (14) | `experiment/results/corpus/malign/TOMWare-corpus-maligno-14-amostras.pdf` |
+| Benign × infected | `experiment/results/corpus/comparativo/` |
+| Official figures | `experiment/results/oracles/manuscript_values.json` |
+| Local VM dump (not published) | `Resultados\benchmarks\` |
 
-Samples used in these experiments: repository folder `samples/` (§4.5).
+Samples: `samples/` (§4.5). How to re-run: **Reproduce** at the top of this README.
 
-## 8.7 IEEE Access revision protocols
+## 8.7 Experimental infrastructure
 
-For the IEEE Access revision (`Access-2026-38745`), additional campaigns close matched-validation,
-selection-bias, metric-validity, and SkewMask resource-interpretation gaps. Scripts live under
-`scripts/r2-*.ps1` and reuse the same VM/snapshot discipline as §8.1. Pre-built DLLs
-(`TOMWare.dll`, `EmptyPinTool.dll`, `FidelityProbe.dll`) are copied to the VM — builds are done
-on the host, not inside the guest.
+`experiment/` is the campaign and oracle runner. `scripts/r2-*.ps1` is the older
+path and reuses the VM/snapshot discipline of §8.1. Pre-built DLLs
+(`TOMWare.dll`, `EmptyPinTool.dll`, `FidelityProbe.dll`) are copied to the VM —
+builds are done on the host, not inside the guest.
 
 | Protocol | Script / artifact | Purpose |
 |----------|-------------------|---------|

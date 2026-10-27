@@ -1,0 +1,7 @@
+﻿"name","knobs","exe","exit","excerpt"
+"M32_native","native","TestModule32.exe","0","module_count=31 | enum_steps=31 | terminated=True | kernel32=1 | pinish=0 | PASS_MASK_OR_CLEAN | "
+"M32_pin","-q","TestModule32.exe","-1","module_count=29 | enum_steps=29 | terminated=True | kernel32=1 | pinish=0 | PASS_MASK_OR_CLEAN | "
+"M32_dp","-dp -q","TestModule32.exe","-1","module_count=29 | enum_steps=29 | terminated=True | kernel32=1 | pinish=0 | PASS_MASK_OR_CLEAN | "
+"WAIT_native","native","TestConcurrentWaits.exe","0","seq_ms=413 | par_ms=203 | tick_delta_ms=62 | monotonic=True | alertable_ms=31 | WAIT_MODEL_OK | "
+"WAIT_go","-go -q","TestConcurrentWaits.exe","-2",""
+"WAIT_go_do","-go -do -q","TestConcurrentWaits.exe","-2",""

@@ -1,0 +1,26 @@
+MC3 _memicmp_l controls — t2_n10_v7b — DLL 4BBC6270
+Source: C:\Users\marge\Downloads\jcvht_t2_n10_v7b\ev_MC3_*\stdout.txt
+
+MC3_NAT exit 0
+  memicmp_l_PIN=PASS detail=ret=0;locale=0
+  memicmp_l_same=OK detail=ret=0
+  memicmp_l_passthrough=DIFF_OK detail=ret=-1;n=8
+
+MC3_TMW0 -q exit 0
+  same three lines as NAT (PASS / OK / DIFF_OK)
+
+MC3_DM -dm -q exit 2 timed_out=false
+  memcmp_PIN=MASKED ret=1
+  memicmp_PIN=MASKED ret=1
+  RtlCompareMemory_PIN=MASKED n=0
+  memcmp_len0/same/passthrough OK
+  memicmp_same/passthrough OK
+  RtlCompareMemory_same/passthrough OK
+  _memicmp_l_export=FOUND
+  RtlEqualMemory/wmemcmp/memcmp_s/bcmp = ABSENT ? NOT_EXERCISED
+  memicmp_l_PIN=MASKED ret=1;locale=0
+  memicmp_l_same and memicmp_l_passthrough ABSENT (process aborted)
+  stderr: RECEIVED_ACCESS_FAULT READ 0xffffffffffffffff then exit(2)
+
+MC3_DA -da -q exit 2 timed_out=false duration_ms=40244
+  same stdout cut-off as DM

@@ -1,0 +1,4 @@
+arm,n,median,min,max,below_threshold,rate_below,median_note
+TMW0,30,2433.285,2168.12,2749.98,30,100,conventional (mean of two central values)
+GO,30,3083.210,2722.01,3845.31,11,36.7,conventional
+GO_DO,30,2104.770,2073.28,2146.11,30,100,conventional

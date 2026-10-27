@@ -1,0 +1,16 @@
+IsDebuggerPresent ascii=1 utf16=0
+NtQueryInformationProcess ascii=1 utf16=0
+NtQuerySystemInformation ascii=1 utf16=0
+GetTickCount ascii=3 utf16=0
+GetTickCount64 ascii=2 utf16=0
+QueryPerformanceCounter ascii=2 utf16=0
+QueryPerformanceFrequency ascii=2 utf16=0
+WaitForSingleObject ascii=5 utf16=0
+CreateToolhelp32Snapshot ascii=2 utf16=0
+Process32First ascii=1 utf16=0
+Process32Next ascii=1 utf16=0
+Module32First ascii=2 utf16=0
+Module32Next ascii=2 utf16=0
+GetModuleHandle ascii=4 utf16=0
+memcmp ascii=1 utf16=3
+OutputDebugString ascii=2 utf16=0

@@ -1,0 +1,1006 @@
+{
+  "samples_root": "D:\\MMB\\workspace\\tomware-melhorias\\TOMWare\\samples",
+  "samples_root_exists": true,
+  "subdirs": [
+    "benign",
+    "infected"
+  ],
+  "benign_dir_exists": true,
+  "infected_dir_exists": true,
+  "benign_file_count": 57,
+  "infected_file_count": 51,
+  "benign_exe_sha_named": 57,
+  "infected_zip_sha_named": 51,
+  "infected_exe_sha_named": 0,
+  "infected_other_ext": [
+    ".zip"
+  ],
+  "infected_nested_files": [],
+  "corpus_rows": 100,
+  "corpus_benign_present_on_disk": [
+    "005d8b80ed17c1b374ad8d4dd121cd240506da55cae4977a8b9eae42436034a3",
+    "00714100343b0d24aa6faf57affe7a8cde0368ce8ecd57eae08d5e5abbefd8bf",
+    "00eb3d5e6092e1246bd0956ff0a341c2afa6f96bb805b93d36a7192a9c29e475",
+    "0111d485351ef0deffd9403a0f8e123759a04a928fbd055b901de18164c4fa39",
+    "018d381ae16f42237b0ef439eacaae038a52da0214894777465f45066943d49e",
+    "01a604553bc43d44a39f7ed7e910f3485c5805af65036c1aadf027ef5d2d5158",
+    "01b7fb5bbcbfcd9b5db2444a35ce92dcfc8196a216de4273f87d38cca098a458",
+    "01e174532b1a79405fcf398331a9937418999381a4970e43af04febad422499b",
+    "02157472592f01a01af87d5495d2520993ebcc7f2f3d39cfb1a88f2a991a573a",
+    "0244aa8269c39e74663920ca738fec27bde0a1bb6667feb24299903864337f12",
+    "02bd4dea03c4cc533e97d6cbbd4f95de60ff5fd6bcdc83230e840007b8a56694",
+    "03d739b71359808d06c7580b584c9a5cd20454853acdf72e97c9c398a1cb6615",
+    "03ec017c1d0370947c4977452c13f989d59715a7e8a4f4ae211356a16a57e718",
+    "0402afd1e3231da4841a093040f861b1af321f3dd6740c879de9d1e3d600d95e",
+    "042f0641c7339eff2f6795228d0a0a7566361e3a1e4d48b7a5e20e244ed3322d",
+    "0436f44255d26e463fe9554d30f5f681bec9aaec14fb8ef53acbdea838b1f39d",
+    "0453ad9bd34c6906406e5b1901dbb7b5798c0f7cd7fe6b6963116bba92fcd98b",
+    "04a8c51f632bae0796e2d15e13a466b3a39763cdfc41bce1e3f1a2e1aa2ad5e7",
+    "04c23776c6e2ae916e692ef033570aca8d2def8d17610f92cb1c9f4fdab9f328",
+    "0528568f4ead8fc3ac7eeac119eab8de7186fdfafe67adab8f610478b9a6b54a",
+    "05c381129c496b6fa7b70caaa9f65143b4281c025ad3673c6953629f103bcfe4",
+    "05d9189362107c05acf2a5e422829eb5a74fccc2b7f663d7ddc8959eb916be96",
+    "05e99983fecba92d46cf880f6ba1895e54ad09200bed26a94038f1d9d2088b0c",
+    "06084d89d2ec270b7d550423b53c4df2c60c432462be9ab322f8d4d806554480",
+    "064181108cd8d7f110cc11b84dbf2d7f18fd5f52a2ee989985d88a969f093dbe",
+    "0706893c0c4262ecb4d8bfa38f1a90ebd0b6f61d332319e124f56f98c7317231",
+    "070a98b4f7c03f99048a10f490d5916a9a98417e0d0de2c414c76b3dd00cb35e",
+    "070b43c6e5dfb7a92fafa30206fa4dd6361c3bad52e7d533a2827c3918c73d93",
+    "071b0d3a08503a8b88aeeda1d20f371a563377028f6e252dc66cce60ab8f823e",
+    "0785c9b642c2b7fc0a09d9df0fd90c9cd6766fcb1cfcc0b08d194bb28e31a030",
+    "07976cd85c285b58015867aa84cbe0611c7c801d9be0232b03cda3b886c5c331",
+    "07c1f3b3ddc138d037acad8ee6eaa54488b4918861bdaff3fc4ae9796ae79d1c",
+    "07caef626368efdb15896bfa029a3ee9e8372e341cfcc46e88767cef31f54422",
+    "087c808efb51e5f1a0f0b2a1da3de15399151781412da941ea412b4ad4ea988e",
+    "096473a4a449d224ac737fd6bb0f326c0aa7f6d713c57f6a728a1bd362671ebc",
+    "0982622f86bd2d3293c8e80bf5cfaed73ffef4461eca3febc4317acddde49244",
+    "09b5bb71284cb130ce70d1d9b63a8182839c25c1d51529ed2ae35c1e991ca488",
+    "09bbff0b52fcf7095cad74057667923fe054ab64230676f5562fe87a653b2453",
+    "0a2e602e0ec5d00d64acf93a447e3e2f5039c455d311bd96a15f5791cc4f2607",
+    "0ab9f2923dac072716a8380ec909ea9f74b9f1755f149c2a41f61b49d93633a2",
+    "0abd30c5a4a6f17c9f1f718da42435ed05927a3c0ee5430a8ff337027f875dfd",
+    "0b1029ad4b71140a7ec31cc0a1f6495264cdb380cef4fbc91701e431c703d525",
+    "0c26c9da6efa3615610cd7fde014013964eab072affb01861dae96649a1bb893",
+    "0c2c6c2141e1a54b526bcc3e426719651ccdc16790a7734bd7f6ab6a8d635c1f",
+    "0cadef5a7709eecc6f315b3f70168ab299822501edf46f1674cd3078fe519aad",
+    "0cb5543430ff67d0ee10cacc2efca29b22821e35b7569fc99c7803663d12613d",
+    "0ccb25ee369a566d3425cabeafa48e9d5c1106d025521188a5cbdd5911cadb95",
+    "0cd44601e6d6558c01cf9b19f2782ef2e425d21e2039c5b013de9cc2b72f4857",
+    "0ce621e2643d9e623648dba7f8eff4016809db8f2a30ea3165898ba78f31799c",
+    "0e3852f51370828c7ad190289fde134b4a961c767ddb839f3413a63bb68dd853"
+  ],
+  "corpus_benign_missing_on_disk": [],
+  "corpus_malicious_present_on_disk": [
+    "01c644aa76c644e78f559f2b4b8d1580c2334d821c79e0de222da56d5a96ecaa",
+    "01d56e9f4bfc02d3b968b1cea2f4ed8870df97ac4caba245e528ee5ddbe1d8c8",
+    "01ec79ca328f90e03dd0c9ab0c115bacc279fa5eccea4cc03e4676dc9da78399",
+    "022066efc497ee51fc55bfbac818f0c8c0194b4fcd6dc89815c30b6ca11d286c",
+    "024dfa6ea07d68814dfceb237548715e1c08aa446e75da00ade8ee97ec9e1f4e",
+    "02ab409a3fa69005878bcd00d41f32330073e5606d60b7635fd970e92acdead0",
+    "04c9688d45188ee977bb3ab1073802ef3b3b19fb5176d0d302eb1aa6116ef2b0",
+    "04e4e646de39b18d7a9b4fe567dfdc986e21e469813f0069220649d26aed862d",
+    "051baaebf1cf899c16f6e66ca43d441a87cf037c3dd2e30ace10172e93386ae2",
+    "06007a21dae67e90762433e5c3a42852f49b55029af6220a954f215793e6c223",
+    "06f42fa9e9d8f0c01a7c560490ea71e4cc582069527a5336cdfc299ed1e67c32",
+    "07b702e023cc57f4cf63f292fb58bfcbf03952036c968d3f8ce4ef11b0aa1e8b",
+    "084b23135a3ea779716490827bd69864d1f66cae60f8456e87e78dbd58241a04",
+    "08d03a5ca6fdddddfc982bb4ecbf0d977eb8f50e7e19342b0cf3c41ef0069a3e",
+    "08efd83b4e438b8e6c0911111d90bf30eb2164ffdb89c27d37e63ed80125179b",
+    "0a0bb00159b1e32ee075cc3bf08e9176a5f2c83dec1f0ce151662e2b2f0c478d",
+    "0b3c09f4cc67e07536c9c77900edf5905e81d1747931c5983e84ce233f35c164",
+    "0b4e63a6488eb8c648abfa376bcaa46eb1596628ced030180441b678d314a935",
+    "0bff11bb3bf1c34493d7185fc47b738d302d63a1b740d751de2eabfc1bc173c7",
+    "0cd6ef1c6fe1438ae173b70ded86ffbf634eaec341b788e23ae74e0e2f3323da",
+    "0d220f40f67c34c15c0fd885a32228c6ae0602216215c1c55df03b7195545369",
+    "0e9afeeac20392cbc350e18b90a0a445d535a04c1b5c3e8defe8a5f57dd07864",
+    "0edcc9061d88c6f0c24ff35d0a2e22387636461db707020d3a70b23cbd523579",
+    "0fc8bf35e3e8d8eff112712fd09081d95b1bb9c388e417aa0ae57754a54cb383",
+    "0fcc376c2edc128ecccba45376cdcdadf26e6f63134a0eff7d86be57775c891e",
+    "10c12ffde56d43a4f999b96abfe7b1d95ca91366a0fa83094bf23d02f9fc03e5",
+    "10f87101da792e5d4276553e22e45aae4123340ab7ce203007cdaa98715f6ecb",
+    "1208c47943cf76a050ee8376cde139d7f2e9ce306af04a986a41ad8d7366b5d5",
+    "12d1b3cfd5b410cc39cd4b74a699c4d31846f551fae776a542f4d26d45c61808",
+    "1490105c73976217f35fe31d65939d1d9711d370c61f3d7d892afbb07eaaec63",
+    "14a0b7d57f22378472a4e1d20fc50d38db5dab72d46007b472d466049181ab0b",
+    "153e11471f85de3df5135b0445014698333ff40a9d6c488d291d6517eb19800d",
+    "1693df9d970e011cf1c827fceaf49a3724f4478bc0ed7dc50f2d90ea417b6d38",
+    "1979b3e9366928d0774a41e8bd5e7610a0302cdf62e9a533d2ff6c5ff7c346e9",
+    "1b5a4745d994e662ce897ae63f48f465cce8498c3605119ac9d8979318e43a71",
+    "1df0c1d9e2deef45b585fefd1a03865a24b0ca98a4f997d2158dae8b480970b6",
+    "2378b573c7799fac6884657f5df6d524f47aed4e5348c9104a4943ce6276653b",
+    "2a2b6b75359f4b74de136bc2c3c3a31633d3fcc169f2e2789e4d3f776ebb9e24",
+    "308af6a404d8a91387ddab482a38fdf266e5f903d0e7ff4cac59ebc137ec288c",
+    "3621c6a555e79fd6640b3073b245d4e3b225d7a73403e2529d13a82a2b228c7f",
+    "3adf56d36779c583cbeb6e95ce137146681a25ca032f912a79f9d018bce33c03",
+    "3b77275d167df06f11fc1faef1faf6b76dd4bb3cf161caec0c8fa520cbaf6bed",
+    "3e9b442995fc472566f6689c275b24bb9d2a0244bd002671d471654d0b0893b0",
+    "3f0dea5783c2deb7a9686accab4b1e17953f4babefbcc2668428a9fc00a1c4ea",
+    "4220480ad9c8e85d6bc41b32f81bbbb28feaf688faecbcf8bdbf04f329ffae29",
+    "4644d296b810ceeb381f5d28cf9f5fb2cefde13e5446b6cd0bdd81949f2dba91",
+    "4722f54e39225ef98a285b6c6ae422f412f4852cd1a482f5571eb24f2c2a8875",
+    "4f30db298f99fc45d153f6568529228c98e1ad173249c1f76424977bd0b373c2",
+    "5337242447876bc309591f6489f1313e42d4eeb4b0f710f5fdc796c8099a9d89",
+    "60477891a177629200ba4f8039b5b42351dccdfd9bc404c0a004a8a387a4de82"
+  ],
+  "corpus_malicious_missing_on_disk": [],
+  "disk_benign_not_in_corpus": [
+    "0d4948c4627df452dbe1dce51f1edb3f1c0bd0a90a38b79ada2e16b6c1c6ddac",
+    "0df42e045bca512d9312e0ca7ac248b81e67824773476c6121e8f34e5ab5ee26",
+    "0e8c5884bb51b2a3cec41b6e6fde9465a983fff3ecd94632ef5aba39e5a18a07",
+    "0edc5d5798e7d4dccbcc7fedf0b18c3c71ac1b1b1ca5beb6dafe1d00eb6bfcc9",
+    "0fdc768d34a770714d0cf0f8050015abcdd03ec5c79b338a82388d019be6d4a3",
+    "1a6d49009179fbe99989c70a6d056f5b8d20a84f1d17fcba8906d4311353f83b",
+    "1c895c5064386ac71d185a3c251ee8f864debbd315670a9c3927eb5631fa1991"
+  ],
+  "disk_infected_not_in_corpus": [
+    "a0aeb837cb5e762fc0b7d657c71d343e765cccb5780cd315756f682418b3cdfe"
+  ],
+  "benign_files": [
+    {
+      "name": "005d8b80ed17c1b374ad8d4dd121cd240506da55cae4977a8b9eae42436034a3.exe",
+      "stem": "005d8b80ed17c1b374ad8d4dd121cd240506da55cae4977a8b9eae42436034a3",
+      "ext": ".exe",
+      "size_bytes": 192512,
+      "stem_is_sha256": true,
+      "sha256_from_name": "005d8b80ed17c1b374ad8d4dd121cd240506da55cae4977a8b9eae42436034a3"
+    },
+    {
+      "name": "00714100343b0d24aa6faf57affe7a8cde0368ce8ecd57eae08d5e5abbefd8bf.exe",
+      "stem": "00714100343b0d24aa6faf57affe7a8cde0368ce8ecd57eae08d5e5abbefd8bf",
+      "ext": ".exe",
+      "size_bytes": 724992,
+      "stem_is_sha256": true,
+      "sha256_from_name": "00714100343b0d24aa6faf57affe7a8cde0368ce8ecd57eae08d5e5abbefd8bf"
+    },
+    {
+      "name": "00eb3d5e6092e1246bd0956ff0a341c2afa6f96bb805b93d36a7192a9c29e475.exe",
+      "stem": "00eb3d5e6092e1246bd0956ff0a341c2afa6f96bb805b93d36a7192a9c29e475",
+      "ext": ".exe",
+      "size_bytes": 135168,
+      "stem_is_sha256": true,
+      "sha256_from_name": "00eb3d5e6092e1246bd0956ff0a341c2afa6f96bb805b93d36a7192a9c29e475"
+    },
+    {
+      "name": "0111d485351ef0deffd9403a0f8e123759a04a928fbd055b901de18164c4fa39.exe",
+      "stem": "0111d485351ef0deffd9403a0f8e123759a04a928fbd055b901de18164c4fa39",
+      "ext": ".exe",
+      "size_bytes": 278528,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0111d485351ef0deffd9403a0f8e123759a04a928fbd055b901de18164c4fa39"
+    },
+    {
+      "name": "018d381ae16f42237b0ef439eacaae038a52da0214894777465f45066943d49e.exe",
+      "stem": "018d381ae16f42237b0ef439eacaae038a52da0214894777465f45066943d49e",
+      "ext": ".exe",
+      "size_bytes": 1875968,
+      "stem_is_sha256": true,
+      "sha256_from_name": "018d381ae16f42237b0ef439eacaae038a52da0214894777465f45066943d49e"
+    },
+    {
+      "name": "01a604553bc43d44a39f7ed7e910f3485c5805af65036c1aadf027ef5d2d5158.exe",
+      "stem": "01a604553bc43d44a39f7ed7e910f3485c5805af65036c1aadf027ef5d2d5158",
+      "ext": ".exe",
+      "size_bytes": 741488,
+      "stem_is_sha256": true,
+      "sha256_from_name": "01a604553bc43d44a39f7ed7e910f3485c5805af65036c1aadf027ef5d2d5158"
+    },
+    {
+      "name": "01b7fb5bbcbfcd9b5db2444a35ce92dcfc8196a216de4273f87d38cca098a458.exe",
+      "stem": "01b7fb5bbcbfcd9b5db2444a35ce92dcfc8196a216de4273f87d38cca098a458",
+      "ext": ".exe",
+      "size_bytes": 484236,
+      "stem_is_sha256": true,
+      "sha256_from_name": "01b7fb5bbcbfcd9b5db2444a35ce92dcfc8196a216de4273f87d38cca098a458"
+    },
+    {
+      "name": "01e174532b1a79405fcf398331a9937418999381a4970e43af04febad422499b.exe",
+      "stem": "01e174532b1a79405fcf398331a9937418999381a4970e43af04febad422499b",
+      "ext": ".exe",
+      "size_bytes": 131072,
+      "stem_is_sha256": true,
+      "sha256_from_name": "01e174532b1a79405fcf398331a9937418999381a4970e43af04febad422499b"
+    },
+    {
+      "name": "02157472592f01a01af87d5495d2520993ebcc7f2f3d39cfb1a88f2a991a573a.exe",
+      "stem": "02157472592f01a01af87d5495d2520993ebcc7f2f3d39cfb1a88f2a991a573a",
+      "ext": ".exe",
+      "size_bytes": 259584,
+      "stem_is_sha256": true,
+      "sha256_from_name": "02157472592f01a01af87d5495d2520993ebcc7f2f3d39cfb1a88f2a991a573a"
+    },
+    {
+      "name": "0244aa8269c39e74663920ca738fec27bde0a1bb6667feb24299903864337f12.exe",
+      "stem": "0244aa8269c39e74663920ca738fec27bde0a1bb6667feb24299903864337f12",
+      "ext": ".exe",
+      "size_bytes": 57344,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0244aa8269c39e74663920ca738fec27bde0a1bb6667feb24299903864337f12"
+    },
+    {
+      "name": "02bd4dea03c4cc533e97d6cbbd4f95de60ff5fd6bcdc83230e840007b8a56694.exe",
+      "stem": "02bd4dea03c4cc533e97d6cbbd4f95de60ff5fd6bcdc83230e840007b8a56694",
+      "ext": ".exe",
+      "size_bytes": 106496,
+      "stem_is_sha256": true,
+      "sha256_from_name": "02bd4dea03c4cc533e97d6cbbd4f95de60ff5fd6bcdc83230e840007b8a56694"
+    },
+    {
+      "name": "03d739b71359808d06c7580b584c9a5cd20454853acdf72e97c9c398a1cb6615.exe",
+      "stem": "03d739b71359808d06c7580b584c9a5cd20454853acdf72e97c9c398a1cb6615",
+      "ext": ".exe",
+      "size_bytes": 610304,
+      "stem_is_sha256": true,
+      "sha256_from_name": "03d739b71359808d06c7580b584c9a5cd20454853acdf72e97c9c398a1cb6615"
+    },
+    {
+      "name": "03ec017c1d0370947c4977452c13f989d59715a7e8a4f4ae211356a16a57e718.exe",
+      "stem": "03ec017c1d0370947c4977452c13f989d59715a7e8a4f4ae211356a16a57e718",
+      "ext": ".exe",
+      "size_bytes": 16910584,
+      "stem_is_sha256": true,
+      "sha256_from_name": "03ec017c1d0370947c4977452c13f989d59715a7e8a4f4ae211356a16a57e718"
+    },
+    {
+      "name": "0402afd1e3231da4841a093040f861b1af321f3dd6740c879de9d1e3d600d95e.exe",
+      "stem": "0402afd1e3231da4841a093040f861b1af321f3dd6740c879de9d1e3d600d95e",
+      "ext": ".exe",
+      "size_bytes": 61440,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0402afd1e3231da4841a093040f861b1af321f3dd6740c879de9d1e3d600d95e"
+    },
+    {
+      "name": "042f0641c7339eff2f6795228d0a0a7566361e3a1e4d48b7a5e20e244ed3322d.exe",
+      "stem": "042f0641c7339eff2f6795228d0a0a7566361e3a1e4d48b7a5e20e244ed3322d",
+      "ext": ".exe",
+      "size_bytes": 372736,
+      "stem_is_sha256": true,
+      "sha256_from_name": "042f0641c7339eff2f6795228d0a0a7566361e3a1e4d48b7a5e20e244ed3322d"
+    },
+    {
+      "name": "0436f44255d26e463fe9554d30f5f681bec9aaec14fb8ef53acbdea838b1f39d.exe",
+      "stem": "0436f44255d26e463fe9554d30f5f681bec9aaec14fb8ef53acbdea838b1f39d",
+      "ext": ".exe",
+      "size_bytes": 5622912,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0436f44255d26e463fe9554d30f5f681bec9aaec14fb8ef53acbdea838b1f39d"
+    },
+    {
+      "name": "0453ad9bd34c6906406e5b1901dbb7b5798c0f7cd7fe6b6963116bba92fcd98b.exe",
+      "stem": "0453ad9bd34c6906406e5b1901dbb7b5798c0f7cd7fe6b6963116bba92fcd98b",
+      "ext": ".exe",
+      "size_bytes": 778576,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0453ad9bd34c6906406e5b1901dbb7b5798c0f7cd7fe6b6963116bba92fcd98b"
+    },
+    {
+      "name": "04a8c51f632bae0796e2d15e13a466b3a39763cdfc41bce1e3f1a2e1aa2ad5e7.exe",
+      "stem": "04a8c51f632bae0796e2d15e13a466b3a39763cdfc41bce1e3f1a2e1aa2ad5e7",
+      "ext": ".exe",
+      "size_bytes": 344648,
+      "stem_is_sha256": true,
+      "sha256_from_name": "04a8c51f632bae0796e2d15e13a466b3a39763cdfc41bce1e3f1a2e1aa2ad5e7"
+    },
+    {
+      "name": "04c23776c6e2ae916e692ef033570aca8d2def8d17610f92cb1c9f4fdab9f328.exe",
+      "stem": "04c23776c6e2ae916e692ef033570aca8d2def8d17610f92cb1c9f4fdab9f328",
+      "ext": ".exe",
+      "size_bytes": 1503232,
+      "stem_is_sha256": true,
+      "sha256_from_name": "04c23776c6e2ae916e692ef033570aca8d2def8d17610f92cb1c9f4fdab9f328"
+    },
+    {
+      "name": "0528568f4ead8fc3ac7eeac119eab8de7186fdfafe67adab8f610478b9a6b54a.exe",
+      "stem": "0528568f4ead8fc3ac7eeac119eab8de7186fdfafe67adab8f610478b9a6b54a",
+      "ext": ".exe",
+      "size_bytes": 265568,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0528568f4ead8fc3ac7eeac119eab8de7186fdfafe67adab8f610478b9a6b54a"
+    },
+    {
+      "name": "05c381129c496b6fa7b70caaa9f65143b4281c025ad3673c6953629f103bcfe4.exe",
+      "stem": "05c381129c496b6fa7b70caaa9f65143b4281c025ad3673c6953629f103bcfe4",
+      "ext": ".exe",
+      "size_bytes": 16430976,
+      "stem_is_sha256": true,
+      "sha256_from_name": "05c381129c496b6fa7b70caaa9f65143b4281c025ad3673c6953629f103bcfe4"
+    },
+    {
+      "name": "05d9189362107c05acf2a5e422829eb5a74fccc2b7f663d7ddc8959eb916be96.exe",
+      "stem": "05d9189362107c05acf2a5e422829eb5a74fccc2b7f663d7ddc8959eb916be96",
+      "ext": ".exe",
+      "size_bytes": 65536,
+      "stem_is_sha256": true,
+      "sha256_from_name": "05d9189362107c05acf2a5e422829eb5a74fccc2b7f663d7ddc8959eb916be96"
+    },
+    {
+      "name": "05e99983fecba92d46cf880f6ba1895e54ad09200bed26a94038f1d9d2088b0c.exe",
+      "stem": "05e99983fecba92d46cf880f6ba1895e54ad09200bed26a94038f1d9d2088b0c",
+      "ext": ".exe",
+      "size_bytes": 172032,
+      "stem_is_sha256": true,
+      "sha256_from_name": "05e99983fecba92d46cf880f6ba1895e54ad09200bed26a94038f1d9d2088b0c"
+    },
+    {
+      "name": "06084d89d2ec270b7d550423b53c4df2c60c432462be9ab322f8d4d806554480.exe",
+      "stem": "06084d89d2ec270b7d550423b53c4df2c60c432462be9ab322f8d4d806554480",
+      "ext": ".exe",
+      "size_bytes": 390816,
+      "stem_is_sha256": true,
+      "sha256_from_name": "06084d89d2ec270b7d550423b53c4df2c60c432462be9ab322f8d4d806554480"
+    },
+    {
+      "name": "064181108cd8d7f110cc11b84dbf2d7f18fd5f52a2ee989985d88a969f093dbe.exe",
+      "stem": "064181108cd8d7f110cc11b84dbf2d7f18fd5f52a2ee989985d88a969f093dbe",
+      "ext": ".exe",
+      "size_bytes": 45056,
+      "stem_is_sha256": true,
+      "sha256_from_name": "064181108cd8d7f110cc11b84dbf2d7f18fd5f52a2ee989985d88a969f093dbe"
+    },
+    {
+      "name": "0706893c0c4262ecb4d8bfa38f1a90ebd0b6f61d332319e124f56f98c7317231.exe",
+      "stem": "0706893c0c4262ecb4d8bfa38f1a90ebd0b6f61d332319e124f56f98c7317231",
+      "ext": ".exe",
+      "size_bytes": 24232,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0706893c0c4262ecb4d8bfa38f1a90ebd0b6f61d332319e124f56f98c7317231"
+    },
+    {
+      "name": "070a98b4f7c03f99048a10f490d5916a9a98417e0d0de2c414c76b3dd00cb35e.exe",
+      "stem": "070a98b4f7c03f99048a10f490d5916a9a98417e0d0de2c414c76b3dd00cb35e",
+      "ext": ".exe",
+      "size_bytes": 110592,
+      "stem_is_sha256": true,
+      "sha256_from_name": "070a98b4f7c03f99048a10f490d5916a9a98417e0d0de2c414c76b3dd00cb35e"
+    },
+    {
+      "name": "070b43c6e5dfb7a92fafa30206fa4dd6361c3bad52e7d533a2827c3918c73d93.exe",
+      "stem": "070b43c6e5dfb7a92fafa30206fa4dd6361c3bad52e7d533a2827c3918c73d93",
+      "ext": ".exe",
+      "size_bytes": 33822,
+      "stem_is_sha256": true,
+      "sha256_from_name": "070b43c6e5dfb7a92fafa30206fa4dd6361c3bad52e7d533a2827c3918c73d93"
+    },
+    {
+      "name": "071b0d3a08503a8b88aeeda1d20f371a563377028f6e252dc66cce60ab8f823e.exe",
+      "stem": "071b0d3a08503a8b88aeeda1d20f371a563377028f6e252dc66cce60ab8f823e",
+      "ext": ".exe",
+      "size_bytes": 918944,
+      "stem_is_sha256": true,
+      "sha256_from_name": "071b0d3a08503a8b88aeeda1d20f371a563377028f6e252dc66cce60ab8f823e"
+    },
+    {
+      "name": "0785c9b642c2b7fc0a09d9df0fd90c9cd6766fcb1cfcc0b08d194bb28e31a030.exe",
+      "stem": "0785c9b642c2b7fc0a09d9df0fd90c9cd6766fcb1cfcc0b08d194bb28e31a030",
+      "ext": ".exe",
+      "size_bytes": 45056,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0785c9b642c2b7fc0a09d9df0fd90c9cd6766fcb1cfcc0b08d194bb28e31a030"
+    },
+    {
+      "name": "07976cd85c285b58015867aa84cbe0611c7c801d9be0232b03cda3b886c5c331.exe",
+      "stem": "07976cd85c285b58015867aa84cbe0611c7c801d9be0232b03cda3b886c5c331",
+      "ext": ".exe",
+      "size_bytes": 431504,
+      "stem_is_sha256": true,
+      "sha256_from_name": "07976cd85c285b58015867aa84cbe0611c7c801d9be0232b03cda3b886c5c331"
+    },
+    {
+      "name": "07c1f3b3ddc138d037acad8ee6eaa54488b4918861bdaff3fc4ae9796ae79d1c.exe",
+      "stem": "07c1f3b3ddc138d037acad8ee6eaa54488b4918861bdaff3fc4ae9796ae79d1c",
+      "ext": ".exe",
+      "size_bytes": 77824,
+      "stem_is_sha256": true,
+      "sha256_from_name": "07c1f3b3ddc138d037acad8ee6eaa54488b4918861bdaff3fc4ae9796ae79d1c"
+    },
+    {
+      "name": "07caef626368efdb15896bfa029a3ee9e8372e341cfcc46e88767cef31f54422.exe",
+      "stem": "07caef626368efdb15896bfa029a3ee9e8372e341cfcc46e88767cef31f54422",
+      "ext": ".exe",
+      "size_bytes": 146744,
+      "stem_is_sha256": true,
+      "sha256_from_name": "07caef626368efdb15896bfa029a3ee9e8372e341cfcc46e88767cef31f54422"
+    },
+    {
+      "name": "087c808efb51e5f1a0f0b2a1da3de15399151781412da941ea412b4ad4ea988e.exe",
+      "stem": "087c808efb51e5f1a0f0b2a1da3de15399151781412da941ea412b4ad4ea988e",
+      "ext": ".exe",
+      "size_bytes": 196608,
+      "stem_is_sha256": true,
+      "sha256_from_name": "087c808efb51e5f1a0f0b2a1da3de15399151781412da941ea412b4ad4ea988e"
+    },
+    {
+      "name": "096473a4a449d224ac737fd6bb0f326c0aa7f6d713c57f6a728a1bd362671ebc.exe",
+      "stem": "096473a4a449d224ac737fd6bb0f326c0aa7f6d713c57f6a728a1bd362671ebc",
+      "ext": ".exe",
+      "size_bytes": 140340512,
+      "stem_is_sha256": true,
+      "sha256_from_name": "096473a4a449d224ac737fd6bb0f326c0aa7f6d713c57f6a728a1bd362671ebc"
+    },
+    {
+      "name": "0982622f86bd2d3293c8e80bf5cfaed73ffef4461eca3febc4317acddde49244.exe",
+      "stem": "0982622f86bd2d3293c8e80bf5cfaed73ffef4461eca3febc4317acddde49244",
+      "ext": ".exe",
+      "size_bytes": 327056,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0982622f86bd2d3293c8e80bf5cfaed73ffef4461eca3febc4317acddde49244"
+    },
+    {
+      "name": "09b5bb71284cb130ce70d1d9b63a8182839c25c1d51529ed2ae35c1e991ca488.exe",
+      "stem": "09b5bb71284cb130ce70d1d9b63a8182839c25c1d51529ed2ae35c1e991ca488",
+      "ext": ".exe",
+      "size_bytes": 118784,
+      "stem_is_sha256": true,
+      "sha256_from_name": "09b5bb71284cb130ce70d1d9b63a8182839c25c1d51529ed2ae35c1e991ca488"
+    },
+    {
+      "name": "09bbff0b52fcf7095cad74057667923fe054ab64230676f5562fe87a653b2453.exe",
+      "stem": "09bbff0b52fcf7095cad74057667923fe054ab64230676f5562fe87a653b2453",
+      "ext": ".exe",
+      "size_bytes": 98304,
+      "stem_is_sha256": true,
+      "sha256_from_name": "09bbff0b52fcf7095cad74057667923fe054ab64230676f5562fe87a653b2453"
+    },
+    {
+      "name": "0a2e602e0ec5d00d64acf93a447e3e2f5039c455d311bd96a15f5791cc4f2607.exe",
+      "stem": "0a2e602e0ec5d00d64acf93a447e3e2f5039c455d311bd96a15f5791cc4f2607",
+      "ext": ".exe",
+      "size_bytes": 437880,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0a2e602e0ec5d00d64acf93a447e3e2f5039c455d311bd96a15f5791cc4f2607"
+    },
+    {
+      "name": "0ab9f2923dac072716a8380ec909ea9f74b9f1755f149c2a41f61b49d93633a2.exe",
+      "stem": "0ab9f2923dac072716a8380ec909ea9f74b9f1755f149c2a41f61b49d93633a2",
+      "ext": ".exe",
+      "size_bytes": 122880,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0ab9f2923dac072716a8380ec909ea9f74b9f1755f149c2a41f61b49d93633a2"
+    },
+    {
+      "name": "0abd30c5a4a6f17c9f1f718da42435ed05927a3c0ee5430a8ff337027f875dfd.exe",
+      "stem": "0abd30c5a4a6f17c9f1f718da42435ed05927a3c0ee5430a8ff337027f875dfd",
+      "ext": ".exe",
+      "size_bytes": 258048,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0abd30c5a4a6f17c9f1f718da42435ed05927a3c0ee5430a8ff337027f875dfd"
+    },
+    {
+      "name": "0b1029ad4b71140a7ec31cc0a1f6495264cdb380cef4fbc91701e431c703d525.exe",
+      "stem": "0b1029ad4b71140a7ec31cc0a1f6495264cdb380cef4fbc91701e431c703d525",
+      "ext": ".exe",
+      "size_bytes": 36659,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0b1029ad4b71140a7ec31cc0a1f6495264cdb380cef4fbc91701e431c703d525"
+    },
+    {
+      "name": "0c26c9da6efa3615610cd7fde014013964eab072affb01861dae96649a1bb893.exe",
+      "stem": "0c26c9da6efa3615610cd7fde014013964eab072affb01861dae96649a1bb893",
+      "ext": ".exe",
+      "size_bytes": 80440,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0c26c9da6efa3615610cd7fde014013964eab072affb01861dae96649a1bb893"
+    },
+    {
+      "name": "0c2c6c2141e1a54b526bcc3e426719651ccdc16790a7734bd7f6ab6a8d635c1f.exe",
+      "stem": "0c2c6c2141e1a54b526bcc3e426719651ccdc16790a7734bd7f6ab6a8d635c1f",
+      "ext": ".exe",
+      "size_bytes": 33795,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0c2c6c2141e1a54b526bcc3e426719651ccdc16790a7734bd7f6ab6a8d635c1f"
+    },
+    {
+      "name": "0cadef5a7709eecc6f315b3f70168ab299822501edf46f1674cd3078fe519aad.exe",
+      "stem": "0cadef5a7709eecc6f315b3f70168ab299822501edf46f1674cd3078fe519aad",
+      "ext": ".exe",
+      "size_bytes": 26728,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0cadef5a7709eecc6f315b3f70168ab299822501edf46f1674cd3078fe519aad"
+    },
+    {
+      "name": "0cb5543430ff67d0ee10cacc2efca29b22821e35b7569fc99c7803663d12613d.exe",
+      "stem": "0cb5543430ff67d0ee10cacc2efca29b22821e35b7569fc99c7803663d12613d",
+      "ext": ".exe",
+      "size_bytes": 2890680,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0cb5543430ff67d0ee10cacc2efca29b22821e35b7569fc99c7803663d12613d"
+    },
+    {
+      "name": "0ccb25ee369a566d3425cabeafa48e9d5c1106d025521188a5cbdd5911cadb95.exe",
+      "stem": "0ccb25ee369a566d3425cabeafa48e9d5c1106d025521188a5cbdd5911cadb95",
+      "ext": ".exe",
+      "size_bytes": 143360,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0ccb25ee369a566d3425cabeafa48e9d5c1106d025521188a5cbdd5911cadb95"
+    },
+    {
+      "name": "0cd44601e6d6558c01cf9b19f2782ef2e425d21e2039c5b013de9cc2b72f4857.exe",
+      "stem": "0cd44601e6d6558c01cf9b19f2782ef2e425d21e2039c5b013de9cc2b72f4857",
+      "ext": ".exe",
+      "size_bytes": 5374088,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0cd44601e6d6558c01cf9b19f2782ef2e425d21e2039c5b013de9cc2b72f4857"
+    },
+    {
+      "name": "0ce621e2643d9e623648dba7f8eff4016809db8f2a30ea3165898ba78f31799c.exe",
+      "stem": "0ce621e2643d9e623648dba7f8eff4016809db8f2a30ea3165898ba78f31799c",
+      "ext": ".exe",
+      "size_bytes": 274432,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0ce621e2643d9e623648dba7f8eff4016809db8f2a30ea3165898ba78f31799c"
+    },
+    {
+      "name": "0d4948c4627df452dbe1dce51f1edb3f1c0bd0a90a38b79ada2e16b6c1c6ddac.exe",
+      "stem": "0d4948c4627df452dbe1dce51f1edb3f1c0bd0a90a38b79ada2e16b6c1c6ddac",
+      "ext": ".exe",
+      "size_bytes": 77824,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0d4948c4627df452dbe1dce51f1edb3f1c0bd0a90a38b79ada2e16b6c1c6ddac"
+    },
+    {
+      "name": "0df42e045bca512d9312e0ca7ac248b81e67824773476c6121e8f34e5ab5ee26.exe",
+      "stem": "0df42e045bca512d9312e0ca7ac248b81e67824773476c6121e8f34e5ab5ee26",
+      "ext": ".exe",
+      "size_bytes": 40960,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0df42e045bca512d9312e0ca7ac248b81e67824773476c6121e8f34e5ab5ee26"
+    },
+    {
+      "name": "0e3852f51370828c7ad190289fde134b4a961c767ddb839f3413a63bb68dd853.exe",
+      "stem": "0e3852f51370828c7ad190289fde134b4a961c767ddb839f3413a63bb68dd853",
+      "ext": ".exe",
+      "size_bytes": 372736,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0e3852f51370828c7ad190289fde134b4a961c767ddb839f3413a63bb68dd853"
+    },
+    {
+      "name": "0e8c5884bb51b2a3cec41b6e6fde9465a983fff3ecd94632ef5aba39e5a18a07.exe",
+      "stem": "0e8c5884bb51b2a3cec41b6e6fde9465a983fff3ecd94632ef5aba39e5a18a07",
+      "ext": ".exe",
+      "size_bytes": 86016,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0e8c5884bb51b2a3cec41b6e6fde9465a983fff3ecd94632ef5aba39e5a18a07"
+    },
+    {
+      "name": "0edc5d5798e7d4dccbcc7fedf0b18c3c71ac1b1b1ca5beb6dafe1d00eb6bfcc9.exe",
+      "stem": "0edc5d5798e7d4dccbcc7fedf0b18c3c71ac1b1b1ca5beb6dafe1d00eb6bfcc9",
+      "ext": ".exe",
+      "size_bytes": 212497530,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0edc5d5798e7d4dccbcc7fedf0b18c3c71ac1b1b1ca5beb6dafe1d00eb6bfcc9"
+    },
+    {
+      "name": "0fdc768d34a770714d0cf0f8050015abcdd03ec5c79b338a82388d019be6d4a3.exe",
+      "stem": "0fdc768d34a770714d0cf0f8050015abcdd03ec5c79b338a82388d019be6d4a3",
+      "ext": ".exe",
+      "size_bytes": 110592,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0fdc768d34a770714d0cf0f8050015abcdd03ec5c79b338a82388d019be6d4a3"
+    },
+    {
+      "name": "1a6d49009179fbe99989c70a6d056f5b8d20a84f1d17fcba8906d4311353f83b.exe",
+      "stem": "1a6d49009179fbe99989c70a6d056f5b8d20a84f1d17fcba8906d4311353f83b",
+      "ext": ".exe",
+      "size_bytes": 2340536,
+      "stem_is_sha256": true,
+      "sha256_from_name": "1a6d49009179fbe99989c70a6d056f5b8d20a84f1d17fcba8906d4311353f83b"
+    },
+    {
+      "name": "1c895c5064386ac71d185a3c251ee8f864debbd315670a9c3927eb5631fa1991.exe",
+      "stem": "1c895c5064386ac71d185a3c251ee8f864debbd315670a9c3927eb5631fa1991",
+      "ext": ".exe",
+      "size_bytes": 126976,
+      "stem_is_sha256": true,
+      "sha256_from_name": "1c895c5064386ac71d185a3c251ee8f864debbd315670a9c3927eb5631fa1991"
+    }
+  ],
+  "infected_files": [
+    {
+      "name": "01c644aa76c644e78f559f2b4b8d1580c2334d821c79e0de222da56d5a96ecaa.zip",
+      "stem": "01c644aa76c644e78f559f2b4b8d1580c2334d821c79e0de222da56d5a96ecaa",
+      "ext": ".zip",
+      "size_bytes": 3251365,
+      "stem_is_sha256": true,
+      "sha256_from_name": "01c644aa76c644e78f559f2b4b8d1580c2334d821c79e0de222da56d5a96ecaa"
+    },
+    {
+      "name": "01d56e9f4bfc02d3b968b1cea2f4ed8870df97ac4caba245e528ee5ddbe1d8c8.zip",
+      "stem": "01d56e9f4bfc02d3b968b1cea2f4ed8870df97ac4caba245e528ee5ddbe1d8c8",
+      "ext": ".zip",
+      "size_bytes": 14988,
+      "stem_is_sha256": true,
+      "sha256_from_name": "01d56e9f4bfc02d3b968b1cea2f4ed8870df97ac4caba245e528ee5ddbe1d8c8"
+    },
+    {
+      "name": "01ec79ca328f90e03dd0c9ab0c115bacc279fa5eccea4cc03e4676dc9da78399.zip",
+      "stem": "01ec79ca328f90e03dd0c9ab0c115bacc279fa5eccea4cc03e4676dc9da78399",
+      "ext": ".zip",
+      "size_bytes": 2367058,
+      "stem_is_sha256": true,
+      "sha256_from_name": "01ec79ca328f90e03dd0c9ab0c115bacc279fa5eccea4cc03e4676dc9da78399"
+    },
+    {
+      "name": "022066efc497ee51fc55bfbac818f0c8c0194b4fcd6dc89815c30b6ca11d286c.zip",
+      "stem": "022066efc497ee51fc55bfbac818f0c8c0194b4fcd6dc89815c30b6ca11d286c",
+      "ext": ".zip",
+      "size_bytes": 5780458,
+      "stem_is_sha256": true,
+      "sha256_from_name": "022066efc497ee51fc55bfbac818f0c8c0194b4fcd6dc89815c30b6ca11d286c"
+    },
+    {
+      "name": "024dfa6ea07d68814dfceb237548715e1c08aa446e75da00ade8ee97ec9e1f4e.zip",
+      "stem": "024dfa6ea07d68814dfceb237548715e1c08aa446e75da00ade8ee97ec9e1f4e",
+      "ext": ".zip",
+      "size_bytes": 4062346,
+      "stem_is_sha256": true,
+      "sha256_from_name": "024dfa6ea07d68814dfceb237548715e1c08aa446e75da00ade8ee97ec9e1f4e"
+    },
+    {
+      "name": "02ab409a3fa69005878bcd00d41f32330073e5606d60b7635fd970e92acdead0.zip",
+      "stem": "02ab409a3fa69005878bcd00d41f32330073e5606d60b7635fd970e92acdead0",
+      "ext": ".zip",
+      "size_bytes": 13836819,
+      "stem_is_sha256": true,
+      "sha256_from_name": "02ab409a3fa69005878bcd00d41f32330073e5606d60b7635fd970e92acdead0"
+    },
+    {
+      "name": "04c9688d45188ee977bb3ab1073802ef3b3b19fb5176d0d302eb1aa6116ef2b0.zip",
+      "stem": "04c9688d45188ee977bb3ab1073802ef3b3b19fb5176d0d302eb1aa6116ef2b0",
+      "ext": ".zip",
+      "size_bytes": 4045838,
+      "stem_is_sha256": true,
+      "sha256_from_name": "04c9688d45188ee977bb3ab1073802ef3b3b19fb5176d0d302eb1aa6116ef2b0"
+    },
+    {
+      "name": "04e4e646de39b18d7a9b4fe567dfdc986e21e469813f0069220649d26aed862d.zip",
+      "stem": "04e4e646de39b18d7a9b4fe567dfdc986e21e469813f0069220649d26aed862d",
+      "ext": ".zip",
+      "size_bytes": 254396,
+      "stem_is_sha256": true,
+      "sha256_from_name": "04e4e646de39b18d7a9b4fe567dfdc986e21e469813f0069220649d26aed862d"
+    },
+    {
+      "name": "051baaebf1cf899c16f6e66ca43d441a87cf037c3dd2e30ace10172e93386ae2.zip",
+      "stem": "051baaebf1cf899c16f6e66ca43d441a87cf037c3dd2e30ace10172e93386ae2",
+      "ext": ".zip",
+      "size_bytes": 8570583,
+      "stem_is_sha256": true,
+      "sha256_from_name": "051baaebf1cf899c16f6e66ca43d441a87cf037c3dd2e30ace10172e93386ae2"
+    },
+    {
+      "name": "06007a21dae67e90762433e5c3a42852f49b55029af6220a954f215793e6c223.zip",
+      "stem": "06007a21dae67e90762433e5c3a42852f49b55029af6220a954f215793e6c223",
+      "ext": ".zip",
+      "size_bytes": 3335776,
+      "stem_is_sha256": true,
+      "sha256_from_name": "06007a21dae67e90762433e5c3a42852f49b55029af6220a954f215793e6c223"
+    },
+    {
+      "name": "06f42fa9e9d8f0c01a7c560490ea71e4cc582069527a5336cdfc299ed1e67c32.zip",
+      "stem": "06f42fa9e9d8f0c01a7c560490ea71e4cc582069527a5336cdfc299ed1e67c32",
+      "ext": ".zip",
+      "size_bytes": 32064894,
+      "stem_is_sha256": true,
+      "sha256_from_name": "06f42fa9e9d8f0c01a7c560490ea71e4cc582069527a5336cdfc299ed1e67c32"
+    },
+    {
+      "name": "07b702e023cc57f4cf63f292fb58bfcbf03952036c968d3f8ce4ef11b0aa1e8b.zip",
+      "stem": "07b702e023cc57f4cf63f292fb58bfcbf03952036c968d3f8ce4ef11b0aa1e8b",
+      "ext": ".zip",
+      "size_bytes": 6316522,
+      "stem_is_sha256": true,
+      "sha256_from_name": "07b702e023cc57f4cf63f292fb58bfcbf03952036c968d3f8ce4ef11b0aa1e8b"
+    },
+    {
+      "name": "084b23135a3ea779716490827bd69864d1f66cae60f8456e87e78dbd58241a04.zip",
+      "stem": "084b23135a3ea779716490827bd69864d1f66cae60f8456e87e78dbd58241a04",
+      "ext": ".zip",
+      "size_bytes": 2555040,
+      "stem_is_sha256": true,
+      "sha256_from_name": "084b23135a3ea779716490827bd69864d1f66cae60f8456e87e78dbd58241a04"
+    },
+    {
+      "name": "08d03a5ca6fdddddfc982bb4ecbf0d977eb8f50e7e19342b0cf3c41ef0069a3e.zip",
+      "stem": "08d03a5ca6fdddddfc982bb4ecbf0d977eb8f50e7e19342b0cf3c41ef0069a3e",
+      "ext": ".zip",
+      "size_bytes": 352860,
+      "stem_is_sha256": true,
+      "sha256_from_name": "08d03a5ca6fdddddfc982bb4ecbf0d977eb8f50e7e19342b0cf3c41ef0069a3e"
+    },
+    {
+      "name": "08efd83b4e438b8e6c0911111d90bf30eb2164ffdb89c27d37e63ed80125179b.zip",
+      "stem": "08efd83b4e438b8e6c0911111d90bf30eb2164ffdb89c27d37e63ed80125179b",
+      "ext": ".zip",
+      "size_bytes": 2823895,
+      "stem_is_sha256": true,
+      "sha256_from_name": "08efd83b4e438b8e6c0911111d90bf30eb2164ffdb89c27d37e63ed80125179b"
+    },
+    {
+      "name": "0a0bb00159b1e32ee075cc3bf08e9176a5f2c83dec1f0ce151662e2b2f0c478d.zip",
+      "stem": "0a0bb00159b1e32ee075cc3bf08e9176a5f2c83dec1f0ce151662e2b2f0c478d",
+      "ext": ".zip",
+      "size_bytes": 2634004,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0a0bb00159b1e32ee075cc3bf08e9176a5f2c83dec1f0ce151662e2b2f0c478d"
+    },
+    {
+      "name": "0b3c09f4cc67e07536c9c77900edf5905e81d1747931c5983e84ce233f35c164.zip",
+      "stem": "0b3c09f4cc67e07536c9c77900edf5905e81d1747931c5983e84ce233f35c164",
+      "ext": ".zip",
+      "size_bytes": 3396573,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0b3c09f4cc67e07536c9c77900edf5905e81d1747931c5983e84ce233f35c164"
+    },
+    {
+      "name": "0b4e63a6488eb8c648abfa376bcaa46eb1596628ced030180441b678d314a935.zip",
+      "stem": "0b4e63a6488eb8c648abfa376bcaa46eb1596628ced030180441b678d314a935",
+      "ext": ".zip",
+      "size_bytes": 2462103,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0b4e63a6488eb8c648abfa376bcaa46eb1596628ced030180441b678d314a935"
+    },
+    {
+      "name": "0bff11bb3bf1c34493d7185fc47b738d302d63a1b740d751de2eabfc1bc173c7.zip",
+      "stem": "0bff11bb3bf1c34493d7185fc47b738d302d63a1b740d751de2eabfc1bc173c7",
+      "ext": ".zip",
+      "size_bytes": 92700,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0bff11bb3bf1c34493d7185fc47b738d302d63a1b740d751de2eabfc1bc173c7"
+    },
+    {
+      "name": "0cd6ef1c6fe1438ae173b70ded86ffbf634eaec341b788e23ae74e0e2f3323da.zip",
+      "stem": "0cd6ef1c6fe1438ae173b70ded86ffbf634eaec341b788e23ae74e0e2f3323da",
+      "ext": ".zip",
+      "size_bytes": 16779926,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0cd6ef1c6fe1438ae173b70ded86ffbf634eaec341b788e23ae74e0e2f3323da"
+    },
+    {
+      "name": "0d220f40f67c34c15c0fd885a32228c6ae0602216215c1c55df03b7195545369.zip",
+      "stem": "0d220f40f67c34c15c0fd885a32228c6ae0602216215c1c55df03b7195545369",
+      "ext": ".zip",
+      "size_bytes": 578487,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0d220f40f67c34c15c0fd885a32228c6ae0602216215c1c55df03b7195545369"
+    },
+    {
+      "name": "0e9afeeac20392cbc350e18b90a0a445d535a04c1b5c3e8defe8a5f57dd07864.zip",
+      "stem": "0e9afeeac20392cbc350e18b90a0a445d535a04c1b5c3e8defe8a5f57dd07864",
+      "ext": ".zip",
+      "size_bytes": 3555314,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0e9afeeac20392cbc350e18b90a0a445d535a04c1b5c3e8defe8a5f57dd07864"
+    },
+    {
+      "name": "0edcc9061d88c6f0c24ff35d0a2e22387636461db707020d3a70b23cbd523579.zip",
+      "stem": "0edcc9061d88c6f0c24ff35d0a2e22387636461db707020d3a70b23cbd523579",
+      "ext": ".zip",
+      "size_bytes": 422743,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0edcc9061d88c6f0c24ff35d0a2e22387636461db707020d3a70b23cbd523579"
+    },
+    {
+      "name": "0fc8bf35e3e8d8eff112712fd09081d95b1bb9c388e417aa0ae57754a54cb383.zip",
+      "stem": "0fc8bf35e3e8d8eff112712fd09081d95b1bb9c388e417aa0ae57754a54cb383",
+      "ext": ".zip",
+      "size_bytes": 3764927,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0fc8bf35e3e8d8eff112712fd09081d95b1bb9c388e417aa0ae57754a54cb383"
+    },
+    {
+      "name": "0fcc376c2edc128ecccba45376cdcdadf26e6f63134a0eff7d86be57775c891e.zip",
+      "stem": "0fcc376c2edc128ecccba45376cdcdadf26e6f63134a0eff7d86be57775c891e",
+      "ext": ".zip",
+      "size_bytes": 9709,
+      "stem_is_sha256": true,
+      "sha256_from_name": "0fcc376c2edc128ecccba45376cdcdadf26e6f63134a0eff7d86be57775c891e"
+    },
+    {
+      "name": "10c12ffde56d43a4f999b96abfe7b1d95ca91366a0fa83094bf23d02f9fc03e5.zip",
+      "stem": "10c12ffde56d43a4f999b96abfe7b1d95ca91366a0fa83094bf23d02f9fc03e5",
+      "ext": ".zip",
+      "size_bytes": 7275210,
+      "stem_is_sha256": true,
+      "sha256_from_name": "10c12ffde56d43a4f999b96abfe7b1d95ca91366a0fa83094bf23d02f9fc03e5"
+    },
+    {
+      "name": "10f87101da792e5d4276553e22e45aae4123340ab7ce203007cdaa98715f6ecb.zip",
+      "stem": "10f87101da792e5d4276553e22e45aae4123340ab7ce203007cdaa98715f6ecb",
+      "ext": ".zip",
+      "size_bytes": 8078,
+      "stem_is_sha256": true,
+      "sha256_from_name": "10f87101da792e5d4276553e22e45aae4123340ab7ce203007cdaa98715f6ecb"
+    },
+    {
+      "name": "1208c47943cf76a050ee8376cde139d7f2e9ce306af04a986a41ad8d7366b5d5.zip",
+      "stem": "1208c47943cf76a050ee8376cde139d7f2e9ce306af04a986a41ad8d7366b5d5",
+      "ext": ".zip",
+      "size_bytes": 3017286,
+      "stem_is_sha256": true,
+      "sha256_from_name": "1208c47943cf76a050ee8376cde139d7f2e9ce306af04a986a41ad8d7366b5d5"
+    },
+    {
+      "name": "12d1b3cfd5b410cc39cd4b74a699c4d31846f551fae776a542f4d26d45c61808.zip",
+      "stem": "12d1b3cfd5b410cc39cd4b74a699c4d31846f551fae776a542f4d26d45c61808",
+      "ext": ".zip",
+      "size_bytes": 49309,
+      "stem_is_sha256": true,
+      "sha256_from_name": "12d1b3cfd5b410cc39cd4b74a699c4d31846f551fae776a542f4d26d45c61808"
+    },
+    {
+      "name": "1490105c73976217f35fe31d65939d1d9711d370c61f3d7d892afbb07eaaec63.zip",
+      "stem": "1490105c73976217f35fe31d65939d1d9711d370c61f3d7d892afbb07eaaec63",
+      "ext": ".zip",
+      "size_bytes": 184677,
+      "stem_is_sha256": true,
+      "sha256_from_name": "1490105c73976217f35fe31d65939d1d9711d370c61f3d7d892afbb07eaaec63"
+    },
+    {
+      "name": "14a0b7d57f22378472a4e1d20fc50d38db5dab72d46007b472d466049181ab0b.zip",
+      "stem": "14a0b7d57f22378472a4e1d20fc50d38db5dab72d46007b472d466049181ab0b",
+      "ext": ".zip",
+      "size_bytes": 2076409,
+      "stem_is_sha256": true,
+      "sha256_from_name": "14a0b7d57f22378472a4e1d20fc50d38db5dab72d46007b472d466049181ab0b"
+    },
+    {
+      "name": "153e11471f85de3df5135b0445014698333ff40a9d6c488d291d6517eb19800d.zip",
+      "stem": "153e11471f85de3df5135b0445014698333ff40a9d6c488d291d6517eb19800d",
+      "ext": ".zip",
+      "size_bytes": 1362854,
+      "stem_is_sha256": true,
+      "sha256_from_name": "153e11471f85de3df5135b0445014698333ff40a9d6c488d291d6517eb19800d"
+    },
+    {
+      "name": "1693df9d970e011cf1c827fceaf49a3724f4478bc0ed7dc50f2d90ea417b6d38.zip",
+      "stem": "1693df9d970e011cf1c827fceaf49a3724f4478bc0ed7dc50f2d90ea417b6d38",
+      "ext": ".zip",
+      "size_bytes": 15763722,
+      "stem_is_sha256": true,
+      "sha256_from_name": "1693df9d970e011cf1c827fceaf49a3724f4478bc0ed7dc50f2d90ea417b6d38"
+    },
+    {
+      "name": "1979b3e9366928d0774a41e8bd5e7610a0302cdf62e9a533d2ff6c5ff7c346e9.zip",
+      "stem": "1979b3e9366928d0774a41e8bd5e7610a0302cdf62e9a533d2ff6c5ff7c346e9",
+      "ext": ".zip",
+      "size_bytes": 9524,
+      "stem_is_sha256": true,
+      "sha256_from_name": "1979b3e9366928d0774a41e8bd5e7610a0302cdf62e9a533d2ff6c5ff7c346e9"
+    },
+    {
+      "name": "1b5a4745d994e662ce897ae63f48f465cce8498c3605119ac9d8979318e43a71.zip",
+      "stem": "1b5a4745d994e662ce897ae63f48f465cce8498c3605119ac9d8979318e43a71",
+      "ext": ".zip",
+      "size_bytes": 119431,
+      "stem_is_sha256": true,
+      "sha256_from_name": "1b5a4745d994e662ce897ae63f48f465cce8498c3605119ac9d8979318e43a71"
+    },
+    {
+      "name": "1df0c1d9e2deef45b585fefd1a03865a24b0ca98a4f997d2158dae8b480970b6.zip",
+      "stem": "1df0c1d9e2deef45b585fefd1a03865a24b0ca98a4f997d2158dae8b480970b6",
+      "ext": ".zip",
+      "size_bytes": 4180240,
+      "stem_is_sha256": true,
+      "sha256_from_name": "1df0c1d9e2deef45b585fefd1a03865a24b0ca98a4f997d2158dae8b480970b6"
+    },
+    {
+      "name": "2378b573c7799fac6884657f5df6d524f47aed4e5348c9104a4943ce6276653b.zip",
+      "stem": "2378b573c7799fac6884657f5df6d524f47aed4e5348c9104a4943ce6276653b",
+      "ext": ".zip",
+      "size_bytes": 102490,
+      "stem_is_sha256": true,
+      "sha256_from_name": "2378b573c7799fac6884657f5df6d524f47aed4e5348c9104a4943ce6276653b"
+    },
+    {
+      "name": "2a2b6b75359f4b74de136bc2c3c3a31633d3fcc169f2e2789e4d3f776ebb9e24.zip",
+      "stem": "2a2b6b75359f4b74de136bc2c3c3a31633d3fcc169f2e2789e4d3f776ebb9e24",
+      "ext": ".zip",
+      "size_bytes": 19559224,
+      "stem_is_sha256": true,
+      "sha256_from_name": "2a2b6b75359f4b74de136bc2c3c3a31633d3fcc169f2e2789e4d3f776ebb9e24"
+    },
+    {
+      "name": "308af6a404d8a91387ddab482a38fdf266e5f903d0e7ff4cac59ebc137ec288c.zip",
+      "stem": "308af6a404d8a91387ddab482a38fdf266e5f903d0e7ff4cac59ebc137ec288c",
+      "ext": ".zip",
+      "size_bytes": 80547,
+      "stem_is_sha256": true,
+      "sha256_from_name": "308af6a404d8a91387ddab482a38fdf266e5f903d0e7ff4cac59ebc137ec288c"
+    },
+    {
+      "name": "3621c6a555e79fd6640b3073b245d4e3b225d7a73403e2529d13a82a2b228c7f.zip",
+      "stem": "3621c6a555e79fd6640b3073b245d4e3b225d7a73403e2529d13a82a2b228c7f",
+      "ext": ".zip",
+      "size_bytes": 578984,
+      "stem_is_sha256": true,
+      "sha256_from_name": "3621c6a555e79fd6640b3073b245d4e3b225d7a73403e2529d13a82a2b228c7f"
+    },
+    {
+      "name": "3adf56d36779c583cbeb6e95ce137146681a25ca032f912a79f9d018bce33c03.zip",
+      "stem": "3adf56d36779c583cbeb6e95ce137146681a25ca032f912a79f9d018bce33c03",
+      "ext": ".zip",
+      "size_bytes": 254472,
+      "stem_is_sha256": true,
+      "sha256_from_name": "3adf56d36779c583cbeb6e95ce137146681a25ca032f912a79f9d018bce33c03"
+    },
+    {
+      "name": "3b77275d167df06f11fc1faef1faf6b76dd4bb3cf161caec0c8fa520cbaf6bed.zip",
+      "stem": "3b77275d167df06f11fc1faef1faf6b76dd4bb3cf161caec0c8fa520cbaf6bed",
+      "ext": ".zip",
+      "size_bytes": 127664,
+      "stem_is_sha256": true,
+      "sha256_from_name": "3b77275d167df06f11fc1faef1faf6b76dd4bb3cf161caec0c8fa520cbaf6bed"
+    },
+    {
+      "name": "3e9b442995fc472566f6689c275b24bb9d2a0244bd002671d471654d0b0893b0.zip",
+      "stem": "3e9b442995fc472566f6689c275b24bb9d2a0244bd002671d471654d0b0893b0",
+      "ext": ".zip",
+      "size_bytes": 128091,
+      "stem_is_sha256": true,
+      "sha256_from_name": "3e9b442995fc472566f6689c275b24bb9d2a0244bd002671d471654d0b0893b0"
+    },
+    {
+      "name": "3f0dea5783c2deb7a9686accab4b1e17953f4babefbcc2668428a9fc00a1c4ea.zip",
+      "stem": "3f0dea5783c2deb7a9686accab4b1e17953f4babefbcc2668428a9fc00a1c4ea",
+      "ext": ".zip",
+      "size_bytes": 5269271,
+      "stem_is_sha256": true,
+      "sha256_from_name": "3f0dea5783c2deb7a9686accab4b1e17953f4babefbcc2668428a9fc00a1c4ea"
+    },
+    {
+      "name": "4220480ad9c8e85d6bc41b32f81bbbb28feaf688faecbcf8bdbf04f329ffae29.zip",
+      "stem": "4220480ad9c8e85d6bc41b32f81bbbb28feaf688faecbcf8bdbf04f329ffae29",
+      "ext": ".zip",
+      "size_bytes": 1845217,
+      "stem_is_sha256": true,
+      "sha256_from_name": "4220480ad9c8e85d6bc41b32f81bbbb28feaf688faecbcf8bdbf04f329ffae29"
+    },
+    {
+      "name": "4644d296b810ceeb381f5d28cf9f5fb2cefde13e5446b6cd0bdd81949f2dba91.zip",
+      "stem": "4644d296b810ceeb381f5d28cf9f5fb2cefde13e5446b6cd0bdd81949f2dba91",
+      "ext": ".zip",
+      "size_bytes": 853127,
+      "stem_is_sha256": true,
+      "sha256_from_name": "4644d296b810ceeb381f5d28cf9f5fb2cefde13e5446b6cd0bdd81949f2dba91"
+    },
+    {
+      "name": "4722f54e39225ef98a285b6c6ae422f412f4852cd1a482f5571eb24f2c2a8875.zip",
+      "stem": "4722f54e39225ef98a285b6c6ae422f412f4852cd1a482f5571eb24f2c2a8875",
+      "ext": ".zip",
+      "size_bytes": 254373,
+      "stem_is_sha256": true,
+      "sha256_from_name": "4722f54e39225ef98a285b6c6ae422f412f4852cd1a482f5571eb24f2c2a8875"
+    },
+    {
+      "name": "4f30db298f99fc45d153f6568529228c98e1ad173249c1f76424977bd0b373c2.zip",
+      "stem": "4f30db298f99fc45d153f6568529228c98e1ad173249c1f76424977bd0b373c2",
+      "ext": ".zip",
+      "size_bytes": 201640,
+      "stem_is_sha256": true,
+      "sha256_from_name": "4f30db298f99fc45d153f6568529228c98e1ad173249c1f76424977bd0b373c2"
+    },
+    {
+      "name": "5337242447876bc309591f6489f1313e42d4eeb4b0f710f5fdc796c8099a9d89.zip",
+      "stem": "5337242447876bc309591f6489f1313e42d4eeb4b0f710f5fdc796c8099a9d89",
+      "ext": ".zip",
+      "size_bytes": 436126,
+      "stem_is_sha256": true,
+      "sha256_from_name": "5337242447876bc309591f6489f1313e42d4eeb4b0f710f5fdc796c8099a9d89"
+    },
+    {
+      "name": "60477891a177629200ba4f8039b5b42351dccdfd9bc404c0a004a8a387a4de82.zip",
+      "stem": "60477891a177629200ba4f8039b5b42351dccdfd9bc404c0a004a8a387a4de82",
+      "ext": ".zip",
+      "size_bytes": 254405,
+      "stem_is_sha256": true,
+      "sha256_from_name": "60477891a177629200ba4f8039b5b42351dccdfd9bc404c0a004a8a387a4de82"
+    },
+    {
+      "name": "a0aeb837cb5e762fc0b7d657c71d343e765cccb5780cd315756f682418b3cdfe.zip",
+      "stem": "a0aeb837cb5e762fc0b7d657c71d343e765cccb5780cd315756f682418b3cdfe",
+      "ext": ".zip",
+      "size_bytes": 62662,
+      "stem_is_sha256": true,
+      "sha256_from_name": "a0aeb837cb5e762fc0b7d657c71d343e765cccb5780cd315756f682418b3cdfe"
+    }
+  ]
+}

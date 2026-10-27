@@ -1,0 +1,31 @@
+Amigo -- Plano A (v5). Mesmos numeros da v1. Explicacao: 00_EXPLICACAO_TUDO.txt
+O Plano B (VM) ainda nao comeca; nao precisa de esperar por ele.
+
+Regra unica:
+- NAO apagar numeros, linhas nem figuras ja existentes.
+- Timing: MOVER a tabela antiga (-go vs -do / Table 6) para APENDICE,
+  nota "confundida". Nao apagar os numeros.
+- Tabela N=30 (tab:timing_matched_n30) no CORPO como resultado principal.
+- Outras tabelas antigas ficam. Inserir as novas a seguir.
+- SUBSTITUIR (nao so anotar):
+  (1) conclusao ~49% / 4080 vs 2081;
+  (2) "-da nao foi avaliado".
+- TMW0 = Pin + TOMWare.dll, knobs desligados (-q). Nao "ordinary Pin".
+- Graficos opcionais: descomentar figure; anexar PDF/PNG a parte.
+
+Tabelas novas:
+  tab:timing_matched_n30     corpo
+  app:timing_confounded      apendice = tabela antiga
+  tab:wait_model_n5
+  tab:module32_fixture
+  tab:processenum_pin_counts
+  tab:memcmp_family
+  tab:da_smoke
+  tab:wall_60s_5050
+  tab:case_attempt
+
+Nao inventar numeros. Proibido: 05_FRASES_PROIBIDAS.md
+Colar 08_INSERCOES_REVISOR.tex. Conferir 04.
+Carta EN so DEPOIS desta edicao: 01_...pdf
+  (working set ~87%/74% separado de CPU ~38%/29%).
+Devolver o PDF.

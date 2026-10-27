@@ -1,0 +1,27 @@
+etapa8_host_check 2026-10-23
+workspace=d:\MMB\workspace\tomware-melhorias
+decisao=bloqueio
+glob_Arancino_count=0
+glob_COBAI_count=0
+glob_Peekaboo_count=0
+pin_README=True
+pin_readme_version=Pin 3.28 Release Notes
+pin_freeze=3.28.98749
+pin_ia32_dir=True
+pin_ia32_bin=True
+pin_ia32_pin_exe=True size=515080
+pin_intel64_bin=True
+pin_intel64_pin_exe=True size=650248
+pin_root_exe=True size=115720
+pin_version_on_host=skipped (IPC hang; lab rule: Pin on VM only)
+corpus_n=100
+corpus_arch=x64=100
+corpus_x86=0
+arancino_public=https://github.com/necst/arancino
+arancino_head=7de9dd89c22de2d44a8682ce162e6fb900c8a4ad
+arancino_head_date=2017-06-06
+arancino_pin_required=pin-2.14-71313-msvc10-windows
+arancino_vs_required=Visual Studio 2010 (mandatory)
+arancino_isa=32-bit only (DIMVA 2017 Implementation section)
+vm_used=no
+bakeoff=no

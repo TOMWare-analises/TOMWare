@@ -1,0 +1,13 @@
+﻿{
+    "campaign":  "t2_n10_v7b",
+    "pin_version":  "3.28.98749",
+    "snapshot":  "tomware_go",
+    "collected_utc":  "2026-10-26T23:45:44.5469095Z",
+    "pin_path":  "C:\\TOMWare\\pin\\pin.exe",
+    "dll_path":  "C:\\TOMWare\\x64\\Release\\TOMWare.dll",
+    "dll_sha256":  "4BBC62707EE0B2EF922D4E8659A6392D92814EA0FC74F4682F1187562AE7F0E6",
+    "dll_prefix8":  "4BBC6270",
+    "pin_sha256":  "920A730ABAC4E30D13F2ED75C92F0538FB53FD85273C40B64991A89DCE0BB819",
+    "empty_pintool_sha256":  "804BE19BF7924B641FE25F07EA89DEC26DC9DAA36C49638F407FF96E2AB153C8",
+    "note":  "Identify by DLL SHA-256. Do not cite git 3040df7. Do not replace N=30."
+}

@@ -1,0 +1,11 @@
+﻿"name","knobs","exe","exit","excerpt"
+"AD_base","-gdb -q","TestAntiDebug.exe","-1","Resumo de ocorrÃªncias: | Alerta: mais de 0 ocorrÃªncias de ""IsDebuggerPresent"" encontradas! | Alerta: mais de 0 ocorrÃªncias de ""PEB.BeingDebugged"" encontradas! | Alerta: mais de 0 ocorrÃªncias de ""PEB.NtGlobalFlag"" encontradas!"
+"AD_treat","-gdb -dd -q","TestAntiDebug.exe","-1","Resumo de ocorrÃªncias: | OK - nenhuma anomalia"
+"PE_base","-q","TestProcessEnum.exe","-1","  ""pin.exe"" pid=5156 |   ""pin.exe"" pid=3724 |   ""pin.exe"" pid=6784 | Resumo de ocorrÃªncias: | pin.exe     : 3 | Alerta: mais de 0 ocorrÃªncias de ""pin.exe"" encontradas!"
+"PE_treat","-dp -q","TestProcessEnum.exe","-1","Resumo de ocorrÃªncias: | pin.exe     : 0 | OK - nenhuma anomalia"
+"PE_da","-da -q","TestProcessEnum.exe","-1","Resumo de ocorrÃªncias: | pin.exe     : 0 | OK - nenhuma anomalia"
+"EV_base","-q","TestGetEnvironments.exe","-1","  ""PIN_CRT_TZDATA=C:\TOMWare\pin/extras/crt/tzdata"" |   ""PIN_CRT_TZDATA=C:\TOMWare\pin/extras/crt/tzdata"" (_dupenv_s) | Resumo de ocorrÃªncias: | PIN_APP_LD_LIBRARY_PATH : 0 | PIN_VM_LD_LIBRARY_PATH  : 0 | PIN_CRT_TZDATA          : 1 | Alerta: mais de 0 ocorrÃªncias de ""PIN_CRT_TZDATA"" encontradas!"
+"EV_treat","-de -q","TestGetEnvironments.exe","-1","Resumo de ocorrÃªncias: | PIN_APP_LD_LIBRARY_PATH : 0 | PIN_VM_LD_LIBRARY_PATH  : 0 | PIN_CRT_TZDATA          : 0 | OK - nenhuma anomalia"
+"MS_base","-q","TestMemoryScan.exe","-1","  ""PIN_ renomeadas para ZZZ_"" |   ""PIN_ neutralizadas no PEB: "" |   ""PIN_"" |   ""PIN_CLIENT_STATE::SetClientInitialized"" |   ""PIN_CLIENT_STATE::SetClientStarted"" |   ""PIN_CLIENT_STATE::SetApplicationStarting"" |   ""PIN_CLIENT_STATE::SetApplicationStarted"" |   ""PIN_CLIENT_STATE::SetClientDetachedFromApplication"" |   ""PIN_LockClient()/PIN_UnlockClient()."" |   ""PIN_UnlockClient()."" |   ""PIN_StartProgram().."" |   ""PIN_StartProgramProbed().."""
+"MS_treat","-dm -q","TestMemoryScan.exe","-1","Resumo de ocorrÃªncias: | PIN_     : 0 | pin.exe  : 0"
+"DA_overhead","-da -q","TestOverhead.exe","-1","Ticks + Latencia: 2050.56, Limite: 3000 | OK - nenhuma anomalia"

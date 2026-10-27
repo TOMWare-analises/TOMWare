@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "campaign_id": "local_benign_smoke",
+  "pilot_mode": false,
+  "created_at_utc": "2026-10-15T13:59:12.599808+00:00",
+  "random_seed": 42,
+  "repetitions": 1,
+  "pin_condition_valid": false,
+  "conditions_included": [
+    "NAT",
+    "EMPTY",
+    "TMW0",
+    "TMW_DD",
+    "TMW_DP",
+    "TMW_DE",
+    "TMW_DM",
+    "TMW_DO",
+    "TMW_ALL"
+  ],
+  "samples_count": 1,
+  "samples": [
+    {
+      "sample_id": "BEN_01",
+      "sha256": "005d8b80ed17c1b374ad8d4dd121cd240506da55cae4977a8b9eae42436034a3",
+      "group": "benign",
+      "execution_profile": "short_lived"
+    }
+  ],
+  "total_planned_runs": 9,
+  "plan_sha256": "6accac3d7355ca6e4b6dcd54a38995efeae831ff6dc310808ee9d6d82f7f1647",
+  "sampling_interval_ms": 200,
+  "isolation_restore_unit": "block"
+}

@@ -1,0 +1,33 @@
+Pedido de validacao da v5 -- antes de qualquer Plano B.
+
+Por favor confirmar ou corrigir estes pontos. Nao restaurar a VM
+nem correr jcvht_parallel ate isto estar aceite.
+
+A) Plano A (envio)
+  [ ] N=30 no corpo; Table 6 antiga no apendice, numeros intactos
+  [ ] Substituir 49% / 4080 vs 2081 e "-da nao foi avaliado"
+  [ ] TMW0 = Pin + TOMWare, knobs off -- nao "ordinary Pin"
+  [ ] Carta: (c) = localizacao; CPU ~38%/29% separado de WS ~87%/74%
+  [ ] Tabelas novas com labels novos; graficos opcionais
+  [ ] Major 3 concedido no texto; case_attempt nao e case study
+
+B) Leitura do revisor
+  [ ] Poucos casos bastam; nao 14 x 5
+  [ ] Cadeia: check -> ramo -> knob -> artefacto extra
+  [ ] Os mesmos casos leem o Major 2
+  [ ] Concessao deixa o pedido experimental aberto -- correcto
+
+C) Tarefas Plano B (ainda nao executar)
+  [ ] T1 DONE/FAIL/BLOQUEADO como em TAREFAS_CRITERIOS.md
+  [ ] T2 independente de T1
+  [ ] P0 = identificar a checagem; nao repetir MAL_03/07/10/BEN_06
+      sem check.md identified=true
+  [ ] SkewMask fired != checagem localizada
+  [ ] "Ainda vivo aos 60 s" = FAIL
+  [ ] evidence_matrix.csv cobre M1-M4, m1, E.1
+  [ ] Entrega: scripts, logs, brutos, traces, hashes, build_id
+  [ ] Nao alterar SkewMask; nao repetir N=30
+  [ ] Corte 02/11; Plano A envia-se mesmo se T1 FAIL
+
+Resposta pedida: aceite / aceite com correcoes / rejeitar ponto X.
+So no aceite (ou aceite com correcoes aplicadas) se inicia o Plano B.

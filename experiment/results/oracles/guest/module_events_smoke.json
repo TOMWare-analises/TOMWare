@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "counters_enabled": true,
+  "antidebug": {
+    "initializations": 0,
+    "sanitizations": 0,
+    "being_debugged_before": -1,
+    "being_debugged_after": -1,
+    "ntglobalflag_before": 0,
+    "ntglobalflag_after": 0,
+    "access_faults": 0
+  },
+  "process_enum": {
+    "calls_intercepted": 140,
+    "processes_examined": 142,
+    "processes_filtered": 3,
+    "modules_examined": 0,
+    "modules_filtered": 0,
+    "unmodified_calls": 0
+  },
+  "sanitize_env": {
+    "entries_examined": 0,
+    "pin_entries_found": 0,
+    "entries_sanitized": 0,
+    "access_faults": 0
+  },
+  "memcmp_mask": {
+    "comparisons_intercepted": 0,
+    "signatures_matched": 0,
+    "responses_modified": 0,
+    "forwarded_to_original": 0
+  },
+  "skew_mask": {
+    "sleep_calls_intercepted": 0,
+    "time_queries_intercepted": 0,
+    "requested_delay_ms_total": 0,
+    "observed_delay_ms_total": 0,
+    "accumulated_skew_ticks": 0,
+    "corrections_applied": 0,
+    "regressions_detected": 0
+  }
+}

@@ -1,0 +1,2 @@
+"name","knobs","timeout_sec","exit_code","timed_out","stdout","stderr","pin_condition_valid","note"
+"PIN_BARE","(none; pin.exe -- exe)","30","0","False","Ocorrências: | Resumo de ocorrências: | IsDebuggerPresent          : 0 | CheckRemoteDebuggerPresent : 0 | ProcessDebugPort           : 0 | ProcessDebugObjectHandle   : 0 | PEB.BeingDebugged          : 0 | PEB.NtGlobalFlag           : 0 | OK - nenhuma anomalia | -------------------------------","","False","Bare Pin is invalid on this Pin 3.28 build if StartServer/IPC assert or launch fails"

@@ -1,0 +1,5 @@
+﻿"name","knobs","exit_code","timed_out","duration_ms","excerpt"
+"PE_NAT","","0","False","47","Ocorrências: |  | Resumo de ocorrências: | pin.exe     : 0 | pinvm.dll   : 0 | pinipc.dll  : 0 | TOMWare.dll : 0 | OK - nenhuma anomalia | ------------------------------- | "
+"PE_TMW0","-q","0","False","1069","  ""pin.exe"" pid=2148 |   ""pin.exe"" pid=5948 |   ""pin.exe"" pid=4300 | Ocorrências: |  | Resumo de ocorrências: | pin.exe     : 3 | pinvm.dll   : 0 | pinipc.dll  : 0 | TOMWare.dll : 0 | Alerta: mais de 0 ocorrências de ""pin.exe"" encontradas! | ------------------------------- | "
+"PE_DP","-dp -q","0","False","2357","Ocorrências: |  | Resumo de ocorrências: | pin.exe     : 0 | pinvm.dll   : 0 | pinipc.dll  : 0 | TOMWare.dll : 0 | OK - nenhuma anomalia | ------------------------------- | "
+"PE_DA","-da -q","0","False","13854","Ocorrências: |  | Resumo de ocorrências: | pin.exe     : 0 | pinvm.dll   : 0 | pinipc.dll  : 0 | TOMWare.dll : 0 | OK - nenhuma anomalia | ------------------------------- | "

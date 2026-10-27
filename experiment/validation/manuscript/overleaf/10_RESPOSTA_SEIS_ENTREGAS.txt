@@ -1,0 +1,105 @@
+Resposta as seis entregas pedidas sobre a v3 (incluida na v4).
+
+A v3/v4 nao afirma atendimento integral ao Revisor 1. Ela organiza o que
+os CSV ja sustentam e concede o que nao sustentam. As seis entregas
+misturam tres coisas: (A) ja medido e na v4; (B) concedido de proposito;
+(C) so possivel com codigo/build/VM novos (Plano B, corte 02/11).
+
+------------------------------------------------
+1. Casos de beneficio pratico -- Major 3
+Estado: nao atendido (concessao). Nao e lacuna escondida da v4.
+
+O que existe: quatro tentativas (MAL_03, MAL_07, MAL_10, BEN_06) em
+NAT / TMW0 / -do, 60 s. new_files=0, stdout vazio, check no PE nao
+localizado. Tabela case_attempt documenta isso. Nao sao case studies.
+
+O que falta para atendimento integral e exactamente a cadeia pedida:
+checagem identificada no codigo -> ramo que desvia -> contramedida
+a atuar -> artefacto extra verificavel, no mesmo executavel e entrada.
+Isso exige guest, traces e (muito provavelmente) outro build. Plano B.
+A v4 nao inventa esse resultado.
+
+------------------------------------------------
+2. Diferencas de recursos -- Major 2
+Estado: parcial.
+
+O que existe: Table 9 rotulada 10 s / 31 PE; percentagens nao sao ganho;
+campanha 50+50 a 60 s (parede +55.452 / +37.387 ms) fica noutra tabela.
+Sem marcos de progresso, sem serie WS/CPU por PID, sem arvore pai/filho
+util (child_count sob Pin nao e processo-filho).
+
+Correcao editorial na v4: a carta v3 dizia "-87% / -38% WS". Isso mistura
+working set (~87% / 74%) com CPU (~38% / 29%). A carta v4 separa
+as duas grandezas. Nao cria marcos novos.
+
+------------------------------------------------
+3. Cobertura funcional -- Major 4
+Estado: parcial. Rotinas nao exercitadas ja estao marcadas NOT_EXERCISED.
+
+O que existe:
+- memcmp, _memicmp, RtlCompareMemory: PASS vs MASKED
+- RtlEqualMemory, wmemcmp: NOT_EXERCISED
+- fixture Module32 (dummy pinvm = copia de version.dll)
+- ProcessEnum pin.exe 0 / 3 / 0 / 0
+- -da smoke 5/5 (nao e campanha 3.100)
+
+O que falta: o conjunto anunciado (ANSI/Unicode, pass-through vs mascara
+em cada export, retornos/parametros, termino e entradas nao relacionadas
+em todas as interfaces). Completar isso e oraculo novo. Plano B.
+
+------------------------------------------------
+4. Validacao temporal -- Major 1
+Estado: M1.1 atendido; M1.2/M1.3 atendidos com limitacao declarada.
+
+O que existe: N=30 carga mantida (TMW0 / GO / GO_DO); waits N=5 com
+Sleep seq e sobrepostos (ainda se intersectam); TickCount dum par;
+WaitOne nativo ~46 ms; timeout -go = SimulateOverhead, nao crash.
+
+O que falta do pedido integral:
+- leituras repetidas durante atualizacao do offset
+- chamada alertavel efectivamente identificada (WaitOne nao e SleepEx
+  nem NtDelayExecution)
+- prova de dupla contabilizacao / regressao artificial do
+  AccumulateSkewTicks
+
+Se o SkewMask mudar, o N=30 deixa de valer e tem de se repetir no
+build final. Por isso o Plano A nao altera o SkewMask.
+
+------------------------------------------------
+5. Versao reproduzivel -- Minor 1
+Estado: parcial; da para montar sem VM nova, mas ainda nao esta no artigo.
+
+Ja temos: Pin 3.28.98749; prefixo DLL 4BBC6270; snapshot tomware_go;
+corpus.csv + exclusions.csv; BUILD.md do pacote de evidencia.
+Ainda falta no envio: commit/release etiquetado, SHA-256 completo da
+DLL da campanha (nao so o prefixo), e o catalogo dos 31 PE do JCVHT
+(17+14) com origem e criterio -- distinto do corpus 50+50 da outra
+campanha. Nao usar o hash git 3040df7.
+
+------------------------------------------------
+6. Aplicar e conferir no artigo completo
+Estado: bloqueado no Overleaf, nao no agente.
+
+A v4 entrega o .tex de insercao e a carta com (c) = localizacao.
+Nao entrega o .tex/.PDF Springer ja compilado: isso e o amigo aplicar
+08_INSERCOES_REVISOR.tex, devolver o PDF, e nos conferirmos numeracao
+e diagramacao. Instrucoes internas ("Required manuscript change") ja
+sairam. CPU vs WS na carta fica corrigido na v4.
+
+------------------------------------------------
+O que o agente pode entregar agora, sem fingir atendimento integral
+
+- Resposta ponto a ponto honesta (esta).
+- Carta com CPU e working set separados.
+- Pacote v4 (Overleaf + cartas + estas respostas) para o amigo aplicar.
+
+O que o agente nao pode entregar sem Plano B (guest + possivel build)
+
+- O caso positivo do Major 3.
+- Marcos / arvore / WS-CPU por processo do Major 2.
+- Oraculos em falta do Major 4 e do resto do Major 1.
+- O artigo Springer ja aplicado e diagramado (isso e o Overleaf).
+
+Atendimento integral e outro objectivo, nao o da v4. Se for esse o
+alvo, o caminho e: amigo aplica o 08; Plano B na VM ate 02/11; so
+depois se o SkewMask mudar e que se repete o N=30.

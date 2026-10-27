@@ -1,0 +1,7 @@
+ADVAPI32.dll!CryptDecrypt
+KERNEL32.DLL!LoadLibraryA
+KERNEL32.DLL!ExitProcess
+KERNEL32.DLL!GetProcAddress
+KERNEL32.DLL!VirtualProtect
+msvcrt.dll!exit
+USER32.dll!MessageBoxW

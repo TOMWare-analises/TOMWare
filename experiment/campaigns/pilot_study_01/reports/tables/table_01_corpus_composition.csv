@@ -1,0 +1,5 @@
+group,execution_profile,count
+benign,persistent,3
+benign,short_lived,2
+malicious,persistent,3
+malicious,short_lived,2

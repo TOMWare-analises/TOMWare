@@ -1,0 +1,9 @@
+campaign=access_r43_skewmask_diag
+sample=BEN_46
+mode=Native
+progress=EXITED_BEFORE_WINDOW
+timed_out=False
+exit_code=-1073741511
+elapsed_ms=781
+peak_ws=0
+identified=false

@@ -1,0 +1,9 @@
+campaign=access_r43_skewmask_diag
+sample=BEN_47
+mode=TMW_DO
+progress=STILL_ALIVE_AT_WINDOW
+timed_out=True
+exit_code=-1
+elapsed_ms=61062
+peak_ws=69128192
+identified=false

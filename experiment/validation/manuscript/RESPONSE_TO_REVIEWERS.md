@@ -171,10 +171,10 @@ Range GO: 2,722–3,845. Range GO_DO: 2,073–2,146. The old 9/31 figure must no
 
 **(a) Concern.** Wall-clock used for some modules and marked N/A for others, with no reconstructable rule.
 
-**(b) Response.** Rule fixed in `experiment.config.json` **before** `corpus_aligned_10k`:
+**(b) Response.** Observation windows (120 s short-lived, 60 s persistent) and N=10 were fixed before `corpus_aligned_10k`. The resource-pair filter (`sample_count > 0` and finite memory) is **post hoc** and is **not** in `experiment.config.json`. Do not present it as prospective.
 
-1. Short-lived: wall-clock until natural exit, crash-exit, or 120 s timeout; timeouts retained.
-2. Persistent: CPU and peak WS only if `sample_count > 0`; wall-clock is the 60 s window when `controlled_termination` holds, otherwise time-to-exit.
+1. Short-lived: wall-clock until recorded exit or 120 s timeout; timeouts retained.
+2. Persistent: wall-clock is the 60 s window when `controlled_termination` holds, otherwise time-to-exit. Resource contrasts keep only pairs that later satisfied the retrospective filter.
 3. ProcessEnum wall-clock is **cost**, not effectiveness (benign short-lived TMW_DP − TMW0 ≈ +3.8 s).
 4. Exactly ten repetitions; no rerun because a number “looked wrong.”
 5. Launch failures are recorded outcomes (251/9,000), not dropped.

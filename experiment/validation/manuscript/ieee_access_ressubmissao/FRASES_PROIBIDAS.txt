@@ -1,0 +1,23 @@
+Não escrever (Access-2026-38745)
+
+- 31 binários / 3 100 / 10 s / 155/155 / 9/31
+- −87,2 % / −38,5 % como ganho
+- as 6 517 como crash
+- equivalência de API / syscalls / cobertura / transparência
+- 22/30 como fidelidade comportamental
+- o malware usou as cinco checagens
+- TOMWare supera Arancino / COBAI / Peekaboo
+- TMW_DO a 60 s = a GUI persistente trabalhou / recuperou comportamento
+- R4.3 reescreve as 9 000
+- Native −1073741511 como sucesso nativo
+- misturar células JCVHT (CTRL_PE, wait 4/10, TestRecoverWork) nas tabelas Access
+
+Pode escrever, com o ficheiro ao lado:
+
+- AntiDebug pareado 3+3, estímulo −gdb, campos PEB (antidebug_n3.csv)
+- Timing N=30 todas as 90 retidas: TMW0 30/30, GO 11/30, GO_DO 30/30
+- 9 000 JSON completos; 6 517 = término sem código (coletor); crash verdadeiro com código = 0
+- Table 19: persistentes benignos TMW0 24/250 → TMW_DO 132/250 (estado/espera, não ganho)
+- R4.3: nos três SHA, Native/TMW0 caem com ENTRYPOINT_NOT_FOUND; TMW_DO mantém o Pin ~61 s
+- Arancino: comparação experimental bloqueada (Pin 2.14, só 32-bit, corpus 100% x64)
+- targeted_evasion = unverified; identified=false

@@ -1,0 +1,39 @@
+reviewer,item,pedido,acao_executada,evidencia,situacao,pendencia
+R1,1,AntiDebug unmatched -gdb vs -dd,Reexecucao pareada 3+3 -gdb -q vs -gdb -dd -q,experiment/results/oracles/guest/antidebug_n3.csv; PDF Table 3,atendido,Limitar aos campos PEB exercitados; -gdb nao e depurador real
+R1,2,SkewMask selection bias 9/31,Protocolo fixo N=30 tres bracos todas as 90 tentativas retidas,experiment/results/oracles/matched_timing_n30.csv SHA 76208218; summary 11/30 vs 30/30,atendido,Nao repetir N=30; nao alterar SkewMask.cpp
+R1,3,Bake-off experimental com Arancino,Bloqueio documentado Pin 2.14+32-bit vs Pin 3.28+x64,experiment/results/oracles/arancino/BLOQUEIO.md,bloqueado,So tabela arquitetural; bake-off exige protocolo 32-bit partilhado
+R1,4,Corpus 14 malware sem familia,Campanha 50+50 SHA fonte perfil em corpus.csv,experiment/corpus/corpus.csv; manuscript_values.json corpus_table3,atendido,Familias sao rotulos grosseiros Trojan_Bazaar/Backdoor_Bazaar; evasion=unverified
+R1,5,Medianas sem IC; -87.2 como ganho,Bootstrap 2000 semente 705851366; Wilson; -87.2 nao esta no PDF atual,experiment/results/campaign/corpus_aligned_10k/; PDF Table 19 e seccao E,atendido,Filtros de recurso ainda a posteriori; n_pairs efetivo nao e sempre 25
+R1,6,Superficie estreita vs titulo,PDF ja restringe interfaces monitoradas e RDTSC/NtQuery* na conclusao,Access-2026-38745_CURRENT.pdf p.17-22,atendido,Nao afirmar transparencia
+R2,1,AntiDebug matched -gdb / -gdb -dd,Igual R1.1,antidebug_n3.csv,atendido,
+R2,2,N fixo timing + distribuicoes + IC,N=30 + medians min max rate; IC no corpus nao no oraculo de ticks,matched_timing_summary_conventional.csv,atendido,Oraculo de ticks reporta proporcao 11/30 vs 30/30 nao IC de mediana
+R2,3,NAT Pin-empty TMW0 disabled enabled,Nove bracos 1000 cada,completeness.json conditions,atendido,Pin sem Pintool (sem tool) e probe invalida; EMPTY nao e o motor nu
+R2,4,Tabela auditavel SHA familia packer,corpus.csv 22 colunas 100 linhas included=true,experiment/corpus/corpus.csv,atendido,Nao inventar familias VirusTotal
+R2,5,Comparar Arancino COBAI Peekaboo,Tabela arquitetural; bake-off bloqueado,BLOQUEIO.md,bloqueado,Nao rankear ferramentas
+R2,6,Fidelidade API traces cobertura,Observador externo 120 runs exit+stdout 22/30; sem FidelityProbe,notes/fidelity_report.md,parcial,Nao e equivalencia de syscalls/cobertura; PDF nao usa 22/30 como prova
+R2,7,Compatibilidade fraca,Table 19 sem 155/155; 6517 = sem codigo,outcomes_by_stratum.csv; campaign_audit_report.md,parcial,Criterio continua operacional; PDF ja o admite
+R2,extra,-da combinado,TMW_ALL 1000 no corpus + da_n10 5/5 oraculos,da_n10.csv; completeness.json,atendido,Smoke oraculo nao e interacao modulo-a-modulo no corpus
+R2,extra,Prova que malware usou as 5 checks,identified=false / targeted_evasion=unverified,identify_summary.csv; corpus.csv,atendido_como_negativo,Manter negativo; IAT nao e ramo executado
+R3,1,AntiDebug matched ou classificar unvalidated,Matched 3+3 no PDF,antidebug_n3.csv,atendido,
+R3,2,Implicacoes 29% reexecucao,Protocolo antigo retirado; N=30 retido,matched_timing_n30.csv,atendido,
+R3,3,Incerteza / resultados descritivos,Wilson + bootstrap no corpus; PDF chama IC exploratorio,manuscript_values.json,atendido,Nao inventar p-valores
+R3,4,Tabela sistemas relacionados,Presente no PDF,CURRENT.pdf related work,atendido,
+R3,5,Lingua e formatacao,Fora do escopo experimental,CURRENT.pdf,parcial,Passo final no Overleaf/Word
+R4,1,Correr AntiDebug matched,Feito,antidebug_n3.csv,atendido,
+R4,2,Reportar todas as tentativas de timing,90/90 retidas,matched_timing_n30.csv,atendido,
+R4,3,Explicar -87.2 ou testar comportamento,"R4.3 N=1 NAT/TMW0/TMW_DO em BEN_28/46/47 (regra a priori TMW0 n_ok=0 TMW_DO n_ok>=6). Native e TMW0 exit -1073741511 ENTRYPOINT_NOT_FOUND. TMW_DO Pin STILL_ALIVE ~61 s. identified=false. -87.2 ausente do PDF.",r43_skewmask_diag/summary.csv; outcomes_by_stratum.csv TMW0 vs TMW_DO,parcial,Permanencia=espera/estado; sem traces API; process_tree.txt partido; N=1; nao reescreve 9000; CTRL_PE e JCVHT separado
+R4,4,Regra de metrica a priori,Janelas 120/60 e N=10 a priori; filtro sample_count>0 ainda post hoc,campaign_audit_report.md,parcial,Declarar no Methods que o filtro de recursos e retrospectivo
+R4,d,Baseline NAT e Pin nu,NAT e EMPTY na campanha; Pin sem tool falhou no probe,completeness.json; protocol/empty_tool_and_pin_probe.md,parcial,EMPTY != custo exclusivo do motor Pin
+R4,e,Proveniencia corpus,SHA fonte data perfil em corpus.csv,corpus.csv,atendido,Rotulos Bazaar nao sao VT
+R5,1,Clarificar AntiDebug,Matched no PDF,Table 3,atendido,
+R5,2,Moderar preservacao comportamental,Abstract e conclusao sem equivalencia,CURRENT.pdf,atendido,
+R5,3,Performance descritiva e estado de execucao,PDF: duration/resources alongside possible state change,CURRENT.pdf,atendido,
+R5,4,Mais referencias DBI evasion,Lista do PDF; pedido opcional,CURRENT.pdf,parcial,Opcional 3-5 papers recentes
+R5,5,Conclusoes no escopo oraculos+corpus,PDF restringe interfaces e corpus,CURRENT.pdf,atendido,
+R6,1,AntiDebug unmatched,Corrigido,antidebug_n3.csv,atendido,
+R6,2,Selection bias timing,Corrigido N=30,matched_timing_n30.csv,atendido,
+R6,3,Compatibilidade != equivalencia,PDF Table 19 + texto,CURRENT.pdf,atendido_como_concessao,
+R6,4,Sem baseline nativo e sem IC,NAT/EMPTY + bootstrap,completeness.json,atendido,
+R6,5,Novidade vs Arancino,Bloqueio bake-off,BLOQUEIO.md,bloqueado,
+Collector,6517,Exit indisponivel rotulado crash,Reclassificacao 6517 unknown; v2.1 para coletas novas; Etapa 7 1800,campaign_audit_report.md; exitcode_report.md; Invoke-SingleRun.ps1 Get-SafeProcessExitCode,parcial,Nao reescrever os 9000 JSON; nao chamar 6517 de crash
+JCVHT,mix,31 PE / 10 s / 3100,Separado; nao usar nestas cartas Access,experiment/results/oracles/ctrl_progress/,atendido_como_separacao,Nunca misturar celulas

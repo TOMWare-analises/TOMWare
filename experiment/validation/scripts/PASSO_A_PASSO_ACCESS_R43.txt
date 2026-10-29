@@ -1,0 +1,60 @@
+VM — Access R4.3 (persistentes NAT / TMW0 / TMW_DO)
+===================================================
+DLL 4BBC6270. Snapshot tomware_go. Rede off. Nao correr no host.
+Nao instalar Pin 2.14. Nao correr Arancino. Nao misturar com JCVHT 10 s.
+Nao ligar -mc (contadores mudam o custo; este ensaio e observacao externa).
+N=1 por braco. Janela 60 s. Campanha access_r43_skewmask_diag.
+
+Porque estes tres
+-----------------
+Regra a priori nos medianos de corpus_aligned_10k:
+persistente benigno, TMW0 n_ok=0, TMW_DO n_ok>=6, parede ~60 s.
+  BEN_28  0111d485351ef0deffd9403a0f8e123759a04a928fbd055b901de18164c4fa39
+  BEN_46  0ab9f2923dac072716a8380ec909ea9f74b9f1755f149c2a41f61b49d93633a2
+  BEN_47  0abd30c5a4a6f17c9f1f718da42435ed05927a3c0ee5430a8ff337027f875dfd
+Copiar para C:\TOMWare\samples\benign\{sha}.exe
+
+O que isto NAO e
+----------------
+Nao e bake-off Arancino. Nao e prova de checagem evasiva.
+Nao reescreve as 9000. Alive at 60 s != progresso equivalente.
+
+Copiar para a VM (zip, nao partilha com Pin a correr)
+----------------------------------------------------
+  Run-AccessR43.ps1
+  PASSO_A_PASSO_ACCESS_R43.txt
+  os tres .exe SHA-named
+
+Passo 0 — Prepare
+-----------------
+  cd C:\TOMWare\m3_v12_scripts   (ou a pasta onde colou o script)
+  powershell -NoProfile -ExecutionPolicy Bypass -File .\Run-AccessR43.ps1 -Job Prepare
+Esperado: DLL 4BBC6270, 3 x OK. Se MISSING, copie os PE e Prepare outra vez.
+
+Ordem (9 corridas). Entre MODOS: copiar C:\TOMWare\access_r43 ao host e restaurar tomware_go.
+Dentro do mesmo modo os tres IDs podem ir seguidos no mesmo snap.
+
+Passo 1 — Native (sem Pin)
+  .\Run-AccessR43.ps1 -Job RUN -Mode Native -SampleId BEN_28
+  .\Run-AccessR43.ps1 -Job RUN -Mode Native -SampleId BEN_46
+  .\Run-AccessR43.ps1 -Job RUN -Mode Native -SampleId BEN_47
+Copiar access_r43. Restaurar tomware_go. Prepare outra vez se os exe sumiram.
+
+Passo 2 — TMW0 (-q)
+  .\Run-AccessR43.ps1 -Job RUN -Mode TMW0 -SampleId BEN_28
+  .\Run-AccessR43.ps1 -Job RUN -Mode TMW0 -SampleId BEN_46
+  .\Run-AccessR43.ps1 -Job RUN -Mode TMW0 -SampleId BEN_47
+Copiar. Restaurar. Prepare.
+
+Passo 3 — TMW_DO (-do -q)
+  .\Run-AccessR43.ps1 -Job RUN -Mode TMW_DO -SampleId BEN_28
+  .\Run-AccessR43.ps1 -Job RUN -Mode TMW_DO -SampleId BEN_46
+  .\Run-AccessR43.ps1 -Job RUN -Mode TMW_DO -SampleId BEN_47
+Copiar pasta final ao host. Nao restaurar por cima sem copiar.
+
+Leitura permitida
+-----------------
+Comparar elapsed_ms, timed_out, exit_code, process_tree, peak_ws
+entre Native / TMW0 / TMW_DO no MESMO SHA.
+Se TMW0 sai cedo e TMW_DO fica ate 60 s: espera/estado, nao ganho de memoria.
+Nao afirmar equivalencia de API. Nao misturar com Table 19 das 9000.

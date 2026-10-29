@@ -1,0 +1,17 @@
+{
+    "campaign_id":  "access_r43_skewmask_diag",
+    "sample_id":  "BEN_28",
+    "sha256":  "0111d485351ef0deffd9403a0f8e123759a04a928fbd055b901de18164c4fa39",
+    "mode":  "TMW0",
+    "knobs":  "-q",
+    "window_sec":  60,
+    "dll_sha256":  "4BBC62707EE0B2EF922D4E8659A6392D92814EA0FC74F4682F1187562AE7F0E6",
+    "pe_path":  "C:\\TOMWare\\samples\\benign\\0111d485351ef0deffd9403a0f8e123759a04a928fbd055b901de18164c4fa39.exe",
+    "timed_out":  false,
+    "exit_code":  -1073741511,
+    "elapsed_ms":  1687,
+    "peak_ws":  70164480,
+    "progress":  "EXITED_BEFORE_WINDOW",
+    "identified":  false,
+    "not_a_claim":  "alive_is_not_progress; not Arancino; not the 9000"
+}

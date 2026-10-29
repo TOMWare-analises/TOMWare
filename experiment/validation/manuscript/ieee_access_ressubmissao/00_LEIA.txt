@@ -1,0 +1,33 @@
+IEEE Access Access-2026-38745 — pacote de análise para o colaborador
+Data: 29/10/2026. NÃO enviar à IEEE. NÃO é o suplemento double-blind.
+
+Campanha do artigo: 100 PE × 9 × 10 = 9 000 (janela 120 s curtas / 60 s persistentes).
+DLL 4BBC62707EE0B2EF922D4E8659A6392D92814EA0FC74F4682F1187562AE7F0E6
+Pin 3.28.98749. Snapshot tomware_go. Semente 705851366.
+NÃO misturar com JCVHT (31 PE / 10 s / 3 100).
+
+Começar por (revisão 20 itens, 29/10/2026 noite):
+  INSERCOES_EN.md              — texto EN para o artigo (itens 1–15, 17, 20)
+  CARTA_PONTO_A_PONTO_EN.md    — carta dos 6 revisores (7 campos)
+  OVERLEAF_PARA_O_AMIGO.md     — o .tex do artigo NÃO está neste repo; Overleaf compila
+  REPRODUCIBILITY.txt          — commit / DLL / Pin (carimbo após o commit)
+  FRASES_PROIBIDAS.txt
+  03_R43_LEITURA.md
+
+PDF do artigo nesta pasta (cópia): Access-2026-38745_CURRENT.pdf
+  SHA-256 5CBC8E96A9684A6B19A7FDDAD1EA96A51504AF6F736B2E7176F53B84B6A98020
+
+Ensaio R4.3 (concluído 29/10/2026, N=1, 60 s):
+  r43_skewmask_diag/  — 9 pastas + summary.csv
+  Native e TMW0: EXITED_BEFORE_WINDOW, exit −1073741511 (STATUS_ENTRYPOINT_NOT_FOUND)
+  TMW_DO: STILL_ALIVE_AT_WINDOW ~61 s (árvore do Pin). identified=false.
+  Permanência ≠ progresso. Não reescreve as 9 000.
+
+Este zip NÃO contém:
+  malware / PE do corpus
+  os 9 000 JSON brutos (ficam no repositório)
+  .env / credenciais
+  bake-off Arancino (bloqueado)
+
+HEAD git no momento da montagem: e382a6c (analises/main).
+Ainda NÃO commitados neste HEAD: esta pasta, Run-AccessR43.ps1, PASSO_A_PASSO_ACCESS_R43.txt.

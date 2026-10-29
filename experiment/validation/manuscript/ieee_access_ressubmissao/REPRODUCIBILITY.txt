@@ -1,0 +1,23 @@
+Access-2026-38745 reproducibility (stamped after the evidence commit)
+
+git_commit: PENDING
+remote: https://github.com/TOMWare-analises/TOMWare
+pin: 3.28.98749
+dll_campaign_sha256: 4BBC62707EE0B2EF922D4E8659A6392D92814EA0FC74F4682F1187562AE7F0E6
+empty_pintool_sha256: 804BE19BF7924B641FE25F07EA89DEC26DC9DAA36C49638F407FF96E2AB153C8
+snapshot: tomware_go
+seed: 705851366
+bootstrap: 2000
+corpus_manifest: experiment/corpus/corpus.csv
+collector_9000: Invoke-SingleRun.ps1 before Get-SafeProcessExitCode (null ExitCode artefact)
+collector_v2.1: experiment/scripts/runner/Invoke-SingleRun.ps1 Get-SafeProcessExitCode (new campaigns only)
+r43_script: experiment/validation/scripts/Run-AccessR43.ps1
+r43_records: experiment/results/oracles/access_r43/
+fidelity_records: experiment/results/oracles/fidelity_by_run.csv
+da_records: experiment/results/oracles/da_n10.csv
+module32_records: experiment/results/oracles/module32_fixture.csv
+timing_records: experiment/results/oracles/matched_timing_n30.csv
+completeness: experiment/results/campaign/corpus_aligned_10k/completeness.json
+
+The 9,000 raw JSON files were not rewritten.
+JCVHT 31/3100/10s is a different campaign.

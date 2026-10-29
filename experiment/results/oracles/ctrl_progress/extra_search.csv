@@ -1,0 +1,14 @@
+candidate,protocol,observation,case,dll
+CTRL_PE_TestRecoverWork,Native / TMW0 / -dp 30s,WORK DAD7D83B / EVASIVE no file / WORK DAD7D83B pe_calls=144 pe_filt=1,controlled_demonstrator_not_malware,4BBC6270
+BEN_05,Native vs TMW0 10s,exit 1/1 identical MUI stderr,progress_milestone,4BBC6270
+BEN_06,Native vs TMW0 10s,exit 3/3 empty stdout,progress_exit_only,4BBC6270
+BEN_10,Native vs TMW0 10s,exit 0/0 same file-not-found stdout,progress_milestone,4BBC6270
+BEN_12,Native vs TMW0 10s,exit 0/0 identical MAKECAB stdout,progress_milestone,4BBC6270
+BEN_16,Native vs TMW0 10s,exit 0/0 empty stdout,progress_exit_only,4BBC6270
+i386_PROG5,TMW0 intel64,INJECTOR_ERR_NO_ACTIVE_SERVER discarded,no,4BBC6270
+MAL_08,Gate -dp -q -mc,valid JSON pe_calls=0 abnormal exit,no,4BBC6270
+MAL_13,Gate -dp -q -mc,no counter log timeout,no,4BBC6270
+BEN_41_MpSigStub,Gate -dp -q -mc,valid JSON pe_calls=0 HRESULT 0x80070647,no,4BBC6270
+RED_953b,Gate -dp -q -mc,timeout no JSON,no,4BBC6270
+SHA_36685EFC,Native vs TMW0 60s,both exit 1; 0 new files; TMW0 pe_calls=0,no,4BBC6270
+TestProcessEnum,Smoke -dp,147 then 143 calls 1 filtered,oracle_only,4BBC6270

@@ -1,0 +1,73 @@
+AUDIT: CURRENT.pdf vs workspace evidence (29 Oct 2026)
+======================================================
+Article: TOMWare_M_c05a1271_CURRENT.pdf (28 pp, Portuguese Resumo).
+PDF SHA-256 39DD04D3043FED1ED7FA5EFAAF39113FD632032E8BE38F7D765557B3976C25C0.
+Verdict: numbers are coherent with the audited CSVs and the CTRL/PROG runs.
+No overclaim of 155/155 behavioral success, 9/31, -87% as gain, Arancino
+bake-off, or independent malware recovery.
+
+MATCH (article vs repo)
+-----------------------
+Timing N=30 CSV SHA-256
+  76208218F71B37B8BF3411C0A74932752B96DD133D4DB102EEBBEC25C65B9827
+  PDF Table 14 / tex Table 6. Medians TMW0 2433.285 (30/30),
+  GO 3083.210 (11/30), GO_DO 2104.770 (30/30). Wilson on GO as in the CSV.
+
+Wait complementary N=10 (PDF Tabela 9; waits_clock_n10.csv, 40 rows)
+  NAT/EMPTY/TMW0: overlap QPC 0/10, TickCount 0/10, SleepEx alertable 10/10.
+  DO/SkewMask:    overlap QPC 0/10, TickCount 4/10 (runs 03/05/07/09),
+                  SleepEx alertable 0/10 before 180 s.
+  Matches the PDF. The English tex still prints an earlier N=5 Join-wall
+  table as primary and states the N=10 series in prose; both are true.
+
+CTRL_PE TestRecoverWork (PDF Tabela 13)
+  PE SHA-256 5DC7AAC873C022FAE669E52980594997DA0E34386AACC2B0B4250E676003042A
+  payload/work.bin SHA-256
+    DAD7D83B37A9992EA6CCD6A513DCE44873EA04C1548570E87DFE0DD6F3E44EFC (281 B)
+  Native 56c3df9c WORK pin_count=0 exit 0 same hash
+  TMW0   bd2aa90f EVASIVE pin_count=1 exit 2 no work.bin
+  -dp -q 09f1a9d8 WORK pin_count=0 pe_calls=144 pe_filt=1 exit 0 same hash
+  Labeled demonstrator. identified remains false.
+
+PROG five Table-9 x64 Native vs TMW0 (PDF Tabela 12), window 10 s, knobs -q -mc 1
+  BEN_05 0244aa82 exit 1/1  2.7 / 8.5 s identical MUI
+  BEN_06 0436f442 exit 3/3  0.5 / 7.0 s exit-only
+  BEN_10 06418110 exit 0/0  0.5 / 2.7 s file-not-found (path normalized)
+  BEN_12 070a98b4 exit 0/0  0.4 / 2.6 s identical MAKECAB
+  BEN_16 07c1f3b3 exit 0/0  0.4 / 3.3 s exit-only
+  i386 leftover: INJECTOR_ERR_NO_ACTIVE_SERVER, discarded, not in the table.
+
+Campaign identity (PDF Tabela 14)
+  DLL 4BBC62707EE0B2EF922D4E8659A6392D92814EA0FC74F4682F1187562AE7F0E6
+  Pin 3.28.98749, snapshot tomware_go
+  tag jcvht-dll-4bbc6270-candidate (not bit-reproducible)
+  Corrected DLL D55EC952... used only for focused memcmp tests
+  31/31 completion-or-observation; 144/155 metric availability
+  ProcessEnum 20/31; -87.2 stated as a resource median, not a gain
+
+INDEPENDENT MALWARE / PROTECTED M3
+----------------------------------
+Still open, as the PDF says. 31/31 identified=false. SHA 36685EFC
+Native vs TMW0 did not yield a hashed extra artifact. extra_search.csv
+records the search and the labeled substitutes; it is not a case study.
+
+COHERENT DIFFERENCES (not errors)
+---------------------------------
+1. PDF is the journal compile (Portuguese Resumo/Palavras-chave, Tabela 8
+   timing, Tabela 9 wait N=10, Tabela 12 PROG, Tabela 13 CTRL).
+   REVISION.tex is the English sn-jnl working draft (N=5 Join-wall as
+   primary wait table). Same hashes; different table numbering.
+2. PDF Table 13 footnote: work.bin prefix "without independent
+   recomputation". The repo hashed the full 281-byte file; the prefix
+   DAD7D83B is correct. The PDF is more conservative than the evidence.
+3. PDF cites memcmp-fix commit 5cc893f6e2266f474e88945d6673e0c13e2cd683.
+   git main records the identical tree as 242f800 (rebase). Tag
+   jcvht-cited-5cc893f6 keeps the cited object reachable. Do not treat
+   them as two different patches.
+
+DO NOT
+------
+Do not rebuild the campaign DLL only to retag.
+Do not change SkewMask or rerun N=30 (would invalidate Table 6/8).
+Do not send analysis zips or samples to the journal.
+Do not mix this 31 PE / 10 s / 3100 campaign with Access 100 PE x 9 x 10.

@@ -1,0 +1,102 @@
+VM — Major Comment 3 (caso real). NAO e campanha N=10/N=30.
+================================================================
+
+Objectivo: ver se MAL_08 (depois MAL_13) CHAMA Toolhelp e compara com Pin.
+IAT/string NAO chega. Contador sozinho NAO chega. Timeout / processo vivo NAO chega.
+
+Fase 1 = PORTA (so isto agora).
+  Smoke (TestProcessEnum) + MAL_08 10 s com -dp -q -mc.
+  Se pe_calls_intercepted = 0: REJEITAR MAL_08. Nao lancar a triade.
+  Depois MAL_13, mesma porta.
+Fase 2 = triade NAT / TMW0 / TMW_DP so se a porta mostrar Toolhelp a correr.
+Fase 3 = RVA / desmontagem / artefacto com hash so se a triade mudar o fluxo.
+
+DLL da campanha. Nao recompilar. Nao mexer no SkewMask.
+Nao reverter o snapshot a meio da pasta de saida; reverter DEPOIS de copiar
+os resultados para o host.
+
+Hashes
+------
+Pin 3.28.98749  pin.exe  920A730A...
+TOMWare.dll campanha:
+  4BBC62707EE0B2EF922D4E8659A6392D92814EA0FC74F4682F1187562AE7F0E6
+Snapshot: tomware_go
+
+MAL_08  1693df9d970e011cf1c827fceaf49a3724f4478bc0ed7dc50f2d90ea417b6d38
+MAL_13  2a2b6b75359f4b74de136bc2c3c3a31633d3fcc169f2e2789e4d3f776ebb9e24
+
+O que copiar para a VM (zip, nao pasta partilhada com malware a correr)
+----------------------------------------------------------------------
+  Run-M3-CaseStudy.ps1
+  PASSO_A_PASSO_VM_M3.txt
+
+No guest: C:\TOMWare\oracle_scripts\
+
+Passo 0 — isolamento
+--------------------
+1. Snapshot tomware_go.
+2. Rede da VM desligada (ou Host-only sem Internet).
+3. AV / firewall desligados se o protocolo da VM ja estiver assim.
+4. NAO correr estes .exe no host.
+
+Passo 1 — DLL da campanha
+-------------------------
+No PowerShell da VM:
+
+  (Get-FileHash C:\TOMWare\x64\Release\TOMWare.dll -Algorithm SHA256).Hash
+
+Tem de comecar por 4BBC6270. Se nao, PARE e avise.
+Nao instalar a DLL D55EC952 para este teste (ProcessEnum nao e o memcmp).
+
+Passo 2 — amostra no sitio
+--------------------------
+  Test-Path C:\TOMWare\malwares\infected\1693df9d970e011cf1c827fceaf49a3724f4478bc0ed7dc50f2d90ea417b6d38.exe
+  Test-Path C:\TOMWare\malwares\infected\2a2b6b75359f4b74de136bc2c3c3a31633d3fcc169f2e2789e4d3f776ebb9e24.exe
+
+Se faltar o .exe, extrair o .zip em samples\infected com password "infected"
+para malwares\infected\ com o nome <SHA256>.exe.
+
+Passo 3 — smoke (benigno, 10 s)
+-------------------------------
+Prova que -mc e o -dp funcionam. NAO e caso de estudo.
+
+  cd C:\TOMWare\oracle_scripts
+  powershell -NoProfile -ExecutionPolicy Bypass -File .\Run-M3-CaseStudy.ps1 `
+    -Phase Smoke -RepoRoot C:\TOMWare -OutDir C:\TOMWare\m3_gate
+
+Esperado no smoke:
+  pe_calls_intercepted > 0
+  pe_processes_filtered > 0   (pin.exe escondido no oraculo)
+Se o smoke der pe_calls=0, PARE (DLL/knobs). Nao avance para malware.
+
+Passo 4 — porta MAL_08 (malware, 10 s, um braco)
+------------------------------------------------
+  powershell -NoProfile -ExecutionPolicy Bypass -File .\Run-M3-CaseStudy.ps1 `
+    -Phase Gate -SampleId MAL_08 -RepoRoot C:\TOMWare -OutDir C:\TOMWare\m3_gate
+
+Isto corre SO:
+  pin.exe -t TOMWare.dll -dp -q -mc 1 -mcf ... -- MAL_08.exe
+  janela 10 s, depois taskkill da arvore pin.
+
+Leia C:\TOMWare\m3_gate\MAL_08\verdict.txt
+
+  REJECT_NO_TOOLHELP  -> pe_calls = 0. MAL_08 nao e caso. Nao faca a triade.
+  GATE_TOOLHELP_SEEN  -> chamou Process32*/Module32*. AINDA NAO e caso Pin.
+                         Traga a pasta ao host. A triade e o passo seguinte,
+                         so se combinarmos.
+
+Passo 5 — copiar e restaurar
+----------------------------
+Copie C:\TOMWare\m3_gate para o host (Downloads). Nao apague na VM ate
+confirmar a copia. Depois restaure o snapshot tomware_go.
+
+Se MAL_08 foi rejeitado, no snapshot limpo: Passo 4 com -SampleId MAL_13
+e OutDir C:\TOMWare\m3_gate_mal13.
+
+O que NAO fazer
+---------------
+- Nao lancar NAT / TMW0 / TMW_DP enquanto verdict = REJECT_NO_TOOLHELP.
+- Nao tratar TestProcessEnum como caso real.
+- Nao citar IAT, string, timeout ou "ainda activo" como prova.
+- Nao enviar o zip a revista.
+- Nao alterar SkewMask.cpp. Nao repetir N=30.

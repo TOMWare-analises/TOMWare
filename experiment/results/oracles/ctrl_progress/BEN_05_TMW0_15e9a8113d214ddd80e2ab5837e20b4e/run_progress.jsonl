@@ -1,0 +1,10 @@
+{"elapsed_ms":2304,"root_exited":false,"root_pid":5560,"observed_live":3,"sampled_tree_ws":63582208,"utc":"2026-10-28T19:55:38.6818366Z","run_id":"15e9a8113d214ddd80e2ab5837e20b4e"}
+{"elapsed_ms":2951,"root_exited":false,"root_pid":5560,"observed_live":3,"sampled_tree_ws":84242432,"utc":"2026-10-28T19:55:39.3223973Z","run_id":"15e9a8113d214ddd80e2ab5837e20b4e"}
+{"elapsed_ms":3623,"root_exited":false,"root_pid":5560,"observed_live":3,"sampled_tree_ws":95723520,"utc":"2026-10-28T19:55:39.9944715Z","run_id":"15e9a8113d214ddd80e2ab5837e20b4e"}
+{"elapsed_ms":4293,"root_exited":false,"root_pid":5560,"observed_live":3,"sampled_tree_ws":102539264,"utc":"2026-10-28T19:55:40.6687026Z","run_id":"15e9a8113d214ddd80e2ab5837e20b4e"}
+{"elapsed_ms":5136,"root_exited":false,"root_pid":5560,"observed_live":3,"sampled_tree_ws":110477312,"utc":"2026-10-28T19:55:41.5094839Z","run_id":"15e9a8113d214ddd80e2ab5837e20b4e"}
+{"elapsed_ms":5783,"root_exited":false,"root_pid":5560,"observed_live":3,"sampled_tree_ws":114937856,"utc":"2026-10-28T19:55:42.1509207Z","run_id":"15e9a8113d214ddd80e2ab5837e20b4e"}
+{"elapsed_ms":6339,"root_exited":false,"root_pid":5560,"observed_live":3,"sampled_tree_ws":120233984,"utc":"2026-10-28T19:55:42.7130003Z","run_id":"15e9a8113d214ddd80e2ab5837e20b4e"}
+{"elapsed_ms":6922,"root_exited":false,"root_pid":5560,"observed_live":3,"sampled_tree_ws":127574016,"utc":"2026-10-28T19:55:43.2929756Z","run_id":"15e9a8113d214ddd80e2ab5837e20b4e"}
+{"elapsed_ms":7528,"root_exited":true,"root_pid":5560,"observed_live":3,"sampled_tree_ws":0,"utc":"2026-10-28T19:55:43.9000582Z","run_id":"15e9a8113d214ddd80e2ab5837e20b4e"}
+{"elapsed_ms":8027,"root_exited":true,"root_pid":5560,"observed_live":0,"sampled_tree_ws":0,"utc":"2026-10-28T19:55:44.4000733Z","run_id":"15e9a8113d214ddd80e2ab5837e20b4e"}

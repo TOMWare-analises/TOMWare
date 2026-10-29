@@ -1,0 +1,2 @@
+﻿"run_id","elapsed_ms","utc","pid","ppid","image_name","image_path","created_utc","alive","cpu_ms","working_set_bytes","process_peak_ws_bytes","metrics_available"
+"5c606d6c639a405dafad975680024d54","315","2026-10-28T19:52:05.9110678Z","6048",,"070a98b4f7c03f99048a10f490d5916a9a98417e0d0de2c414c76b3dd00cb35e.exe","C:\TOMWare\samples\benign\070a98b4f7c03f99048a10f490d5916a9a98417e0d0de2c414c76b3dd00cb35e.exe","2026-10-28T19:52:05.6734426Z","False",,,,"False"

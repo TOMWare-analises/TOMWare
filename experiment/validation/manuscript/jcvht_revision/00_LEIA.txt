@@ -1,0 +1,43 @@
+JCVHT c05a1271 -- article tree (audited 29/10/2026)
+
+Do NOT send analysis zips, samples, ORIENTACOES, or this folder's pack builders
+to the journal. The compiled article is the PDF in this directory.
+
+Files
+-----
+TOMWare_M_c05a1271_CURRENT.pdf
+    Current journal compile (Portuguese Resumo, 28 pp). Numbers audited
+    against the CSVs and the CTRL/PROG host runs. This is the article.
+
+TOMWare_M_c05a1271_REVISION.tex
+    English working draft (sn-jnl). Same campaign identity and the same
+    CTRL/PROG/timing hashes. Structure differs from CURRENT.pdf: this
+    tex keeps the N=5 Join-wall wait table as primary, while the PDF
+    reports the N=10 complementary wait series as Tabela 9. Do not mix
+    the two table numberings when editing.
+
+AUDIT_PDF_VS_EVIDENCE.txt
+    Number-by-number confrontation of CURRENT.pdf vs repo evidence.
+
+extra_search.csv
+    Compact catalog of the labeled demonstrator, five Table-9 x64
+    recaptures, discarded i386 leftover, and the conceded independent
+    malware search. Not a case-study table.
+
+tomwareM.png
+timing_n30.pdf
+wait_join_vs_seq.pdf
+    Figures for the English tex. The PDF already embeds its own figures.
+
+Identity (do not mix with the IEEE Access 100-PE campaign)
+----------
+Pin 3.28.98749
+pin.exe  920A730A...0BB819  (intel64\bin; some run_meta also list FBA632E4)
+DLL      4BBC62707EE0B2EF922D4E8659A6392D92814EA0FC74F4682F1187562AE7F0E6
+snapshot tomware_go
+tag      jcvht-dll-4bbc6270-candidate = a22e01d (not bit-reproducible)
+memcmp   PDF cites 5cc893f6; git main 242f800 is the identical tree
+         (tag jcvht-cited-5cc893f6). Corrected DLL D55EC952 is separate.
+
+Campaign of this article = 31 PE / 10 s / 3 100 launches.
+Do not mix with Access 100 PE x 9 x 10.

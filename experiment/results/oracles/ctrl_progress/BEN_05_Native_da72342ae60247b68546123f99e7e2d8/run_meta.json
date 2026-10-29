@@ -1,0 +1,57 @@
+﻿{
+    "schema_version":  12,
+    "run_id":  "da72342ae60247b68546123f99e7e2d8",
+    "mode":  "Native",
+    "collection_scope":  "Observed process cohort only; sampling can miss short-lived processes. Watched directories only; no global filesystem/registry/network coverage.",
+    "metrics_scope":  "Per-process sampled cumulative CPU and working set. peak_ws is maximum sampled sum of observed live working sets, not sum of individual peaks.",
+    "resource_collection_errors":  0,
+    "stdout_partial":  false,
+    "stderr_partial":  false,
+    "known_process_count":  1,
+    "watch_paths":  [
+                        "C:\\TOMWare\\m3_ctrl_progress\\BEN_05_Native_da72342ae60247b68546123f99e7e2d8\\drop"
+                    ],
+    "application_arguments":  [
+
+                              ],
+    "input_files":  [
+
+                    ],
+    "working_directory":  "C:\\TOMWare\\m3_ctrl_progress\\BEN_05_Native_da72342ae60247b68546123f99e7e2d8\\drop",
+    "counter_status":  "not_applicable_for_gate",
+    "counter_scope":  "Last readable snapshot at requested path; not a verified per-process aggregate. Multiple instrumented processes may overwrite a shared output.",
+    "file_snapshot_complete":  true,
+    "scripts_sha256":  {
+                           "core":  "29F22CED22DFD82324FAD18955C40339E8723964B967EA43F7222330796728B5",
+                           "runner":  "28EE328E728BBF501EE1EA119346303682F6F9372291DC4D4872A43F530E2DF0"
+                       },
+    "pin_path":  "C:\\TOMWare\\pin\\intel64\\bin\\pin.exe",
+    "actual_launcher_path":  "C:\\TOMWare\\samples\\benign\\0244aa8269c39e74663920ca738fec27bde0a1bb6667feb24299903864337f12.exe",
+    "instrumented":  false,
+    "pin_version_expected":  "3.28.98749",
+    "snapshot_expected":  "tomware_go",
+    "phase":  "Capture",
+    "sample_id":  "BEN_05",
+    "sha256":  "0244aa8269c39e74663920ca738fec27bde0a1bb6667feb24299903864337f12",
+    "pe_path":  "C:\\TOMWare\\samples\\benign\\0244aa8269c39e74663920ca738fec27bde0a1bb6667feb24299903864337f12.exe",
+    "dll_sha256":  "4BBC62707EE0B2EF922D4E8659A6392D92814EA0FC74F4682F1187562AE7F0E6",
+    "pin_sha256":  "FBA632E40F00FEEC1FAA7BC1A3BF8CC9A551AB1F17ABA6B07D31C67E602A741A",
+    "knobs":  "",
+    "window_sec":  10,
+    "timed_out":  false,
+    "exit_code":  1,
+    "elapsed_ms":  2687,
+    "peak_ws":  0,
+    "json_ok":  0,
+    "pe_calls_intercepted":  null,
+    "pe_processes_examined":  null,
+    "pe_processes_filtered":  null,
+    "pe_modules_examined":  null,
+    "pe_modules_filtered":  null,
+    "n_new_files":  0,
+    "n_modified_files":  0,
+    "n_unreadable_files":  0,
+    "verdict":  "CAPTURE_ONLY",
+    "identified":  false,
+    "why":  "Counts apply only when counter_status=valid. Captured calls are leads; no comparison RVA, branch, or recovered behavior is inferred."
+}

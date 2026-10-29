@@ -1,0 +1,1 @@
+﻿{"pid":2344,"ppid":null,"image_name":"064181108cd8d7f110cc11b84dbf2d7f18fd5f52a2ee989985d88a969f093dbe.exe","created_utc":"2026-10-28T19:52:03.8021911Z","alive":false}

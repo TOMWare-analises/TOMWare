@@ -1,0 +1,1 @@
+﻿{"pid":8308,"ppid":null,"image_name":"07c1f3b3ddc138d037acad8ee6eaa54488b4918861bdaff3fc4ae9796ae79d1c.exe","created_utc":"2026-10-28T19:52:07.4967343Z","alive":false}

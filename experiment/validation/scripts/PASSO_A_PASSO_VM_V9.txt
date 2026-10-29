@@ -1,0 +1,107 @@
+VM — testes focados v9 (nao e campanha N=10/N=30)
+=================================================
+
+Objectivo: validar so a correcao de _memicmp_l (commit 5cc893f).
+Nao reverter o snapshot tomware_go.
+Nao substituir a DLL da campanha sem backup.
+Nao repetir N=10 nem N=30.
+
+Hashes
+------
+Campanha (guardar, nao perder):
+  TOMWare.dll  SHA-256
+  4BBC62707EE0B2EF922D4E8659A6392D92814EA0FC74F4682F1187562AE7F0E6
+
+Build nova (commit 5cc893f, ja compilada no host):
+  TOMWare.dll  SHA-256
+  D55EC952202F9E90C75FB5DDAEED1E2085242B5D9CDA0337DA0C704690DBC143
+
+Pin continua 3.28.98749.
+
+O que copiar para a VM (zip, nao pasta partilhada)
+--------------------------------------------------
+Do zip VM_FOCO_V9:
+  TOMWare_D55EC952_v9_5cc893f.dll
+  TOMWare_4BBC6270.dll          (copia de seguranca)
+  Run-Oracles.ps1
+  TestMemcmpVariants.cs
+  PASSO_A_PASSO_VM_V9.txt
+
+No guest, coloque os dois .dll em C:\TOMWare\dll_archive\
+e os scripts em C:\TOMWare\oracle_scripts\
+
+Passo 1 — backup da DLL da campanha
+-----------------------------------
+No PowerShell da VM:
+
+  New-Item -ItemType Directory -Force -Path C:\TOMWare\dll_archive | Out-Null
+  Copy-Item C:\TOMWare\x64\Release\TOMWare.dll C:\TOMWare\dll_archive\TOMWare_campaign.dll -Force
+  (Get-FileHash C:\TOMWare\dll_archive\TOMWare_campaign.dll -Algorithm SHA256).Hash
+
+Confirme que o hash comeca por 4BBC6270. Se nao, PARE e avise.
+
+Passo 2 — instalar a DLL nova
+-----------------------------
+  Copy-Item C:\TOMWare\dll_archive\TOMWare_D55EC952_v9_5cc893f.dll `
+            C:\TOMWare\x64\Release\TOMWare.dll -Force
+  (Get-FileHash C:\TOMWare\x64\Release\TOMWare.dll -Algorithm SHA256).Hash
+
+Confirme que o hash comeca por D55EC952.
+
+Passo 3 — oraculo memcmp (4 corridas, minutos)
+----------------------------------------------
+  cd C:\TOMWare\oracle_scripts
+  powershell -NoProfile -ExecutionPolicy Bypass -File .\Run-Oracles.ps1 `
+    -Part Memcmp -RepoRoot C:\TOMWare -CampaignId t2_memcmp_v9 `
+    -OutDir C:\TOMWare\oracle_t2_memcmp_v9
+
+Quando terminar, copie a pasta C:\TOMWare\oracle_t2_memcmp_v9 para o host
+(Downloads). Nao apague a pasta na VM.
+
+Criterio de sucesso (DLL nova)
+------------------------------
+MC3_NAT  exit 0   memicmp_l_PIN=PASS   memicmp_l_same=OK   memicmp_l_passthrough=DIFF_OK
+MC3_TMW0 exit 0   iguais ao NAT
+MC3_DM   exit 0   memicmp_l_PIN=MASKED memicmp_l_same=OK   memicmp_l_passthrough=DIFF_OK
+MC3_DA   exit 0   iguais ao DM
+
+Falha (ainda o bug): DM/DA exit 2 e stdout a cortar em memicmp_l_PIN=MASKED.
+
+Exportos ABSENT (RtlEqualMemory, wmemcmp, memcmp_s, bcmp) devem
+continuar NOT_EXERCISED.
+
+Passo 4 — restaurar a DLL da campanha
+-------------------------------------
+  Copy-Item C:\TOMWare\dll_archive\TOMWare_campaign.dll `
+            C:\TOMWare\x64\Release\TOMWare.dll -Force
+  (Get-FileHash C:\TOMWare\x64\Release\TOMWare.dll -Algorithm SHA256).Hash
+
+Deve voltar a comecar por 4BBC6270.
+
+Opcional — waits N=1 (so se houver tempo)
+-----------------------------------------
+Nao altera a ferramenta. Serve so para ver se o SleepEx alertavel
+ainda esgota os 180 s na DLL nova.
+
+  Copy-Item C:\TOMWare\dll_archive\TOMWare_D55EC952_v9_5cc893f.dll `
+            C:\TOMWare\x64\Release\TOMWare.dll -Force
+  powershell -NoProfile -ExecutionPolicy Bypass -File .\Run-Oracles.ps1 `
+    -Part Waits -WaitN 1 -RepoRoot C:\TOMWare -CampaignId t2_wait1_v9 `
+    -OutDir C:\TOMWare\oracle_t2_wait1_v9
+  Copy-Item C:\TOMWare\dll_archive\TOMWare_campaign.dll `
+            C:\TOMWare\x64\Release\TOMWare.dll -Force
+
+Se W3_DO ainda sair exit=-2 ~180 s: fica como limitacao. Nao mude SkewMask.
+NAT / EMPTY / TMW0 devem continuar exit 0.
+
+Se a VM desligar a meio
+-----------------------
+Ligue outra vez. Nao reverter tomware_go.
+Repita o mesmo comando com -Resume.
+
+O que NAO fazer
+---------------
+Nao campanha N=10 / N=30.
+Nao recompilar na VM (a DLL ja vem do host, commit 5cc893f).
+Nao apagar C:\TOMWare\dll_archive.
+Nao enviar estes zips a revista.

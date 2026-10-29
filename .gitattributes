@@ -1,0 +1,3 @@
+# Keep hashed demonstrator payloads byte-identical across Windows checkouts.
+experiment/results/oracles/ctrl_progress/**/*.bin binary
+*.exe binary

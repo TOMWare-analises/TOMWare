@@ -1,0 +1,1 @@
+﻿{"pid":6048,"ppid":null,"image_name":"070a98b4f7c03f99048a10f490d5916a9a98417e0d0de2c414c76b3dd00cb35e.exe","created_utc":"2026-10-28T19:52:05.6734426Z","alive":false}

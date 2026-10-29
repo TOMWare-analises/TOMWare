@@ -1,0 +1,87 @@
+VM — caso controlado + 5 benignos (Major 3 rotulado / Major 2 marcos)
+======================================================================
+DLL 4BBC6270. Snapshot tomware_go. Rede off. Nao correr no host.
+TMW0 = Pin + TOMWare.dll, knobs off (-q). Knob do caso 1 = -dp (nao -dd).
+O v12 NAO restaura snapshots. Copiar OutDir ao host ANTES de restaurar.
+
+Isto NAO e case study de malware. CTRL_PE e demonstrador controlado.
+
+O que copiar para a VM (zip, nao pasta partilhada com Pin a correr)
+-------------------------------------------------------------------
+  TestRecoverWork.exe          (x64, se ja compilado)
+  TestRecoverWork.cpp          (se precisar de compilar na VM)
+  Compile-TestRecoverWork.ps1
+  Run-CtrlProgress.ps1
+Junto dos scripts v12:
+  C:\TOMWare\m3_v12_scripts\Run-CtrlProgress.ps1
+  C:\TOMWare\m3_v12_scripts\Compile-TestRecoverWork.ps1   (opcional)
+  C:\TOMWare\Resultados\Apps-Teste\TestRecoverWork.exe
+
+Os 5 PROG sao x64 do catalogo Table 9 (nao os i386 em TOMWare\samples\benign).
+Zip no host: Downloads\JCVHT_PROG5_X64.zip
+Copiar para C:\TOMWare\samples\benign\{SHA}.exe:
+  BEN_05 0244aa8269c39e74663920ca738fec27bde0a1bb6667feb24299903864337f12.exe
+  BEN_06 0436f44255d26e463fe9554d30f5f681bec9aaec14fb8ef53acbdea838b1f39d.exe
+  BEN_10 064181108cd8d7f110cc11b84dbf2d7f18fd5f52a2ee989985d88a969f093dbe.exe
+  BEN_12 070a98b4f7c03f99048a10f490d5916a9a98417e0d0de2c414c76b3dd00cb35e.exe
+  BEN_16 07c1f3b3ddc138d037acad8ee6eaa54488b4918861bdaff3fc4ae9796ae79d1c.exe
+Descartar os TMW0 i386 (INJECTOR_ERR_NO_ACTIVE_SERVER). CTRL_PE x64 ja fechou.
+
+Passo 0 — Prepare (uma vez por snap limpo)
+------------------------------------------
+  cd C:\TOMWare\m3_v12_scripts
+  powershell -NoProfile -ExecutionPolicy Bypass -File .\Run-CtrlProgress.ps1 -Job Prepare
+
+Esperado: DLL 4BBC6270, payload SHA, CTRL_PE staged, 5 x OK ou MISSING.
+Se MISSING, copie os PE e volte a Prepare. Nao avance com missing.
+
+Passo 1 — CTRL Native (sem Pin)
+-------------------------------
+  powershell -NoProfile -ExecutionPolicy Bypass -File .\Run-CtrlProgress.ps1 -Job CTRL -Mode Native
+
+Esperado em stdout: BRANCH=WORK pin_count=0 work_written=1 exit 0
+  drop\work.bin SHA-256 = payload.sha256
+
+Copiar C:\TOMWare\m3_ctrl_progress para o host. Restaurar tomware_go.
+Voltar a copiar exe+scripts se o snap nao os tiver. Prepare outra vez.
+
+Passo 2 — CTRL TMW0 (-q)
+------------------------
+  Prepare se o payload/exe desapareceram com o snap.
+  powershell -NoProfile -ExecutionPolicy Bypass -File .\Run-CtrlProgress.ps1 -Job CTRL -Mode TMW0
+
+Esperado: BRANCH=EVASIVE pin_count>=1 work_written=0 exit 2
+  work.bin AUSENTE no drop
+
+Copiar pasta. Restaurar.
+
+Passo 3 — CTRL DP (-dp -q)
+--------------------------
+  Prepare se preciso.
+  powershell -NoProfile -ExecutionPolicy Bypass -File .\Run-CtrlProgress.ps1 -Job CTRL -Mode DP
+
+Esperado: BRANCH=WORK pin_count=0 work.bin com o MESMO hash do Native.
+  pe_calls_intercepted > 0 e pe_processes_filtered >= 1 no JSON (lead, nao "caso malware")
+
+Copiar pasta. Restaurar.
+
+Passo 4 — PROG Native depois TMW0, um PE de cada vez
+----------------------------------------------------
+Janela 10 s (a deste artigo). Sem -dp. Sem -do. Sem -dd.
+  powershell ... Run-CtrlProgress.ps1 -Job PROG -SampleId BEN_05 -Mode Native
+  (depois BEN_06 BEN_10 BEN_12 BEN_16 Native; copiar pastas para o host; restaurar; Prepare; TMW0 dos mesmos 5)
+Copiar pastas para DENTRO de m3_ctrl_progress no host; nao substituir a pasta inteira.
+
+Marco = mesmo exit + mesmo hash de stdout.txt e/ou mesmos new_files.
+Se o Native nao produzir stdout nem ficheiro, DESCARTAR essa linha
+(nao e marco). CPU e peak_ws ficam no run_meta; nao os fundir; nao
+chamar queda de WS de ganho.
+
+O que NAO fazer
+---------------
+- Nao tratar CTRL_PE como malware / protegido independente.
+- Nao ligar -dd.
+- Nao alterar SkewMask nem repetir N=30.
+- Nao misturar Access 100 PE / 9 000.
+- Nao enviar zips de analise a revista.
+- Nao marcar identified=true.

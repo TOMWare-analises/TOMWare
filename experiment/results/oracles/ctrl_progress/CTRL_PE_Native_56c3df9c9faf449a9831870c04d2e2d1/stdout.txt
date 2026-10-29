@@ -1,0 +1,6 @@
+CTRL_PE v1
+CHECK=CreateToolhelp32Snapshot+Process32FirstW/Process32NextW name=pin.exe
+ROLE=controlled_demonstrator_not_malware
+pin_count=0
+BRANCH=WORK
+work_written=1

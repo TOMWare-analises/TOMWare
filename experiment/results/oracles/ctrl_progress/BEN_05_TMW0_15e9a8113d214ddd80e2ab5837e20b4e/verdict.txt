@@ -1,0 +1,15 @@
+run_id=15e9a8113d214ddd80e2ab5837e20b4e
+counter_status=not_applicable_for_gate
+verdict=CAPTURE_ONLY
+identified=false
+sample=BEN_05
+sha256=0244aa8269c39e74663920ca738fec27bde0a1bb6667feb24299903864337f12
+dll=4BBC62707EE0B2EF922D4E8659A6392D92814EA0FC74F4682F1187562AE7F0E6
+pe_calls_intercepted=
+pe_processes_filtered=
+pe_modules_examined=
+timed_out=False
+exit_code=1
+n_new_files=0
+n_modified_files=0
+why=Counts apply only when counter_status=valid. Captured calls are leads; no comparison RVA, branch, or recovered behavior is inferred.

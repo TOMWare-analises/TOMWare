@@ -1,0 +1,6 @@
+{"elapsed_ms":636,"root_exited":false,"root_pid":9576,"observed_live":3,"sampled_tree_ws":50348032,"utc":"2026-10-28T19:56:00.6347697Z","run_id":"a01c59b4f1bb41febabbb6110a084cf4"}
+{"elapsed_ms":1013,"root_exited":false,"root_pid":9576,"observed_live":3,"sampled_tree_ws":68280320,"utc":"2026-10-28T19:56:01.0094446Z","run_id":"a01c59b4f1bb41febabbb6110a084cf4"}
+{"elapsed_ms":1341,"root_exited":false,"root_pid":9576,"observed_live":3,"sampled_tree_ws":87511040,"utc":"2026-10-28T19:56:01.3376882Z","run_id":"a01c59b4f1bb41febabbb6110a084cf4"}
+{"elapsed_ms":1692,"root_exited":false,"root_pid":9576,"observed_live":3,"sampled_tree_ws":107380736,"utc":"2026-10-28T19:56:01.6817567Z","run_id":"a01c59b4f1bb41febabbb6110a084cf4"}
+{"elapsed_ms":2059,"root_exited":false,"root_pid":9576,"observed_live":3,"sampled_tree_ws":122335232,"utc":"2026-10-28T19:56:02.0563861Z","run_id":"a01c59b4f1bb41febabbb6110a084cf4"}
+{"elapsed_ms":2405,"root_exited":true,"root_pid":9576,"observed_live":0,"sampled_tree_ws":0,"utc":"2026-10-28T19:56:02.4000922Z","run_id":"a01c59b4f1bb41febabbb6110a084cf4"}

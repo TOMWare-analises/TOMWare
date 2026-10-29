@@ -59,3 +59,7 @@ experiment/validation/**/tomware-envvars.log
 
 # Analysis zips (copies of evidence packs; kept on disk, not versioned)
 experiment/validation/manuscript/letters/*.zip
+
+# Local PDF extract / pack builders (not part of the article tree)
+experiment/validation/manuscript/jcvht_revision/_pdf7_extract.txt
+experiment/validation/manuscript/jcvht_revision/__pycache__/

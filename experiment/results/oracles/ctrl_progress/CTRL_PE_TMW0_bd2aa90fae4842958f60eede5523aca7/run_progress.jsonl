@@ -1,0 +1,3 @@
+{"elapsed_ms":1493,"root_exited":false,"root_pid":7832,"observed_live":3,"sampled_tree_ws":75640832,"utc":"2026-10-28T19:18:51.9085904Z","run_id":"bd2aa90fae4842958f60eede5523aca7"}
+{"elapsed_ms":1863,"root_exited":false,"root_pid":7832,"observed_live":3,"sampled_tree_ws":109514752,"utc":"2026-10-28T19:18:52.2835548Z","run_id":"bd2aa90fae4842958f60eede5523aca7"}
+{"elapsed_ms":2198,"root_exited":true,"root_pid":7832,"observed_live":0,"sampled_tree_ws":0,"utc":"2026-10-28T19:18:52.6118178Z","run_id":"bd2aa90fae4842958f60eede5523aca7"}

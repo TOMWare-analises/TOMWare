@@ -1,0 +1,2 @@
+Error 15100 : O carregador de recursos não pôde localizar o arquivo MUI.
+ returned in FormatMessage

@@ -1,6 +1,6 @@
 Access-2026-38745 reproducibility (stamped after the evidence commit)
 
-git_commit: PENDING
+git_commit: 58ea738020681318c5a65eb1cdae02b1ea82b922
 remote: https://github.com/TOMWare-analises/TOMWare
 pin: 3.28.98749
 dll_campaign_sha256: 4BBC62707EE0B2EF922D4E8659A6392D92814EA0FC74F4682F1187562AE7F0E6

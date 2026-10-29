@@ -240,4 +240,4 @@ Architectural comparison only. No Arancino superiority (item 15).
 
 ## Reproducibility (item 16)
 
-Stamped after the evidence commit (see `REPRODUCIBILITY.txt`). Required fields: full commit, DLL SHA-256, Pin 3.28.98749, snapshot `tomware_go`, seed 705851366, `corpus.csv`, `Invoke-SingleRun.ps1` v2.1, `Run-AccessR43.ps1`, `experiment/results/oracles/access_r43/`, `fidelity_by_run.csv`, `da_n10.csv`, `module32_fixture.csv`.
+Evidence commit `58ea738020681318c5a65eb1cdae02b1ea82b922` (https://github.com/TOMWare-analises/TOMWare). DLL SHA-256 `4BBC6270…F0E6`. Pin 3.28.98749. Snapshot `tomware_go`. Seed 705851366. `corpus.csv`, `Invoke-SingleRun.ps1` v2.1, `Run-AccessR43.ps1`, `experiment/results/oracles/access_r43/`, `fidelity_by_run.csv`, `da_n10.csv`, `module32_fixture.csv`. See `REPRODUCIBILITY.txt`.

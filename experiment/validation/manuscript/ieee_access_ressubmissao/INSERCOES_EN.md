@@ -2,7 +2,7 @@
 
 Paste into the Overleaf/Word source. Replace every remaining Portuguese evaluation page. Do not mix JCVHT 31 PE / 10 s / 3,100 cells. Numbers are from audited CSVs only.
 
-Campaign identity (also item 16 after the commit): Intel Pin 3.28.98749; campaign DLL SHA-256 `4BBC62707EE0B2EF922D4E8659A6392D92814EA0FC74F4682F1187562AE7F0E6`; EmptyPinTool `804BE19BF7924B641FE25F07EA89DEC26DC9DAA36C49638F407FF96E2AB153C8`; snapshot `tomware_go`; seed 705851366; bootstrap 2,000; corpus `experiment/corpus/corpus.csv`.
+Campaign identity: git `58ea738020681318c5a65eb1cdae02b1ea82b922` (https://github.com/TOMWare-analises/TOMWare); Intel Pin 3.28.98749; campaign DLL SHA-256 `4BBC62707EE0B2EF922D4E8659A6392D92814EA0FC74F4682F1187562AE7F0E6`; EmptyPinTool `804BE19BF7924B641FE25F07EA89DEC26DC9DAA36C49638F407FF96E2AB153C8`; snapshot `tomware_go`; seed 705851366; bootstrap 2,000; corpus `experiment/corpus/corpus.csv`. The stamp commit that only writes this hash is recorded in `REPRODUCIBILITY.txt`.
 
 ---
 

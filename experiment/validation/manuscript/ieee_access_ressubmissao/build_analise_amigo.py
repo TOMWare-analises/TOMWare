@@ -50,6 +50,10 @@ def main() -> None:
         "FRASES_PROIBIDAS.txt",
         "RELATORIO_SEIS_REVISORES.md",
         "MATRIZ_SEIS_REVISORES.csv",
+        "INSERCOES_EN.md",
+        "CARTA_PONTO_A_PONTO_EN.md",
+        "OVERLEAF_PARA_O_AMIGO.md",
+        "REPRODUCIBILITY.txt",
         "Access-2026-38745_CURRENT.pdf",
     ):
         src = MS / name
@@ -62,6 +66,9 @@ def main() -> None:
     cartas = DST / "cartas"
     for pdf in (
         ROOT / "experiment" / "validation" / "manuscript" / "Access-2026-38745_Response_to_Reviewers.pdf",
+        ROOT / "experiment" / "validation" / "manuscript" / "Access-2026-38745_Response_to_Reviewers_HL.pdf",
+        ROOT / "experiment" / "validation" / "manuscript" / "Access-2026-38745_Manuscript_Inserts.pdf",
+        ROOT / "experiment" / "validation" / "manuscript" / "Access-2026-38745_Manuscript_Inserts_HL.pdf",
         ROOT / "experiment" / "validation" / "manuscript" / "Access-2026-38745_Resposta_aos_Revisores.pdf",
         ROOT / "experiment" / "validation" / "manuscript" / "Access-2026-38745_Overleaf_Instructions.pdf",
     ):

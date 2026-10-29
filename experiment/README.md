@@ -11,9 +11,7 @@ Duas campanhas medidas neste tree — **não misturar células**:
 | JCVHT 31-PE | 17 benignos + 14 infectados | 10 s | `experiment/results/corpus/` e `oracles/` | `4BBC6270` |
 | Access 9 000 | 100 PE (50+50) × 9 × 10 | 120 s curtas / 60 s persistentes | `experiment/results/campaign/corpus_aligned_10k/` | `4BBC6270` |
 
-Identidade: Pin 3.28.98749, snapshot `tomware_go`, tag `jcvht-dll-4bbc6270-candidate` (`a22e01d`).
-O `main` atual (`242f800`) só acrescenta o hook de 4 argumentos em `_memicmp_l`; `SkewMask.cpp`
-não muda. Como repetir: README da raiz, secção Reproduce.
+Identidade e hashes: README da raiz, secção **Reproduce**. `SkewMask.cpp` não muda.
 
 ## Decisões de desenho
 
@@ -63,17 +61,18 @@ processed/*.csv  ──►  Python analysis  ──►  reports/tables + figures
 O caminho `TOMWare\TOMWare` **não é um erro de cópia**: a pasta de fora é a raiz do repositório (solução Visual Studio + Pin + `experiment/`); a de dentro é o código C++ da Pintool, como o `.sln` espera.
 
 ```
-tomware-melhorias/                 ← workspace local
-  TOMWare/                         ← raiz do repositório (RepoRoot / C:\TOMWare na VM)
-    TOMWare/                       ← fonte C++ da Pintool (.vcxproj)
-    EmptyPinTool/  FidelityProbe/
-    pin/                           ← Intel Pin 3.28
-    x64/Release/                   ← DLLs compiladas (**fora do git**; copiar 4BBC6270)
-    samples/benign|infected        ← corpus (exe benignos; zip maliciosos)
-    experiment/                    ← campanha + oráculos (produto; não é pasta de artigo)
-    Resultados/Apps-Teste/         ← oráculos funcionais
-    config/signatures.txt
+TOMWare/                           ← raiz do git (RepoRoot / C:\TOMWare na VM)
+  TOMWare/                         ← fonte C++ da Pintool (.vcxproj); não é um segundo clone
+  EmptyPinTool/  FidelityProbe/
+  pin/                             ← Intel Pin 3.28
+  x64/Release/                     ← DLLs compiladas (**fora do git**; copiar 4BBC6270)
+  samples/benign|infected          ← corpus (exe benignos; zip maliciosos)
+  experiment/                      ← campanha + oráculos + tabelas medidas
+  Resultados/Apps-Teste/           ← oráculos funcionais (não são as tabelas do artigo)
+  config/signatures.txt
 ```
+
+A pasta de workspace `tomware-melhorias/` (zips, PDFs de submissão, `_archive`) **não** faz parte do git. Não misturar com a raiz do repositório.
 
 A infraestrutura experimental vive em `experiment/`:
 
@@ -98,6 +97,10 @@ experiment/
     run_record.schema.json           # esquema formal do JSON de cada execução
   campaigns/<campaign_id>/           # plano e manifesto (campaign.json, execution_plan.csv)
   results/                           # único sítio de tabelas (corpus / oracles / campaign)
+    oracles/ctrl_progress/           # TestRecoverWork + 5 benignos Table-9 (não é case study)
+  validation/
+    scripts/                         # Run-Oracles.ps1, Run-CtrlProgress.ps1
+    manuscript/jcvht_revision/       # CURRENT.pdf (artigo) + REVISION.tex
   scripts/
     planner/                         # generate_plan.py
     runner/                          # Run-Campaign.ps1, Invoke-SingleRun.ps1

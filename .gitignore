@@ -63,3 +63,8 @@ experiment/validation/manuscript/letters/*.zip
 # Local PDF extract / pack builders (not part of the article tree)
 experiment/validation/manuscript/jcvht_revision/_pdf7_extract.txt
 experiment/validation/manuscript/jcvht_revision/__pycache__/
+experiment/validation/manuscript/jcvht_revision/ORIENTACOES.pdf
+experiment/validation/manuscript/jcvht_revision/O_QUE_MUDOU.pdf
+experiment/validation/manuscript/jcvht_revision/build_*.py
+experiment/validation/manuscript/notes/RELATORIO_M3_*.md
+experiment/validation/manuscript/notes/RELATORIO_PENDENCIAS_V10.md

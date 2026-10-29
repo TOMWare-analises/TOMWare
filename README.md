@@ -4,7 +4,7 @@
 
 Repository: [https://github.com/TOMWare-analises/TOMWare](https://github.com/TOMWare-analises/TOMWare)
 
-This tree is the pintool **and** the measured evidence. The tool was presented at the SBSeg 2026 Tools Fair. The tables under `experiment/results/` are the JCVHT 31-PE pack plus the 100-PE / 9 000-run campaign. Do not mix those cells.
+This tree is the pintool **and** the measured evidence. Folder map: [§1.3](#13-repository-layout). The nested `TOMWare/` directory is the Visual Studio pintool project, not a second clone. The tool was presented at the SBSeg 2026 Tools Fair. Tables under `experiment/results/` cover two campaigns (JCVHT 31-PE / 10 s and Access 100-PE / 9 000-run). Do not mix those cells.
 
 ---
 
@@ -27,13 +27,14 @@ Do not change `SkewMask.cpp`. Do not replace the N=30 table. Do not execute `sam
 
 All measured tables are under **`experiment/results/`**. Two campaigns; **do not mix cells**:
 
-| Folder | What | Window / N | DLL |
+| Folder under `experiment/results/` | What | Window / N | DLL |
 |--------|------|------------|-----|
 | `corpus/` | 17 benign + 14 infected pack (PDFs/CSV) | 10 s (Table 9 protocol) | `4BBC6270` |
 | `oracles/` | N=30 timing, N=10 waits/memcmp/`-da`, identify, counters, `manuscript_values.json` | matched oracles | `4BBC6270` |
+| `oracles/ctrl_progress/` | `TestRecoverWork` triad + five Table-9 x64 Native/TMW0 recaptures | 30 s / 10 s | `4BBC6270` |
 | `campaign/corpus_aligned_10k/` | 100 PE (50+50) × 9 conditions × 10 = 9 000 processed tables | 120 s short / 60 s persistent | `4BBC6270` |
 
-`oracles/collector/` is a **synthetic** 10 s PowerShell+PING smoke. It is not Table 9.
+`oracles/collector/` is a **synthetic** 10 s PowerShell+PING smoke. It is not Table 9. Current JCVHT compile: `experiment/validation/manuscript/jcvht_revision/TOMWare_M_c05a1271_CURRENT.pdf`.
 
 **Smoke (no malware), after the campaign DLL is in place:**  
 `pin\pin.exe -t x64\Release\TOMWare.dll -q -- Resultados\Apps-Teste\TestOverhead.exe`
@@ -55,9 +56,7 @@ If the VM dies: power on without reverting the snapshot; add `-Resume`.
 
 ## Abstract
 
-TOMWare.M is a modular DBI pintool built on Intel Pin to mitigate anti-instrumentation techniques. It implements five selectively activatable countermeasures targeting debugging indicators, process enumeration, environment variables, memory signatures, and execution-time discrepancies. The five modules were validated through controlled test applications; execution times were recorded before and after activation. Results indicate that the countermeasures reduce the corresponding instrumentation indicators in the evaluated scenarios, while temporal impact varies according to the intercepted mechanism and its activation frequency.
-
-TOMWare.M implements five selectively activatable countermeasures (`-dd`, `-dp`, `-de`, `-dm`, `-do`), validated with controlled test applications and exercisable on real samples under Pin. It provides an experimental platform to investigate the relationship between **transparency** and **temporal impact** in DBI environments.
+TOMWare.M implements five selectively activatable countermeasures (`-dd`, `-dp`, `-de`, `-dm`, `-do`) on Intel Pin for Windows x64. Controlled test applications show that each module reduces the matching instrumentation indicator; temporal impact depends on the intercepted mechanism. The pintool is an experimental platform for the relationship between **transparency** and **temporal impact** in DBI environments. Published campaign tables are under `experiment/results/` (see **Reproduce**).
 
 ---
 
@@ -65,7 +64,7 @@ TOMWare.M implements five selectively activatable countermeasures (`-dd`, `-dp`,
 
 * [Reproduce](#reproduce)
 * [1. Structure of this README](#1-structure-of-this-readme)
-  * [1.1 Organization](#11-organization)
+  * [1.1 Where to look](#11-where-to-look)
   * [1.2 Distributed artifacts](#12-distributed-artifacts)
   * [1.3 Repository layout](#13-repository-layout)
   * [1.4 Demonstration videos (playlist)](#14-demonstration-videos-playlist)
@@ -89,19 +88,18 @@ TOMWare.M implements five selectively activatable countermeasures (`-dd`, `-dp`,
 
 # 1. Structure of this README
 
-## 1.1 Organization
+## 1.1 Where to look
 
-This README is organized into the following main sections:
-
-1. **Structure of this README** — overview of the document, repository, and **video playlist** (§1.4).
-2. **Artifact badges considered** — the four CTA artifact badges (D / F / S / R).
-3. **Basic information** — introduction, modules, architecture, and environment.
-4. **Dependencies** — host, build, and VM requirements (+ installers on Drive; samples in `samples/`).
-5. **Security** — mandatory isolation when running real samples.
-6. **Installation** — clone does not include the campaign DLL; build from `main` is a new hash.
-7. **Minimal test** — quick validation with test apps (no malware).
-8. **Experiments** — baseline vs countermeasure; 31-PE pack vs 9 000-run (§8.6–§8.7).
-9. **License** — terms of use.
+| Need | Place |
+|------|--------|
+| Campaign DLL identity, smoke command, what not to mix | **Reproduce** (top) |
+| Which folder is the tool vs the tables vs the VM helpers | [§1.3](#13-repository-layout) |
+| Knobs `-dd/-dp/-de/-dm/-do` | [§3.2](#32-main-features) |
+| Install / build | [§6](#6-installation) |
+| Minimal test (no malware) | [§7](#7-minimal-test) |
+| Published tables | [§8.6](#86-published-result-evidence) |
+| Campaign runner / older `scripts/r2-*` | [§8.7](#87-experimental-infrastructure) and [`experiment/README.md`](experiment/README.md) |
+| Current JCVHT article PDF | `experiment/validation/manuscript/jcvht_revision/` |
 
 ## 1.2 Distributed artifacts
 
@@ -123,46 +121,67 @@ This README is organized into the following main sections:
 
 ## 1.3 Repository layout
 
+Paths below are **fixed**. `TOMWare.sln` includes `TOMWare\TOMWare.vcxproj`; guest scripts and Pin commands use `C:\TOMWare\scripts`, `Resultados\Apps-Teste`, and `x64\Release\TOMWare.dll`. Do not rename these folders.
+
+The nested `TOMWare/TOMWare` is not a duplicated clone: the outer folder is the git root (this README + `.sln` + Pin + experiments); the inner folder is the pintool C++ project.
+
+| Path | What it is | Canonical for |
+|------|------------|----------------|
+| `TOMWare/` | Pintool sources (`AntiDebugMask.cpp`, …) | Building / reading the tool |
+| `EmptyPinTool/` | No-op pintool | `EMPTY` / `pin_empty` ladder |
+| `FidelityProbe/` | BBL / image / API counters | Fidelity probe |
+| `pin/` | Intel Pin 3.28 MSVC x64 | Runtime |
+| `x64/Release/` | Compiled DLLs (**gitignored**) | Copy campaign `4BBC6270` here |
+| `config/` | `signatures.txt`, mappings | `-sf` |
+| `Resultados/Apps-Teste/` | Pre-built oracles, including `TestRecoverWork.exe` | Smoke / §7 |
+| `Resultados/Apps-Teste-src/` | Oracle sources | Rebuild test apps |
+| `Resultados/benchmarks/` | Local VM dumps | **Not** published tables |
+| `scripts/` | Original guest helpers (`run-sample`, `r2-*`) | One-off VM runs; older path |
+| `experiment/scripts/` | Planner / host campaign runner / validators | 9 000-run campaign |
+| `experiment/validation/scripts/` | `Run-Oracles.ps1`, `Run-CtrlProgress.ps1` | N=10 oracles; CTRL/PROG |
+| `experiment/results/` | **Only** place for measured tables | Paper / README numbers |
+| `experiment/validation/manuscript/jcvht_revision/` | Current JCVHT PDF + English `.tex` | Article compile |
+| `samples/` | Corpus hashes | Copy to VM `malwares/` (§4.5) |
+| `imgs/` | README figures | Docs |
+
+What looks repeated but is **not** the same data:
+
+| You see | Do not confuse with |
+|---------|---------------------|
+| `scripts/` vs `experiment/scripts/` vs `experiment/validation/scripts/` | Guest helpers vs 9 000-run host runner vs oracle/CTRL re-runs |
+| `Resultados/` vs `experiment/results/` | Test apps + local dumps vs **published** CSVs/PDFs |
+| `samples/` vs `experiment/corpus/corpus.csv` | Files on disk vs the **100-PE Access** catalog (the 31-PE JCVHT pack is the other cut) |
+| `oracles/collector/` vs Table 9 / Tabela 12 | Synthetic 10 s PING smoke vs corpus / five-benign recaptures |
+| Campaign DLL `4BBC6270` vs `main` / `D55EC952` | Measured tables vs `_memicmp_l` four-arg rebuild |
+
 ```text
-TOMWare/                              ← repository root (this README)
-├── TOMWare/                          ← pintool source (.cpp/.h)
-├── pin/                              ← Intel Pin 3.28 (x64, MSVC)
-├── config/                           ← signatures (-sf), corpus, mappings
-├── scripts/                          ← original VM helpers (used by experiment/ too)
-│   ├── run-sample.ps1
-│   ├── run-baseline-dm-one.ps1/.cmd
-│   ├── benchmark-poc.ps1
-│   ├── benchmark-corpus.ps1
-│   ├── benchmark-infected.ps1
-│   ├── r2-*.ps1                      ← older campaign path; prefer experiment/
-│   └── lib/TomwareBenchmark.ps1
-├── experiment/                       ← campaign + oracles
-│   ├── results/                      ← **all** measured tables (31-PE / oracles / 9 000-run)
+TOMWare/                                 git root (this README, TOMWare.sln)
+├── TOMWare/                             pintool C++ (TOMWare.vcxproj)
+├── EmptyPinTool/   FidelityProbe/
+├── pin/                                 Intel Pin 3.28
+├── x64/Release/                         DLLs, gitignored; copy 4BBC6270
+├── config/signatures.txt
+├── scripts/                             guest helpers (r2-*, run-sample)
+├── experiment/
+│   ├── README.md                        campaign infrastructure
 │   ├── protocol/ corpus/ config/
-│   ├── scripts/                      ← planner, runner, validators, analysis
-│   └── validation/scripts/           ← Run-Oracles.ps1
-├── EmptyPinTool/                     ← empty pintool baseline (pin_empty ladder)
-├── x64/Release/                      ← compiled DLLs (**gitignored**; copy 4BBC6270)
-├── FidelityProbe/                    ← behavioral fidelity probe helper
-├── imgs/                             ← README / architecture figures
-├── samples/                          ← experiment corpus (§4.5)
-│   ├── benign/                       ← <SHA256>.exe (benign)
-│   └── infected/                     ← <SHA256>.zip (infected; password in password.txt)
-├── Resultados/
-│   ├── Apps-Teste/                   ← test-app executables
-│   │   └── Loop_X_1000/              ← same apps with 1000 iterations
-│   ├── Apps-Teste-src/               ← test-app sources
-│   ├── Capturas-Tela/                ← experiment screenshots
-│   ├── Avaliacao/                    ← benchmark outputs (when generated)
-│   └── benchmarks/                   ← local VM dumps (generated; not the published tables)
-├── TOMWare.sln
-├── .env.example                      ← VT_API_KEY template (never commit `.env`)
-├── LICENSE
-└── README.md
+│   ├── scripts/                         9 000-run planner/runner
+│   ├── validation/
+│   │   ├── scripts/                     Run-Oracles.ps1, Run-CtrlProgress.ps1
+│   │   └── manuscript/jcvht_revision/   CURRENT.pdf + REVISION.tex
+│   └── results/                         published tables only
+│       ├── corpus/                      17+14 / 10 s
+│       ├── oracles/                     N=30, N=10, identify, build_id.json
+│       │   └── ctrl_progress/           TestRecoverWork + five x64 recaptures
+│       └── campaign/corpus_aligned_10k/ 100 PE × 9 × 10
+├── Resultados/Apps-Teste/               Test*.exe, TestRecoverWork.exe
+├── samples/benign|infected
+├── imgs/
+├── .env.example                         never commit .env
+└── LICENSE
 ```
 
-> **Important:** when downloading the GitHub `.zip`, the folder may be named `TOMWare-main`. Adjust example paths to your extraction location.  
-> On the VM, copy/extract samples from `samples/` into `C:\TOMWare\malwares\benign\` and `C:\TOMWare\malwares\infected\` (§4.5).
+> When downloading the GitHub `.zip`, the folder may be named `TOMWare-main`. On the VM this tree is `C:\TOMWare`. Copy `samples/` into `malwares\benign\` and `malwares\infected\` (§4.5).
 
 ## 1.4 Demonstration videos (playlist)
 
@@ -701,6 +720,7 @@ experiment/results/
 ├── corpus/                         17+14 pack (per-hash PDF/CSV + consolidations)
 ├── oracles/                        N=30 timing, N=10 waits/memcmp/-da, identify,
 │                                   counters, manuscript_values.json, build_id.json
+│   └── ctrl_progress/              TestRecoverWork triad + five Table-9 x64 recaptures
 └── campaign/corpus_aligned_10k/    100 PE × 9 × 10 processed tables
 ```
 
@@ -712,8 +732,10 @@ experiment/results/
 | Infected consolidated (14) | `experiment/results/corpus/malign/TOMWare-corpus-maligno-14-amostras.pdf` |
 | Benign × infected | `experiment/results/corpus/comparativo/` |
 | Official oracle figures | `experiment/results/oracles/manuscript_values.json` |
+| CTRL/PROG recaptures | `experiment/results/oracles/ctrl_progress/` |
 | 9 000-run processed tables | `experiment/results/campaign/corpus_aligned_10k/` |
 | 100-PE catalog | `experiment/corpus/corpus.csv` |
+| JCVHT article compile | `experiment/validation/manuscript/jcvht_revision/TOMWare_M_c05a1271_CURRENT.pdf` |
 | Local VM dump (not published) | `Resultados\benchmarks\` |
 
 Samples: `samples/` (§4.5). How to re-run: **Reproduce** at the top of this README.
@@ -733,6 +755,7 @@ inside the guest.
 | Empty pintool | `EmptyPinTool/` + `scripts/r2-build-empty-pintool.ps1` | Isolate Pin overhead without TOMWare modules |
 | SkewMask fixed-N | `scripts/r2-skewmask-fixedN.ps1` | Frozen N=30, retain **all** runs; do **not** re-run to refresh Table 6 |
 | Oracle re-run | `experiment/validation/scripts/Run-Oracles.ps1` | N=10 waits/memcmp/`-da` on guest `tomware_go` |
+| CTRL/PROG recapture | `experiment/validation/scripts/Run-CtrlProgress.ps1` | `TestRecoverWork` + five Table-9 x64; not a malware case study |
 | Host 9 000-run | `experiment/scripts/host/Run-HostCampaign.ps1` | 100 PE × 9 × 10; do not overwrite published `campaign/` tables |
 | Behavioral fidelity | `scripts/r2-behavioral-fidelity.ps1`, `r2-fidelity-one-sample-noshares.ps1` | Zero-share / one-sample-then-exit loops on a snapshot |
 | Fidelity probe | `FidelityProbe/` | BBL / image / API-watchlist counters for behavioural comparisons |

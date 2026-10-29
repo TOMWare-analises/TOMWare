@@ -20,9 +20,9 @@ AUDIT_PDF_VS_EVIDENCE.txt
     Number-by-number confrontation of CURRENT.pdf vs repo evidence.
 
 extra_search.csv
-    Compact catalog of the labeled demonstrator, five Table-9 x64
-    recaptures, discarded i386 leftover, and the conceded independent
-    malware search. Not a case-study table.
+    Copy of the catalog. Canonical file:
+    experiment/results/oracles/ctrl_progress/extra_search.csv
+    Labeled demonstrator + five Table-9 x64 recaptures. Not a case study.
 
 tomwareM.png
 timing_n30.pdf

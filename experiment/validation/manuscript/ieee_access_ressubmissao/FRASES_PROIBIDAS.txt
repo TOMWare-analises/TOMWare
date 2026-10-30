@@ -11,6 +11,15 @@ Não escrever (Access-2026-38745)
 - R4.3 reescreve as 9 000
 - Native −1073741511 como sucesso nativo
 - misturar células JCVHT (CTRL_PE, wait 4/10, TestRecoverWork) nas tabelas Access
+- “não incluem controles positivos Module32” / “a ausência dos módulos-alvo impede confirmar Module32” (negação ainda no CFD80 inglês; o fixture já existe — Table 21)
+- `da_n10.csv` como dez repetições de `-da` (são cinco linhas, uma por oráculo)
+- validar as 9 000 com a DLL `D55EC952` (`_memicmp_l` de 4 argumentos)
+- “9,000 TMW0 versus TMW_DO” (são 2 000 tentativas, 1 000 por condição)
+- “Same as R1.1” / “Optional. No unread citations added”
+- “baseline ladder table” sem a Table 26 no artigo
+- Pin sem Pintool como sempre impossível (o probe de 22 Oct saiu 0, stderr vazio)
+- instruções sobre “trechos ainda em português” (o CFD80 já é inglês; o 5CBC foi retirado)
+- citar git `e382a6c` ou `58ea738` / `cf735e1` depois do commit único em REPRODUCIBILITY.txt
 
 Pode escrever, com o ficheiro ao lado:
 

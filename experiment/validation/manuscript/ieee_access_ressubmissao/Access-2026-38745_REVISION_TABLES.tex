@@ -1,0 +1,159 @@
+% Access-2026-38745 — LaTeX patches for the English article (base PDF SHA-256 CFD80F0D0EE9\ldots).
+% Existing Tables 1--20 keep their numbers. New material is Tables 21--27.
+% Wrap every newly inserted sentence with \hl{\ldots} in the highlighted compile; omit \hl in the clean compile.
+% Base article: English. Do not restore Portuguese evaluation pages. Do not mix JCVHT 31/3100/10s cells.
+
+% ---------- Table 21. Module32 fixture (insert in V-B after Table 6; DELETE the denial of a positive control) ----------
+\begin{table}[!t]
+\centering
+\caption{Module32 positive control. A copy of \texttt{version.dll} was loaded as \texttt{\%TEMP\%\textbackslash pinvm.dll} (dummy name, not a real Pin module). One execution per configuration. Source: \texttt{module32\_fixture.csv}.}
+\label{tab:module32_fixture}
+\begin{tabular}{lccccc}
+\hline
+Configuration & Knobs & Exit & Modules & \texttt{kernel32.dll} & fixture \texttt{pinvm.dll} \\
+\hline
+Native & --- & 0 & 32 & visible & visible \\
+TMW0 & \texttt{-q} & 0 & 31 & visible & visible \\
+ProcessEnum & \texttt{-dp -q} & 0 & 30 & visible & hidden \\
+Combined & \texttt{-da -q} & 0 & 30 & visible & hidden \\
+\hline
+\end{tabular}
+\end{table}
+
+% V-B replacement after Table 6 (delete ``do not include specific positive controls for Module32''):
+% The process oracle TestProcessEnum.exe used Unicode process enumeration and found three pin.exe
+% entries under -q and none under -dp or -da (Table~\ref{tab:processenum}, Table 6 in the base PDF).
+% Table~\ref{tab:module32_fixture} supplies the Module32 positive control. Enumeration terminated
+% (ENUM\_OK) in all four runs. The fixture is not NtQuerySystemInformation and does not individually
+% validate every GetModuleHandleA/W calling pattern.
+
+% ---------- Table 22. Combined -da (one run per oracle; filename da_n10.csv is NOT N=10) ----------
+\begin{table}[!t]
+\centering
+\caption{Combined-mode smoke test (\texttt{-da}). Campaign id \texttt{t2\_n10\_v7b}; file \texttt{da\_n10.csv} contains five rows, one execution per oracle, not ten repetitions. Campaign DLL \texttt{4BBC6270}.}
+\label{tab:da_smoke}
+\begin{tabular}{llccc}
+\hline
+Oracle & Knobs & Exit & Timed out & Duration (ms) \\
+\hline
+TestAntiDebug & \texttt{-gdb -da -q} & 0 & no & 10316 \\
+TestProcessEnum & \texttt{-da -q} & 0 & no & 13413 \\
+TestGetEnvironments & \texttt{-da -q} & 0 & no & 13324 \\
+TestMemoryScan & \texttt{-da -q} & 0 & no & 44062 \\
+TestOverhead & \texttt{-da -q} & 0 & no & 14658 \\
+\hline
+\end{tabular}
+\end{table}
+
+% TestOverhead score 2042.56 $<$ 3000. This smoke test does not prove the absence of module
+% interactions on the 100-binary corpus. TMW\_ALL in Table 19 is a separate operational arm.
+
+% ---------- Table 23. InstMemcmpMask family on campaign DLL ----------
+\begin{table}[!t]
+\centering
+\caption{Comparison-family controls on campaign DLL \texttt{4BBC6270} (\texttt{memcmp\_n10.csv}), one execution per configuration. PIN-string operand. Legitimate equality and inequality (pass-through) remained OK on the three exercised routines.}
+\label{tab:memcmp_family}
+\begin{tabular}{llccc}
+\hline
+Configuration & Exit & \texttt{memcmp} PIN & \texttt{\_memicmp} PIN & \texttt{RtlCompareMemory} PIN \\
+\hline
+Native & 0 & PASS (ret=0) & PASS (ret=0) & PASS ($n$=4) \\
+TMW0 \texttt{-q} & 0 & PASS & PASS & PASS \\
+\texttt{-dm -q} & 2 & MASKED (ret=1) & MASKED (ret=1) & MASKED ($n$=0) \\
+\texttt{-da -q} & 2 & MASKED & MASKED & MASKED \\
+\hline
+\end{tabular}
+\end{table}
+
+% Unexercised / ABSENT: RtlEqualMemory, wmemcmp, memcmp\_s, wmemcmp\_s, bcmp.
+% \_memicmp\_l: FOUND in msvcrt; NAT/TMW0 PASS; -dm/-da MASKED then RECEIVED\_ACCESS\_FAULT
+% at 0xffffffffffffffff (three-argument hook versus four-argument CRT). Later DLL D55EC952
+% does not retroactively validate the 9{,}000 attempts (DLL 4BBC6270). Keep Table 12 memcmp scan counts.
+
+% ---------- Table 24. 22/30 diagnostic (paste in Section VI, not only the Introduction) ----------
+\begin{table}[!t]
+\centering
+\caption{External-observer diagnostic, TMW0 versus TMW\_ALL, 10 executables $\times$ 3 repetitions $= 30$ pairs. Agreement: equal exit code and equal stdout SHA-256. Source: \texttt{fidelity\_by\_run.csv}. Not API equivalence.}
+\label{tab:obs2230}
+\begin{tabular}{lp{3.2cm}p{3.6cm}p{4.2cm}}
+\hline
+Pairs & TMW0 & TMW\_ALL & Reading \\
+\hline
+22/30 & --- & --- & exit and stdout hash equal \\
+BEN\_06 $\times$ 3 & exit 3 & timeout ($-2$) & combined mode changed the outcome \\
+BEN\_12 $\times$ 2 & exit 0, 754\,B stdout & timeout; finished attempt kept the same hash & text matched when the process exited \\
+MAL\_06 $\times$ 1 & exit 0 & exit 2 & one of three repetitions differed \\
+MAL\_07 $\times$ 2 & exit 0 & \texttt{0xC0000005} & combined mode worsened termination \\
+\hline
+\end{tabular}
+\end{table}
+
+% ---------- Table 25. SkewMask diagnostic access_r43 ----------
+\begin{table}[!t]
+\centering
+\caption{SkewMask diagnostic \texttt{access\_r43\_skewmask\_diag}, $N=1$, 60\,s window, DLL \texttt{4BBC6270}. Selection: persistent benign, campaign TMW0 $n_{\mathrm{ok}}=0$, TMW\_DO $n_{\mathrm{ok}}\ge 6$. \texttt{identified=false}. Persistence is state or wait, not application progress.}
+\label{tab:r43}
+\begin{tabular}{llrrl}
+\hline
+Sample & Mode & Exit & Elapsed (ms) & Progress \\
+\hline
+BEN\_28 & Native & $-1073741511$ & 1609 & EXITED (peak WS $=0$) \\
+BEN\_28 & TMW0 & $-1073741511$ & 1687 & EXITED \\
+BEN\_28 & TMW\_DO & $-1$ (timeout) & 61016 & STILL\_ALIVE Pin tree \\
+BEN\_46 & Native & $-1073741511$ & 781 & EXITED (peak WS $=0$) \\
+BEN\_46 & TMW0 & $-1073741511$ & 1938 & EXITED \\
+BEN\_46 & TMW\_DO & $-1$ (timeout) & 61234 & STILL\_ALIVE Pin tree \\
+BEN\_47 & Native & $-1073741511$ & 750 & EXITED (peak WS $=0$) \\
+BEN\_47 & TMW0 & $-1073741511$ & 1703 & EXITED \\
+BEN\_47 & TMW\_DO & $-1$ (timeout) & 61062 & STILL\_ALIVE Pin tree \\
+\hline
+\end{tabular}
+\end{table}
+
+% $-1073741511$ $=$ STATUS\_ENTRYPOINT\_NOT\_FOUND. Corpus TMW0 versus TMW\_DO contrast in
+% Table 16/19 uses 2{,}000 attempts (1{,}000 per condition), not 9{,}000.
+
+% ---------- Table 26. Baselines NAT / EMPTY / TMW0 ----------
+\begin{table}[!t]
+\centering
+\caption{Descriptive median of per-binary median wall-clock, short-lived benign binaries ($n=25$). Incremental countermeasure effects remain TMW0 versus the enabled module (Table 20). TMW0 versus a module is not the total cost of Intel Pin.}
+\label{tab:baselines}
+\begin{tabular}{lrr}
+\hline
+Condition & Meaning & Median wall-clock (s) \\
+\hline
+NAT & no Pin & 0.260 \\
+EMPTY & Pin + EmptyPinTool & 1.485 \\
+TMW0 & Pin + TOMWare, knobs off & 1.973 \\
+\hline
+\end{tabular}
+\end{table}
+
+% ---------- Table 27. Pin without a Pintool ----------
+\begin{table}[!t]
+\centering
+\caption{Isolated Pin-without-Pintool probe, 22 Oct 2026, \texttt{pin.exe -{}- TestAntiDebug.exe}, 30\,s timeout. Source: \texttt{pin\_probe.csv}. The 9{,}000-attempt campaign still omitted this arm (\texttt{pin\_condition\_valid=false} in \texttt{campaign.json}).}
+\label{tab:pin_probe}
+\begin{tabular}{lp{9cm}}
+\hline
+Field & Value \\
+\hline
+exit code & 0 \\
+timed out & false \\
+stderr & empty \\
+stdout (excerpt) & oracle ``OK -- no anomaly''; PEB fields 0 \\
+CSV \texttt{pin\_condition\_valid} & False (campaign-day IPC/StartServer note) \\
+\hline
+\end{tabular}
+\end{table}
+
+% 6{,}517 rows: termination with unavailable exit code (PowerShell 5.1 null ExitCode). Original JSON
+% not rewritten. Collector v2.1 is prospective only. No success rate from those rows. Section VI-D, Table 19.
+
+% Manifest: experiment/corpus/corpus.csv (100 rows). Trojan\_Bazaar / Backdoor\_Bazaar are coarse labels.
+% Packer/protector unknown on malware. targeted\_evasion=unverified. Resource filter sample\_count>0 is post hoc;
+% 98 duration pairs; SanitizePinEnvVars CPU/memory 97 pairs (BEN\_32). Intervals exploratory.
+
+% Item 6 limitations (Discussion / Conclusion; do not mark resolved):
+% API traces and coverage; per-binary hook counters (off in the 9{,}000);
+% full temporal coherence; malware check--branch--recovered-behavior case; Arancino/COBAI/Peekaboo bake-off.

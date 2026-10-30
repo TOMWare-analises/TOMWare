@@ -1,7 +1,9 @@
-Access-2026-38745 reproducibility (stamped after the evidence commit)
+Access-2026-38745 reproducibility (single landing commit; stamped after git rev-parse)
 
-git_commit: 58ea738020681318c5a65eb1cdae02b1ea82b922
+git_commit: PENDING_FINAL_ACCESS_REVISION
 remote: https://github.com/TOMWare-analises/TOMWare
+article_base_pdf_sha256: CFD80F0D0EE964CDAC490A55152454C219F2EB63B86A46CDCB220C0E766B3000
+withdrawn_pdf_sha256: 5CBC8E96A9684A6B19A7FDDAD1EA96A51504AF6F736B2E7176F53B84B6A98020
 pin: 3.28.98749
 dll_campaign_sha256: 4BBC62707EE0B2EF922D4E8659A6392D92814EA0FC74F4682F1187562AE7F0E6
 empty_pintool_sha256: 804BE19BF7924B641FE25F07EA89DEC26DC9DAA36C49638F407FF96E2AB153C8
@@ -16,8 +18,13 @@ r43_records: experiment/results/oracles/access_r43/
 fidelity_records: experiment/results/oracles/fidelity_by_run.csv
 da_records: experiment/results/oracles/da_n10.csv
 module32_records: experiment/results/oracles/module32_fixture.csv
-timing_records: experiment/results/oracles/matched_timing_n30.csv
+memcmp_records: experiment/results/oracles/memcmp_n10.csv
+pin_probe: experiment/results/oracles/guest/pin_probe.csv
+baselines: experiment/results/campaign/corpus_aligned_10k/stratum_medians.csv
 completeness: experiment/results/campaign/corpus_aligned_10k/completeness.json
+latex_tables: experiment/validation/manuscript/ieee_access_ressubmissao/Access-2026-38745_REVISION_TABLES.tex
+letter: experiment/validation/manuscript/ieee_access_ressubmissao/CARTA_FINAL_EN.md
 
+Older hashes e382a6c / 58ea738 / cf735e1 are superseded by git_commit above.
 The 9,000 raw JSON files were not rewritten.
 JCVHT 31/3100/10s is a different campaign.

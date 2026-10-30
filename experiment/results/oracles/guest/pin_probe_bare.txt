@@ -1,0 +1,32 @@
+PIN-without-Pintool probe (guest, 22 Oct 2026)
+Command: pin.exe -- TestAntiDebug.exe
+CSV: experiment/results/oracles/guest/pin_probe.csv
+timeout_sec: 30
+exit_code: 0
+timed_out: False
+stderr: (empty)
+stdout:
+Ocorrências:
+Resumo de ocorrências:
+IsDebuggerPresent          : 0
+CheckRemoteDebuggerPresent : 0
+ProcessDebugPort           : 0
+ProcessDebugObjectHandle   : 0
+PEB.BeingDebugged          : 0
+PEB.NtGlobalFlag           : 0
+OK - nenhuma anomalia
+-------------------------------
+
+pin_condition_valid field in that CSV: False
+note in CSV: Bare Pin is invalid on this Pin 3.28 build if StartServer/IPC assert or launch fails
+
+Campaign decision (14 Oct 2026), experiment/campaigns/corpus_aligned_10k/campaign.json:
+  pin_condition_valid: false
+  conditions_included: NAT, EMPTY, TMW0, TMW_DD, TMW_DP, TMW_DE, TMW_DM, TMW_DO, TMW_ALL
+  (no PIN / pin.exe-without-tool arm)
+
+Reading allowed in the article:
+- This isolated 22 Oct probe completed with exit 0, empty stderr, and the oracle stdout above.
+- The 9,000-attempt campaign omitted a PIN-without-tool arm because the campaign-day probe was recorded as invalid (IPC/StartServer).
+- Do not claim that Pin without a Pintool is always impossible on Pin 3.28.
+- EMPTY remains the smallest Pin-hosted reference in the 9,000 attempts.

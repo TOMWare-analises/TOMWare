@@ -15,7 +15,7 @@ from pathlib import Path
 
 ROOT = Path(r"d:\MMB\workspace\tomware-melhorias\TOMWare")
 SRC_R43 = Path(r"C:\Users\marge\Downloads\access_r43")
-PACK_NAME = "Access-2026-38745_ANALISE_AMIGO_2026-10-30"
+PACK_NAME = "Access-2026-38745_ANALISE_AMIGO_2026-10-30b"
 DST = Path(r"C:\Users\marge\Downloads") / PACK_NAME
 ORACLE_DST = ROOT / "experiment" / "results" / "oracles" / "access_r43"
 MS = ROOT / "experiment" / "validation" / "manuscript" / "ieee_access_ressubmissao"
@@ -73,6 +73,8 @@ def main() -> None:
         "OVERLEAF_PARA_O_AMIGO.md",
         "REPRODUCIBILITY.txt",
         "VERIFICACAO_7_ITENS.md",
+        "STATUS_ITENS_TECNICOS.md",
+        "TABELA_NAT_EMPTY_TMW0.md",
         "Access-2026-38745_REVISION_TABLES.tex",
         "Access-2026-38745_REVISION_BASE.pdf",
     ):
@@ -146,6 +148,8 @@ def main() -> None:
         ROOT / "experiment" / "results" / "oracles" / "guest" / "antidebug_n3.csv",
         ROOT / "experiment" / "results" / "oracles" / "guest" / "pin_probe.csv",
         ROOT / "experiment" / "results" / "oracles" / "guest" / "pin_probe_bare.txt",
+        ROOT / "experiment" / "results" / "campaign" / "corpus_aligned_10k" / "nat_empty_tmw0_table.csv",
+        ROOT / "experiment" / "validation" / "manuscript" / "ieee_access_ressubmissao" / "TABELA_NAT_EMPTY_TMW0.md",
         ROOT / "experiment" / "results" / "oracles" / "matched_timing_n30.csv",
         ROOT / "experiment" / "results" / "oracles" / "da_n10.csv",
         ROOT / "experiment" / "results" / "oracles" / "processenum_base.csv",
@@ -165,6 +169,9 @@ def main() -> None:
     for src in copies:
         if src.exists():
             copy_file(src, ev / src.name)
+    pin_host = ROOT / "experiment" / "results" / "oracles" / "guest" / "pin_bare_probe_host"
+    if pin_host.exists():
+        copy_dir(pin_host, ev / "pin_bare_probe_host")
 
     med_src = ROOT / "experiment" / "results" / "campaign" / "corpus_aligned_10k" / "sample_condition_medians.csv"
     if med_src.exists():
@@ -183,6 +190,19 @@ def main() -> None:
     copy_file(
         ROOT / "experiment" / "validation" / "scripts" / "PASSO_A_PASSO_ACCESS_R43.txt",
         scripts / "PASSO_A_PASSO_ACCESS_R43.txt",
+    )
+    copy_file(ROOT / "experiment" / "validation" / "scripts" / "Run-AccessR43b.ps1", scripts / "Run-AccessR43b.ps1")
+    copy_file(
+        ROOT / "experiment" / "validation" / "scripts" / "PASSO_A_PASSO_ACCESS_R43B.txt",
+        scripts / "PASSO_A_PASSO_ACCESS_R43B.txt",
+    )
+    copy_file(
+        ROOT / "experiment" / "validation" / "scripts" / "PASSO_A_PASSO_ACCESS_ITENS_6_9.txt",
+        scripts / "PASSO_A_PASSO_ACCESS_ITENS_6_9.txt",
+    )
+    copy_file(
+        ROOT / "experiment" / "validation" / "scripts" / "Run-PinBareProbe.ps1",
+        scripts / "Run-PinBareProbe.ps1",
     )
     copy_file(ROOT / "experiment" / "scripts" / "runner" / "Invoke-SingleRun.ps1", scripts / "Invoke-SingleRun.ps1")
 

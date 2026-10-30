@@ -1,0 +1,13 @@
+campaign_id=access_pin_bare_host
+machine=host
+command=pin.exe -- TestAntiDebug.exe
+pin_sha256=FBA632E40F00FEEC1FAA7BC1A3BF8CC9A551AB1F17ABA6B07D31C67E602A741A
+oracle=TestAntiDebug.exe
+oracle_sha256=3B25069EEBC099593905F6075AF210E9DAE53AD405A5D98C3BB0DFCC0CE1CECD
+timeout_sec=15
+timed_out=False
+exit_code=
+duration_ms=718
+stderr=(empty)
+stdout=StartServer assertion (NTDLL rebased; ipc_server_windows.cpp:1283)
+conclusion=not_supported_by_engine

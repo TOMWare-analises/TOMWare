@@ -1,0 +1,43 @@
+VM — Access R4.3b process tree (preserves access_r43)
+=====================================================
+Campaign id: access_r43b_process_tree
+Does NOT overwrite C:\TOMWare\access_r43 or the 9,000.
+Fixes automatic $pid (uses $procId). Emits process_tree.txt/.csv/.jsonl
+with name, pid, parent_pid, depth.
+DLL 4BBC6270. Snapshot tomware_go. Network off. Guest only.
+N=1 per arm. Window 60 s. BEN_28, BEN_46, BEN_47 × NAT / TMW0 / TMW_DO.
+
+Copy to the guest (zip, not a live share):
+  Run-AccessR43b.ps1
+  PASSO_A_PASSO_ACCESS_R43B.txt
+  the three SHA-named PEs already used for access_r43
+
+Passo 0
+  powershell -NoProfile -ExecutionPolicy Bypass -File .\Run-AccessR43b.ps1 -Job Prepare
+  Expected: DLL 4BBC6270, 3 x OK.
+
+Order (9 runs). Between MODES: copy C:\TOMWare\access_r43b to the host,
+then restore tomware_go. Do not copy over access_r43.
+
+Native:
+  .\Run-AccessR43b.ps1 -Job RUN -Mode Native -SampleId BEN_28
+  .\Run-AccessR43b.ps1 -Job RUN -Mode Native -SampleId BEN_46
+  .\Run-AccessR43b.ps1 -Job RUN -Mode Native -SampleId BEN_47
+Copy access_r43b. Restore tomware_go. Prepare.
+
+TMW0 (-q):
+  .\Run-AccessR43b.ps1 -Job RUN -Mode TMW0 -SampleId BEN_28
+  .\Run-AccessR43b.ps1 -Job RUN -Mode TMW0 -SampleId BEN_46
+  .\Run-AccessR43b.ps1 -Job RUN -Mode TMW0 -SampleId BEN_47
+Copy. Restore. Prepare.
+
+TMW_DO (-do -q):
+  .\Run-AccessR43b.ps1 -Job RUN -Mode TMW_DO -SampleId BEN_28
+  .\Run-AccessR43b.ps1 -Job RUN -Mode TMW_DO -SampleId BEN_46
+  .\Run-AccessR43b.ps1 -Job RUN -Mode TMW_DO -SampleId BEN_47
+Copy the final folder to the host.
+
+Reading:
+  process_tree.csv columns: name, pid, parent_pid, depth
+  Persistence of the Pin tree is not application progress.
+  identified=false. Not Arancino. Not the 9,000.

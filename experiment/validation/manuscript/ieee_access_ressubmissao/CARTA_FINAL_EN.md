@@ -103,10 +103,10 @@ Corpus numbers below are from the 100 PE × 9 × 10 = 9,000 campaign. The JCVHT 
 - **Comment.** Incremental-only baselines hide the cost of Pin relative to native execution.
 - **Response.** Nine conditions are reported. Two contrasts are separated: total instrumentation cost (NAT versus EMPTY or TMW0) and incremental countermeasure effect (TMW0 versus the enabled module).
 - **Experiment.** 1,000 attempts each: NAT, EMPTY, TMW0, five knobs, TMW_ALL. Table 26 reports short-lived benign medians. Table 27 reports the isolated Pin-without-tool probe.
-- **Result.** Short-lived benign, $n=25$ binaries, median of per-binary medians: NAT 0.260 s, EMPTY 1.485 s, TMW0 1.973 s. Probe `pin.exe -- TestAntiDebug.exe`: exit 0, empty stderr, oracle stdout; campaign still omitted the PIN arm (`campaign.json` `pin_condition_valid=false`).
-- **Change.** Table 26 and Table 27 inserted. TMW0 versus a module is not described as the total Pin cost.
-- **Location.** Section VI-B; Tables 19, 26, 27.
-- **Limitation.** EMPTY still includes tool load and injection. The 9,000 attempts have no PIN-without-tool cells.
+- **Result.** Short-lived benign, n=25: NAT 0.260 s, EMPTY 1.485 s, TMW0 1.973 s (`nat_empty_tmw0_table.csv`). Paired EMPTY−NAT +1.166 s; TMW0−EMPTY +0.151 s. Guest Pin-without-tool (22 Oct): exit 0, empty stderr, oracle stdout; campaign omitted PIN. Host probe (30 Oct): StartServer assertion in 718 ms, conclusion not_supported_by_engine; different pin.exe SHA-256.
+- **Change.** Table 26 (four strata + paired deltas + missing counts) and Table 27 (guest and host probes). TMW0 versus a module is not described as the total Pin cost.
+- **Location.** Section VI-B; Tables 19, 26, 27; `nat_empty_tmw0_table.csv`; `pin_bare_probe_host/`.
+- **Limitation.** EMPTY still includes tool load and injection. The 9,000 attempts have no PIN-without-tool cells. Host Pin is not the guest campaign binary.
 
 ### R2.4 Auditable corpus table
 

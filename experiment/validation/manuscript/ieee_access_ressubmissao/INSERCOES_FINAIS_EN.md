@@ -105,28 +105,30 @@ The 100-row manifesto is `experiment/corpus/corpus.csv`. Columns: SHA-256, sourc
 
 Nine conditions were evaluated: native execution (NAT), Pin with an empty Pintool (EMPTY), TOMWare.M with modules disabled (TMW0), each of the five countermeasures individually, and joint activation of all modules. Two contrasts are separated. Total instrumentation cost is NAT versus EMPTY or TMW0. Incremental countermeasure effect is TMW0 versus the enabled module. TMW0 versus a module is not the total cost of Intel Pin.
 
-Table 26 reports the descriptive median of per-binary median wall-clock among short-lived benign binaries (`n=25`): NAT 0.260 s, EMPTY 1.485 s, TMW0 1.973 s (`stratum_medians.csv`).
+Table 26 and `nat_empty_tmw0_table.csv` report NAT, EMPTY, and TMW0 together. Short-lived benign binaries (`n=25`): median of per-binary medians NAT 0.260 s, EMPTY 1.485 s, TMW0 1.973 s (260.0 / 1484.8 / 1973.5 ms). Paired deltas (bootstrap 2,000, seed 705851366): EMPTY−NAT +1.166 s [0.955, 2.553]; TMW0−NAT +1.277 s [1.019, 2.441]; TMW0−EMPTY +0.151 s [0.026, 0.270]. NAT CPU and working-set are missing for 23 of 25 of those binaries; CPU zeros under EMPTY/TMW0 remain descriptive.
 
-An isolated probe of Pin without a Pintool (`pin.exe -- TestAntiDebug.exe`, 22 Oct 2026, `pin_probe.csv`) completed with exit code 0, empty stderr, and oracle stdout reporting no PEB anomaly (Table 27). The CSV still records `pin_condition_valid=False` because of the campaign-day IPC/StartServer note. The 9,000-attempt campaign omitted the PIN arm (`campaign.json`). EMPTY remains the smallest Pin-hosted reference in those 9,000 attempts. Do not claim that Pin without a Pintool is always impossible on Pin 3.28.
+Two Pin-without-Pintool records exist and must not be mixed. Guest 22 Oct (`pin_probe.csv`): `pin.exe -- TestAntiDebug.exe`, exit 0, empty stderr, oracle stdout OK, duration bound 30 s, `pin_condition_valid=False`; the 9,000 omitted the PIN arm. Host 30 Oct (`pin_bare_probe_host/`): full command with SHA-256 of `pin.exe` `FBA632E40F00FEEC…` and `TestAntiDebug.exe` `3B25069EEBC09959…`; duration 718 ms; stderr empty; stdout is the StartServer assertion (`NTDLL module is rebased`; `ipc_server_windows.cpp:1283`); conclusion **not_supported_by_engine**. That host `pin.exe` is not the guest campaign binary. EMPTY remains the smallest Pin-hosted reference in the 9,000.
 
-**Table 26.** Descriptive median wall-clock, short-lived benign binaries (`n=25`).
+**Table 26.** NAT / EMPTY / TMW0, short-lived benign, n=25. Full four-stratum CSV: `nat_empty_tmw0_table.csv`.
 
-| Condition | Meaning | Median wall-clock (s) |
+| Condition | Meaning | Median wall-clock (s) | 95% CI (s) |
+|---|---|---|---|
+| NAT | no Pin | 0.260 | [0.254, 0.272] |
+| EMPTY | Pin + EmptyPinTool | 1.485 | [1.282, 2.830] |
+| TMW0 | Pin + TOMWare, knobs off | 1.973 | [1.398, 3.076] |
+
+**Table 27.** Pin without a Pintool. Guest campaign probe versus host probe (different `pin.exe` identity).
+
+| Field | Guest 22 Oct | Host 30 Oct |
 |---|---|---|
-| NAT | no Pin | 0.260 |
-| EMPTY | Pin + EmptyPinTool | 1.485 |
-| TMW0 | Pin + TOMWare, knobs off | 1.973 |
-
-**Table 27.** Isolated Pin-without-Pintool probe, 22 Oct 2026, 30 s timeout.
-
-| Field | Value |
-|---|---|
-| command | `pin.exe -- TestAntiDebug.exe` |
-| exit code | 0 |
-| timed out | false |
-| stderr | empty |
-| stdout (excerpt) | oracle “OK — no anomaly”; PEB fields 0 |
-| CSV `pin_condition_valid` | False (campaign-day IPC/StartServer note) |
+| command | `pin.exe -- TestAntiDebug.exe` | full paths in `run_meta.json` |
+| oracle SHA-256 | not stored in `pin_probe.csv` | `3B25069EEBC09959…CECD` |
+| pin.exe SHA-256 | campaign guest Pin 3.28.98749 | `FBA632E40F00FEEC…741A` |
+| exit code | 0 | not populated after abort |
+| duration | ≤ 30 s (timeout cap) | 718 ms |
+| stdout | oracle OK; PEB fields 0 | StartServer assertion |
+| stderr | empty | empty |
+| conclusion | campaign omitted PIN (`pin_condition_valid=false`) | `not_supported_by_engine` |
 
 ---
 

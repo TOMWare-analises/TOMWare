@@ -1,0 +1,21 @@
+{
+  "campaign_id": "access_pin_bare_host",
+  "machine": "host",
+  "utc": "2026-10-30T22:02:54Z",
+  "command": "D:\\MMB\\workspace\\tomware-melhorias\\TOMWare\\pin\\intel64\\bin\\pin.exe -- D:\\MMB\\workspace\\tomware-melhorias\\TOMWare\\Resultados\\Apps-Teste\\TestAntiDebug.exe",
+  "pin_path": "D:\\MMB\\workspace\\tomware-melhorias\\TOMWare\\pin\\intel64\\bin\\pin.exe",
+  "pin_sha256": "FBA632E40F00FEEC1FAA7BC1A3BF8CC9A551AB1F17ABA6B07D31C67E602A741A",
+  "oracle": "TestAntiDebug.exe",
+  "oracle_path": "D:\\MMB\\workspace\\tomware-melhorias\\TOMWare\\Resultados\\Apps-Teste\\TestAntiDebug.exe",
+  "oracle_sha256": "3B25069EEBC099593905F6075AF210E9DAE53AD405A5D98C3BB0DFCC0CE1CECD",
+  "timeout_sec": 15,
+  "timed_out": false,
+  "exit_code": null,
+  "duration_ms": 718,
+  "stdout_file": "stdout.txt",
+  "stderr_file": "stderr.txt",
+  "stderr_empty": true,
+  "startserver_assert": true,
+  "conclusion": "not_supported_by_engine",
+  "not_a_claim": "This host Pin binary is not the guest campaign pin.exe (920A730A…). Do not mix with the 9,000. Guest 22 Oct probe is a separate record (exit 0, oracle OK, pin_condition_valid=false)."
+}

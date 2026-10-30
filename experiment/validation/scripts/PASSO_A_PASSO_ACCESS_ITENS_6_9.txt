@@ -1,0 +1,36 @@
+Guest-only remaining experiments (Access, not JCVHT)
+====================================================
+Do not rerun AntiDebug 3+3, timing N=30, the 9,000, Module32 fixture,
+da_n10 smoke, or the 1,800 collector confirmation.
+
+VM: Windows 10 x64-tomware. Snapshot tomware_go. Network off.
+DLL of the 9,000: 4BBC6270. A NEW DLL for item 7 must have its own SHA-256
+and must not be presented as retroactive validation of the 9,000.
+
+6. Temporal coherence battery
+   Fixed N, retain every attempt. Oracle: TestOverhead / wait harness on the guest.
+   Arms: sequential waits; concurrent; overlapping/nested; alertable wait;
+   repeated clock reads; monotonicity / rollback detection.
+   Do NOT copy JCVHT 10 s / wait 4/10 / TickCount cells into Access tables.
+   Record: campaign_id access_temporal_v1, N, every attempt, CSV+JSON, hashes.
+
+7. Functional interface matrix
+   Process32First/Next and W; Module32First/Next and W; GetModuleHandleA/W;
+   RtlEqualMemory; wmemcmp; memcmp_s; wmemcmp_s; bcmp;
+   _memicmp_l with four arguments (source already has wMemcmpIL).
+   Build a new TOMWare.dll, record SHA-256. Run NAT / TMW0 / knob / -da,
+   one execution per cell unless a positive control requires more.
+   Absent GetProcAddress exports stay ABSENT/NOT_EXERCISED.
+
+8. Paired behavioural evidence (documented subset, not the 9,000)
+   Same binaries, TMW0 vs TMW_ALL, -mc on for this diagnostic only.
+   Record: hook counters, API names, descendants, file/registry/network,
+   execution milestones, exit code, stdout/stderr SHA-256.
+   Agreement of exit+hash is not API equivalence.
+
+9. Real evasive case
+   Requires identified Pin check, branch taken because of that result,
+   matching knob, and an additional hashed artefact on the same malicious
+   PE and input. Imports/strings/IAT/persistence are not enough.
+   Start from Run-M3-CaseStudy.ps1 gate (MAL_08 then MAL_13). If
+   pe_calls_intercepted=0, REJECT that sample. Do not invent a chain.

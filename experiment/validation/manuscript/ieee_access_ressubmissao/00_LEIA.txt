@@ -12,7 +12,7 @@ Start here:
   Access-2026-38745_REVISION_TABLES.tex
   CARTA_FINAL_EN.md               — point-by-point letter (full answer per reviewer; no “Same as”)
   OVERLEAF_PARA_O_AMIGO.md
-  REPRODUCIBILITY.txt             — single git commit / DLL / Pin
+  REPRODUCIBILITY.txt             — git 53a7ee0c8fc95e7ff4064fbb580bc793a80a5083 / DLL / Pin
   FRASES_PROIBIDAS.txt
   03_R43_LEITURA.md
 

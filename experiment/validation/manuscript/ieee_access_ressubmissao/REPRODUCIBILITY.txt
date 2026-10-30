@@ -1,6 +1,6 @@
 Access-2026-38745 reproducibility (single landing commit; stamped after git rev-parse)
 
-git_commit: PENDING_FINAL_ACCESS_REVISION
+git_commit: 53a7ee0c8fc95e7ff4064fbb580bc793a80a5083
 remote: https://github.com/TOMWare-analises/TOMWare
 article_base_pdf_sha256: CFD80F0D0EE964CDAC490A55152454C219F2EB63B86A46CDCB220C0E766B3000
 withdrawn_pdf_sha256: 5CBC8E96A9684A6B19A7FDDAD1EA96A51504AF6F736B2E7176F53B84B6A98020

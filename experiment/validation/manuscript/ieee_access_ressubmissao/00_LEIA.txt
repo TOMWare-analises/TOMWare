@@ -12,7 +12,8 @@ Start here:
   Access-2026-38745_REVISION_TABLES.tex
   CARTA_FINAL_EN.md               — point-by-point letter (full answer per reviewer; no “Same as”)
   OVERLEAF_PARA_O_AMIGO.md
-  REPRODUCIBILITY.txt             — git 53a7ee0c8fc95e7ff4064fbb580bc793a80a5083 / DLL / Pin
+  REPRODUCIBILITY.txt             — git 665aebba7e555ecafbdcfd33f18c076cef39526d / DLL / Pin
+  STATUS_ITENS_TECNICOS.md        — itens 1–9 (o que foi corrido vs o que falta na VM)
   FRASES_PROIBIDAS.txt
   03_R43_LEITURA.md
 

@@ -4,7 +4,7 @@ Base article: English PDF SHA-256 `CFD80F0D0EE9…` (22 pages). Existing Tables 
 
 The IEEE `.tex` is not in this repository. Paste these replacements into Overleaf. The compiled addendum PDFs merge Tables 21–27 onto the 22-page base. Do not restore Portuguese evaluation pages. Do not mix JCVHT 31/3,100/10 s cells.
 
-Campaign identity is git `665aebba7e555ecafbdcfd33f18c076cef39526d` (`REPRODUCIBILITY.txt`). Pin 3.28.98749; campaign DLL `4BBC62707EE0B2EF922D4E8659A6392D92814EA0FC74F4682F1187562AE7F0E6`; EmptyPinTool `804BE19BF7924B641FE25F07EA89DEC26DC9DAA36C49638F407FF96E2AB153C8`; snapshot `tomware_go`; seed 705851366.
+Campaign identity is git `a2ee6c9e509ce2d47ff68ba3ae9197a6529d66b3` (`REPRODUCIBILITY.txt`). Pin 3.28.98749; campaign DLL `4BBC62707EE0B2EF922D4E8659A6392D92814EA0FC74F4682F1187562AE7F0E6`; EmptyPinTool `804BE19BF7924B641FE25F07EA89DEC26DC9DAA36C49638F407FF96E2AB153C8`; snapshot `tomware_go`; seed 705851366.
 
 ---
 

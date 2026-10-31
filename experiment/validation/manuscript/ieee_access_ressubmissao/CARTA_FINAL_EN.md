@@ -6,7 +6,7 @@ For every comment: reviewer comment; authors’ response; experiment or analysis
 
 Corpus numbers below are from the 100 PE × 9 × 10 = 9,000 campaign. The JCVHT 31 PE / 3,100 / 10 s campaign is not used.
 
-**Reproducibility (single citation):** git `665aebba7e555ecafbdcfd33f18c076cef39526d` (`REPRODUCIBILITY.txt`). Pin 3.28.98749; campaign DLL `4BBC62707EE0B2EF922D4E8659A6392D92814EA0FC74F4682F1187562AE7F0E6`; snapshot `tomware_go`; seed 705851366. Base PDF SHA-256 `CFD80F0D0EE964CDAC490A55152454C219F2EB63B86A46CDCB220C0E766B3000`. Older hashes `e382a6c` / `58ea738` / `cf735e1` are superseded.
+**Reproducibility (single citation):** git `a2ee6c9e509ce2d47ff68ba3ae9197a6529d66b3` (`REPRODUCIBILITY.txt`). Pin 3.28.98749; campaign DLL `4BBC62707EE0B2EF922D4E8659A6392D92814EA0FC74F4682F1187562AE7F0E6`; snapshot `tomware_go`; seed 705851366. Base PDF SHA-256 `CFD80F0D0EE964CDAC490A55152454C219F2EB63B86A46CDCB220C0E766B3000`. Older hashes `e382a6c` / `58ea738` / `cf735e1` / `665aebba` are superseded.
 
 **Declared remaining gaps (not marked resolved):** API traces and code coverage; per-binary hook counters (disabled in the 9,000); full temporal coherence; a malware case with identified check, branch, knob, and recovered behavior; experimental comparison with Arancino, COBAI, or Peekaboo.
 

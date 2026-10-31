@@ -1,6 +1,6 @@
 Access-2026-38745 reproducibility (single landing commit; stamped after git rev-parse)
 
-git_commit: 665aebba7e555ecafbdcfd33f18c076cef39526d
+git_commit: a2ee6c9e509ce2d47ff68ba3ae9197a6529d66b3
 remote: https://github.com/TOMWare-analises/TOMWare
 article_base_pdf_sha256: CFD80F0D0EE964CDAC490A55152454C219F2EB63B86A46CDCB220C0E766B3000
 withdrawn_pdf_sha256: 5CBC8E96A9684A6B19A7FDDAD1EA96A51504AF6F736B2E7176F53B84B6A98020
@@ -25,6 +25,7 @@ completeness: experiment/results/campaign/corpus_aligned_10k/completeness.json
 latex_tables: experiment/validation/manuscript/ieee_access_ressubmissao/Access-2026-38745_REVISION_TABLES.tex
 letter: experiment/validation/manuscript/ieee_access_ressubmissao/CARTA_FINAL_EN.md
 
-Older hashes e382a6c / 58ea738 / cf735e1 are superseded by git_commit above.
+Older hashes e382a6c / 58ea738 / cf735e1 / 665aebba are superseded by git_commit above.
+665aebba was rewritten to a2ee6c9 (same tree; Cursor trailer removed from the message).
 The 9,000 raw JSON files were not rewritten.
 JCVHT 31/3100/10s is a different campaign.

@@ -14,7 +14,7 @@ Integral compiled views in this pack:
 2. `Access-2026-38745_REVISION_TABLES.tex` — LaTeX tables.
 3. `CARTA_FINAL_EN.md` — official point-by-point letter. Full answer for every reviewer. Do not write “Same as R1.1”.
 4. `FRASES_PROIBIDAS.txt`
-5. `REPRODUCIBILITY.txt` — git `665aebba7e555ecafbdcfd33f18c076cef39526d`.
+5. `REPRODUCIBILITY.txt` — git `a2ee6c9e509ce2d47ff68ba3ae9197a6529d66b3`.
 
 Withdrawn (do not paste): `PATCH_VB_VIC_VIIA_EN.md` Portuguese-excerpt block, `INSERCOES_EN.md`, `CARTA_PONTO_A_PONTO_EN.md`, `MATRIZ_SEIS_REVISORES.csv`, `RELATORIO_SEIS_REVISORES.md`.
 

@@ -19,7 +19,7 @@ Não escrever (Access-2026-38745)
 - “baseline ladder table” sem a Table 26 no artigo
 - Pin sem Pintool como sempre impossível (o probe de 22 Oct saiu 0, stderr vazio)
 - instruções sobre “trechos ainda em português” (o CFD80 já é inglês; o 5CBC foi retirado)
-- citar git `e382a6c` ou `58ea738` / `cf735e1` depois do commit único em REPRODUCIBILITY.txt
+- citar git `e382a6c` ou `58ea738` / `cf735e1` / `665aebba` depois do commit único em REPRODUCIBILITY.txt
 
 Pode escrever, com o ficheiro ao lado:
 

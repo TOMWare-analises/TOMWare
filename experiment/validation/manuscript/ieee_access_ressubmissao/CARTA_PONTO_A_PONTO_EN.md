@@ -18,7 +18,7 @@ The 31-binary / 3,100-launch / 10 s campaign is not used below. All corpus numbe
 - **Result.** Baseline: IsDebuggerPresent / PEB.BeingDebugged / PEB.NtGlobalFlag = 1 (3/3). Treatment: all 0 (3/3). `-gdb` is a PEB stimulus, not an attached debugger.
 - **Change.** Table of the matched pair; claim scoped to those PEB fields.
 - **Location.** Functional AntiDebug table; Methods.
-- **Limitation.** Other debug APIs were not the stimulus.
+- **Limitation.** Other debug APIs were not the stimulus. Combined `-da` on this oracle is one run in `da_n10.csv`, not ten repetitions.
 
 ### R1.2 SkewMask selection bias (9/31)
 
@@ -106,8 +106,8 @@ Same as R1.3. COBAI and Peekaboo are absent from the repository; architectural t
 - **Response.** We agree. Equivalence is not demonstrated (item 13).
 - **Experiment.** External observer, 10 PE × 4 arms × 3 = 120 runs; TMW0 versus TMW_ALL.
 - **Result.** 22/30 pairs matched on exit code and stdout hash; 8 disagreed (item 1).
-- **Change.** Diagnostic table; language limited to observables.
-- **Location.** Diagnostic subsection; Discussion.
+- **Change.** Full method, sample list, three repetitions, agreement criterion, and the eight disagreements moved into Section VI Results (they must not remain only in the Introduction).
+- **Location.** Section VI (new diagnostic subsection); `fidelity_by_run.csv`.
 - **Limitation.** No API/coverage/file/registry/network equivalence.
 
 ### R2.7 Weak compatibility criterion
@@ -123,10 +123,29 @@ Same as R1.3. COBAI and Peekaboo are absent from the repository; architectural t
 ### R2 extra Combined `-da`; malware used the five checks
 
 - **Comment.** Need combined mode and proof of in-the-wild checks.
-- **Response.** Combined mode exists as TMW_ALL (9,000) plus a five-oracle smoke test (item 3). The malware-check claim is **not** made (item 14).
+- **Response.** Combined mode exists as TMW_ALL (9,000) plus a five-oracle smoke test. The file `da_n10.csv` has **five rows** (campaign id `t2_n10_v7b`); it is **not** ten `-da` repetitions. The malware-check claim is **not** made (item 14).
 - **Result.** `-da` oracles: 5/5 exit 0, one run each. `identified=false`.
 - **Change.** Smoke-test table; negative statement on evasion use.
 - **Limitation.** Smoke test ≠ corpus interaction study. No evasive chain.
+
+### ProcessEnum Module32 positive control (V-B, VI-C, VII-A)
+
+- **Comment.** The process oracle did not hide a monitored module; the PDF still stated that absence.
+- **Response.** A fixture now supplies that control. Sentences in V-B, VI-C, and VII-A that deny it must be deleted.
+- **Experiment.** `module32_fixture.csv`: copy of `version.dll` loaded as `%TEMP%\pinvm.dll` (dummy name, not real Pin).
+- **Result.** Native/TMW0: fixture visible. `-dp` and `-da`: fixture hidden; `kernel32.dll` visible; `ENUM_OK`; counts 32 / 31 / 30 / 30.
+- **Change.** New Module32 table; VII-A no longer says filtering cannot be confirmed.
+- **Location.** Section V-B; VI-C; VII-A; supplement `module32_fixture.csv`.
+- **Limitation.** Not `NtQuerySystemInformation`; not a full `GetModuleHandle` matrix.
+
+### InstMemcmpMask family (campaign DLL)
+
+- **Comment.** Functional evidence was limited to `memcmp` in `TestMemoryScan.exe`.
+- **Response.** Family controls on `4BBC6270` are in `memcmp_n10.csv`.
+- **Result.** `memcmp`, `_memicmp`, `RtlCompareMemory`: PASS (NAT/TMW0) → MASKED (`-dm`/`-da`). Pass-through equality/inequality OK. `_memicmp_l`: ACCESS_FAULT after MASKED under `-dm`/`-da` (3-arg hook). ABSENT/NOT_EXERCISED: `RtlEqualMemory`, `wmemcmp`, `memcmp_s`, `wmemcmp_s`, `bcmp`. DLL `D55EC952` does not revalidate the 9,000.
+- **Change.** Table in V InstMemcmpMask; limitation list explicit.
+- **Location.** Section V InstMemcmpMask; Limitations.
+- **Limitation.** Unexercised exports remain unimplemented-as-validated.
 
 ---
 

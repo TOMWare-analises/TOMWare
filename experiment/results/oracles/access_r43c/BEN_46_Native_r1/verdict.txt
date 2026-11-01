@@ -1,0 +1,15 @@
+campaign=access_r43c_process_tree
+sample=BEN_46
+mode=Native
+rep=1
+progress=EXITED_BEFORE_WINDOW
+validity=inconclusive_native_died_before_named_sample
+timed_out=False
+process_stayed_alive_60s=False
+behavioral_progress_observed=false
+exit_code=-1073741511
+elapsed_ms=150
+peak_ws=1527808
+n_named_last_sample=0
+elevated=true
+identified=false

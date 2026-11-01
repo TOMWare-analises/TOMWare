@@ -1,0 +1,15 @@
+campaign=access_r43c_process_tree
+sample=BEN_47
+mode=TMW0
+rep=2
+progress=EXITED_BEFORE_WINDOW
+validity=valid_attempt
+timed_out=False
+process_stayed_alive_60s=False
+behavioral_progress_observed=false
+exit_code=-1073741511
+elapsed_ms=1360
+peak_ws=82165760
+n_named_last_sample=3
+elevated=true
+identified=false

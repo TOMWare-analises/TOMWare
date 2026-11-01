@@ -58,8 +58,8 @@ Corpus numbers below are from the 100 PE × 9 × 10 = 9,000 campaign. The JCVHT 
 
 - **Comment.** Large resource drops need uncertainty and a behavioral reading.
 - **Response.** −87.2% / −38.5% are not in this English revision. Persistence under `-do` is treated as state or wait.
-- **Experiment.** Table 16/19 corpus contrast TMW0 versus TMW_DO: **2,000 attempts (1,000 per condition)**, not 9,000. Resource pairs: 98 for duration (MAL_33 and MAL_37 excluded from those contrasts only). Additional diagnostic Table 25: BEN_28, BEN_46, BEN_47, $N=1$.
-- **Result.** Benign persistent window-survival TMW0 9.6% → TMW_DO 52.8% (Table 19 class counts). Table 25: NAT and TMW0 exit `−1073741511` (`STATUS_ENTRYPOINT_NOT_FOUND`); TMW_DO Pin tree still alive ~61 s; `identified=false`.
+- **Experiment.** Table 16/19 corpus contrast TMW0 versus TMW_DO: **2,000 attempts (1,000 per condition)**, not 9,000. Resource pairs: 98 for duration (MAL_33 and MAL_37 excluded from those contrasts only). Additional diagnostic Table 25: `access_r43b_process_tree`, BEN_28, BEN_46, BEN_47, $N=1$, `script_rev=r43b.2`.
+- **Result.** Benign persistent window-survival TMW0 9.6% → TMW_DO 52.8% (Table 19 class counts). Table 25 (`access_r43b_process_tree`): native `STATUS_ENTRYPOINT_NOT_FOUND`; named tree `pin.exe` → sample + `conhost.exe` on BEN_46 TMW0 and TMW_DO (TMW_DO still alive 61063 ms); BEN_28 TMW_DO exited after ~49 s with the same entrypoint status; BEN_47 TMW0/TMW_DO is Pin Win32 740 (elevation). `identified=false`.
 - **Change.** Absolute paired deltas in Tables 17 and 20; Table 25 added; −87.2 deleted.
 - **Location.** Section V-E; Section VI-D; Tables 17, 19, 20, 25.
 - **Limitation.** No API traces of persistents. Recorded CPU zeros are descriptive only.
@@ -238,8 +238,8 @@ Corpus numbers below are from the 100 PE × 9 × 10 = 9,000 campaign. The JCVHT 
 
 - **Comment.** Large SkewMask resource deltas may reflect truncated or altered execution.
 - **Response.** Those percentages are withdrawn. The 60 s corpus contrast and Table 25 are the test.
-- **Experiment.** Table 16/19: **1,000 TMW0 + 1,000 TMW_DO = 2,000 attempts**. Table 25: BEN_28, BEN_46, BEN_47, NAT / TMW0 / TMW_DO, $N=1$, 60 s.
-- **Result.** TMW_DO fills the window in the corpus medians. Table 25: native/TMW0 `STATUS_ENTRYPOINT_NOT_FOUND`; TMW_DO Pin tree ~61 s; empty stdout/stderr; `identified=false`.
+- **Experiment.** Table 16/19: **1,000 TMW0 + 1,000 TMW_DO = 2,000 attempts**. Table 25: `access_r43b_process_tree`, BEN_28, BEN_46, BEN_47, NAT / TMW0 / TMW_DO, $N=1$, 60 s.
+- **Result.** TMW_DO fills the window in the corpus medians. Table 25 named tree: `pin.exe` → sample + `conhost.exe` on BEN_46; BEN_28 TMW_DO exited at 49344 ms; BEN_47 is Pin 740 (elevation), not a SkewMask hold. `identified=false`.
 - **Change.** Tables 17, 20, 25; −87.2 / −38.5 absent.
 - **Location.** Section V-E; Section VI-D; Tables 17, 19, 25.
 - **Limitation.** No application-progress evidence.
@@ -293,7 +293,7 @@ Corpus numbers below are from the 100 PE × 9 × 10 = 9,000 campaign. The JCVHT 
 - **Comment.** Performance numbers may reflect state changes, not efficiency.
 - **Response.** Adopted. SkewMask wall-clock increase and Table 25 are the leading examples. CPU zeros are not savings.
 - **Experiment.** Tables 17, 20, 25.
-- **Result.** TMW_DO stretches wall-clock toward 60 s; Table 25 shows Pin-tree persistence after native entrypoint failure.
+- **Result.** TMW_DO stretches wall-clock toward 60 s in the corpus. Table 25 shows a named Pin tree on BEN_46 and an entrypoint exit on BEN_28 after ~49 s; BEN_47 did not launch under Pin (Win32 740).
 - **Change.** Section V-E and VII-B wording.
 - **Location.** Sections V-E, VI-D, VII-B; Tables 17, 25.
 - **Limitation.** No progress milestones.

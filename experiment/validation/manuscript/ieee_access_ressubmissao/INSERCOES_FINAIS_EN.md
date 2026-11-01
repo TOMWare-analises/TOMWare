@@ -83,7 +83,7 @@ A separate diagnostic, not part of the 9,000-attempt corpus, compared TMW0 (`-q`
 
 Ten executables (BEN_05, BEN_06, BEN_10, BEN_12, BEN_14, MAL_01, MAL_02, MAL_06, MAL_07, MAL_11) × three independent repetitions = 30 TMW0–TMW_ALL pairs.
 
-Agreement criterion: equal exit code and equal stdout SHA-256. An empty stdout is hashed as the empty buffer; agreement on an empty buffer remains an external observable only.
+Agreement criterion: equal exit code and equal stdout hash field. A 0-byte stdout leaves the hash field **empty**; it is not the SHA-256 of a zero-length buffer (`e3b0c442…`). Two empty fields are equal fields. Of the 22 agreeing pairs, 12 are empty-field agreements and 10 compare a non-empty SHA-256. Derived: `fidelity_pairs_2230.csv`.
 
 Result: 22 of 30 pairs agreed; 8 disagreed (Table 24). This diagnostic does not demonstrate equivalence of APIs, control flow, or external effects (files, registry, or network). Longer wall-clock under TMW_ALL in several agreeing pairs is cost, not a fidelity gain. Per-binary hook-invocation counters were not collected in the 9,000 JSON (`module_counters` off).
 
@@ -91,7 +91,7 @@ Result: 22 of 30 pairs agreed; 8 disagreed (Table 24). This diagnostic does not 
 
 | Pairs | TMW0 | TMW_ALL | Reading |
 |---|---|---|---|
-| 22/30 | — | — | exit and stdout hash equal |
+| 22/30 | — | — | exit equal and stdout hash field equal (12/22 are empty-field / 0-byte stdout) |
 | BEN_06 × 3 | exit 3 | timeout (−2) | combined mode changed the outcome |
 | BEN_12 × 2 | exit 0, 754 B stdout | timeout; finished attempt kept the same hash | text matched when the process exited |
 | MAL_06 × 1 | exit 0 | exit 2 | one of three repetitions differed |
@@ -107,7 +107,7 @@ Nine conditions were evaluated: native execution (NAT), Pin with an empty Pintoo
 
 Table 26 and `nat_empty_tmw0_table.csv` report NAT, EMPTY, and TMW0 together. Short-lived benign binaries (`n=25`): median of per-binary medians NAT 0.260 s, EMPTY 1.485 s, TMW0 1.973 s (260.0 / 1484.8 / 1973.5 ms). Paired deltas (bootstrap 2,000, seed 705851366): EMPTY−NAT +1.166 s [0.955, 2.553]; TMW0−NAT +1.277 s [1.019, 2.441]; TMW0−EMPTY +0.151 s [0.026, 0.270]. NAT CPU and working-set are missing for 23 of 25 of those binaries; CPU zeros under EMPTY/TMW0 remain descriptive.
 
-Two Pin-without-Pintool records exist and must not be mixed. Guest 22 Oct (`pin_probe.csv`): `pin.exe -- TestAntiDebug.exe`, exit 0, empty stderr, oracle stdout OK, duration bound 30 s, `pin_condition_valid=False`; the 9,000 omitted the PIN arm. Host 30 Oct (`pin_bare_probe_host/`): full command with SHA-256 of `pin.exe` `FBA632E40F00FEEC…` and `TestAntiDebug.exe` `3B25069EEBC09959…`; duration 718 ms; stderr empty; stdout is the StartServer assertion (`NTDLL module is rebased`; `ipc_server_windows.cpp:1283`); conclusion **not_supported_by_engine**. That host `pin.exe` is not the guest campaign binary. EMPTY remains the smallest Pin-hosted reference in the 9,000.
+Table 27 uses only a validated guest `C:\TOMWare\pin\pin.exe` (SHA-256 `920A730A…0BB819`) run of `pin.exe -- TestAntiDebug.exe`. The host 30 Oct StartServer probe (`FBA632E4…`, `intel64\bin`) is withdrawn from Table 27 and is not incompatibility proof. Guest N=3 (`pin_bare_guest_n3`) is pending ingest; until those three raw folders are on the host, campaign Pin-without-tool incompatibility is **not confirmed**. The 22 Oct `pin_probe.csv` row remains historical (exit 0, empty stderr, oracle OK; pin SHA not stored). `campaign.json` `pin_condition_valid=false` is the 14 Oct design record that omitted PIN from the 9,000. EMPTY remains the smallest Pin-hosted reference in the 9,000.
 
 **Table 26.** NAT / EMPTY / TMW0, short-lived benign, n=25. Full four-stratum CSV: `nat_empty_tmw0_table.csv`.
 
@@ -117,18 +117,15 @@ Two Pin-without-Pintool records exist and must not be mixed. Guest 22 Oct (`pin_
 | EMPTY | Pin + EmptyPinTool | 1.485 | [1.282, 2.830] |
 | TMW0 | Pin + TOMWare, knobs off | 1.973 | [1.398, 3.076] |
 
-**Table 27.** Pin without a Pintool. Guest campaign probe versus host probe (different `pin.exe` identity).
+**Table 27.** Guest Pin-without-Pintool, N=3, campaign launcher only.
 
-| Field | Guest 22 Oct | Host 30 Oct |
-|---|---|---|
-| command | `pin.exe -- TestAntiDebug.exe` | full paths in `run_meta.json` |
-| oracle SHA-256 | not stored in `pin_probe.csv` | `3B25069EEBC09959…CECD` |
-| pin.exe SHA-256 | campaign guest Pin 3.28.98749 | `FBA632E40F00FEEC…741A` |
-| exit code | 0 | not populated after abort |
-| duration | ≤ 30 s (timeout cap) | 718 ms |
-| stdout | oracle OK; PEB fields 0 | StartServer assertion |
-| stderr | empty | empty |
-| conclusion | campaign omitted PIN (`pin_condition_valid=false`) | `not_supported_by_engine` |
+| Rep | Launcher | Engine (recorded file) | Oracle | Exit | ms | Timeout | Conclusion |
+|---|---|---|---|---|---|---|---|
+| 1 | `920A730A…0BB819` | `FBA632E4…741A` `intel64\bin\pin.exe` | `3B25069E…CECD` | 0 | 2963 | no | completed_ok |
+| 2 | same | same | same | 0 | 1948 | no | completed_ok |
+| 3 | same | same | same | 0 | 1900 | no | completed_ok |
+
+Command: `C:\TOMWare\pin\pin.exe -- TestAntiDebug.exe`. Stderr empty; stdout oracle OK / PEB fields 0. Classification: technically valid on this launcher; omitted from the 9,000 by design. **Not incompatible.** Host StartServer is not this table. `campaign.json` `pin_condition_valid=false` is unchanged.
 
 ---
 
@@ -148,21 +145,17 @@ Table 19 includes all 9,000 attempts. The collector’s previous label `crash_ex
 
 Among persistent executables, observation-window attainment at 60 s increased from 21.2% with TMW0 to 55.2% with SkewMask and 60.2% with all modules. Greater observation-window attainment does not demonstrate equivalent progress or the recovery of malicious behavior.
 
-The TMW0 versus TMW_DO corpus contrast uses 2,000 attempts (1,000 per condition), not 9,000. An additional diagnostic (`access_r43_skewmask_diag`, Table 25) selected three persistent benign binaries a priori from `sample_condition_medians.csv` (campaign TMW0 `n_ok=0`, TMW_DO `n_ok≥6`): BEN_28, BEN_46, BEN_47. One run per condition (NAT, TMW0, TMW_DO), 60 s window, campaign DLL. Native and TMW0 terminated with exit `−1073741511` (`STATUS_ENTRYPOINT_NOT_FOUND`) in 750–1938 ms. TMW_DO kept the Pin process tree alive for about 61 s. Standard output and standard error were empty. `identified=false`. Persistence is a change of execution state or wait under `-do`, not evidence that the application made progress.
+The TMW0 versus TMW_DO corpus contrast uses 2,000 attempts (1,000 per condition), not 9,000. Table 25 is the N=3 process-tree diagnostic `access_r43d_process_tree` (all 27 attempts kept; no cherry-pick). Same a-priori SHAs: BEN_28, BEN_46, BEN_47. Modes Native / TMW0 (`-q`) / TMW_DO (`-do -q`). Snapshot `tomware_go`, DLL `4BBC6270`, elevated session, 50 ms sampling, launcher `C:\TOMWare\pin\pin.exe` SHA-256 `920A730A…0BB819` (`pin_sha256_matches_campaign=true`). Preserved and **not** Table 25: `access_r43` (`tree_error`), `access_r43b` (N=1; BEN_47 Pin 740), `access_r43c` (launcher was `intel64\bin\pin.exe` `FBA632E4`). Native 9/9 exited `−1073741511` (`STATUS_ENTRYPOINT_NOT_FOUND`) with no named last dump. TMW0 9/9 exited the same code in 1.4–2.9 s; last dump named on 5/9 (three `pin.exe` + sample + two `conhost.exe`). TMW_DO 9/9 `STILL_ALIVE_AT_WINDOW` at 60.2 s with that named tree. `behavioral_progress_observed=false` on all 27. `identified=false`. Persistence is wait/state, not recovered application behaviour. Full 27-row table: `TABELAS_25_26_27_R43D.md`.
 
-**Table 25.** SkewMask diagnostic `access_r43_skewmask_diag`, N=1, 60 s, DLL `4BBC6270`.
+**Table 25 (summary; all 27 rows in `TABELAS_25_26_27_R43D.md`).** `access_r43d_process_tree`, N=3, launcher `920A730A`.
 
-| Sample | Mode | Exit | Elapsed (ms) | Progress |
-|---|---|---|---|---|
-| BEN_28 | Native | −1073741511 | 1609 | EXITED (peak WS = 0) |
-| BEN_28 | TMW0 | −1073741511 | 1687 | EXITED |
-| BEN_28 | TMW_DO | −1 (timeout) | 61016 | STILL_ALIVE Pin tree |
-| BEN_46 | Native | −1073741511 | 781 | EXITED (peak WS = 0) |
-| BEN_46 | TMW0 | −1073741511 | 1938 | EXITED |
-| BEN_46 | TMW_DO | −1 (timeout) | 61234 | STILL_ALIVE Pin tree |
-| BEN_47 | Native | −1073741511 | 750 | EXITED (peak WS = 0) |
-| BEN_47 | TMW0 | −1073741511 | 1703 | EXITED |
-| BEN_47 | TMW_DO | −1 (timeout) | 61062 | STILL_ALIVE Pin tree |
+| Sample | Native | TMW0 | TMW_DO |
+|---|---|---|---|
+| BEN_28 | 3/3 EXITED `−1073741511` (median 266 ms) | 3/3 EXITED `−1073741511` (median 1875 ms); named last 2/3 | 3/3 STILL_ALIVE ~60250 ms; named last 3/3 |
+| BEN_46 | 3/3 EXITED `−1073741511` (median 188 ms) | 3/3 EXITED `−1073741511` (median 1375 ms); named last 2/3 | 3/3 STILL_ALIVE ~60297 ms; named last 3/3 |
+| BEN_47 | 3/3 EXITED `−1073741511` (median 203 ms) | 3/3 EXITED `−1073741511` (median 1672 ms); named last 1/3 | 3/3 STILL_ALIVE ~60172 ms; named last 3/3 |
+
+**Table 26 (N=3 trees).** Median elapsed and observed range. n=3 is too small for a bootstrap 95% CI. Corpus NAT/EMPTY/TMW0 CIs remain in `nat_empty_tmw0_table.csv`.
 
 ---
 

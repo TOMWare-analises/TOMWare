@@ -1,0 +1,6 @@
+pin.exe pid=7040 parent=672 created=2026-10-31T22:40:56.2476050Z
+  pin.exe pid=7088 parent=7040 created=2026-10-31T22:40:56.2986830Z
+    pin.exe pid=3480 parent=7088 created=2026-10-31T22:40:56.3806140Z
+      conhost.exe pid=3944 parent=3480 created=2026-10-31T22:40:56.3904460Z
+    0111d485351ef0deffd9403a0f8e123759a04a928fbd055b901de18164c4fa39.exe pid=4768 parent=7088 created=2026-10-31T22:40:56.3305850Z
+  conhost.exe pid=5772 parent=7040 created=2026-10-31T22:40:56.2623140Z

@@ -1,0 +1,4 @@
+name,pid,parent_pid,depth,creation_utc,first_seen_ms,last_seen_ms,approx_exit_utc
+pin.exe,6036,4324,0,2026-10-31T03:43:32.7355030Z,16,59859,
+0abd30c5a4a6f17c9f1f718da42435ed05927a3c0ee5430a8ff337027f875dfd.exe,6256,6036,1,2026-10-31T03:43:32.7812540Z,16,59859,
+conhost.exe,1480,6036,1,2026-10-31T03:43:32.7403270Z,16,59859,

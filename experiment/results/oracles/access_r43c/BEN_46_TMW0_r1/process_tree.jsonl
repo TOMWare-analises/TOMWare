@@ -1,0 +1,3 @@
+{"name":"pin.exe","pid":2424,"parent_pid":5628,"depth":0,"creation_utc":"2026-10-31T03:20:31.1998610Z"}
+{"name":"0ab9f2923dac072716a8380ec909ea9f74b9f1755f149c2a41f61b49d93633a2.exe","pid":4160,"parent_pid":2424,"depth":1,"creation_utc":"2026-10-31T03:20:31.2534400Z"}
+{"name":"conhost.exe","pid":5324,"parent_pid":2424,"depth":1,"creation_utc":"2026-10-31T03:20:31.2062220Z"}

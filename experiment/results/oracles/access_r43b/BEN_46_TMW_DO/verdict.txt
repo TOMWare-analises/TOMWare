@@ -1,0 +1,9 @@
+campaign=access_r43b_process_tree
+sample=BEN_46
+mode=TMW_DO
+progress=STILL_ALIVE_AT_WINDOW
+timed_out=True
+exit_code=-1
+elapsed_ms=61063
+peak_ws=70381568
+identified=false

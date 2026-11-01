@@ -1,0 +1,15 @@
+campaign=access_r43d_process_tree
+sample=BEN_47
+mode=TMW_DO
+rep=1
+progress=STILL_ALIVE_AT_WINDOW
+validity=valid_attempt
+timed_out=True
+process_stayed_alive_60s=True
+behavioral_progress_observed=false
+exit_code=-1
+elapsed_ms=60156
+peak_ws=23744512
+n_named_last_sample=6
+elevated=true
+identified=false

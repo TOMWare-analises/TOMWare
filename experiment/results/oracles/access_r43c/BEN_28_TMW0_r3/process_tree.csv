@@ -1,0 +1,3 @@
+name,pid,parent_pid,depth,creation_utc
+pin.exe,8076,5628,0,2026-10-31T03:20:28.7979690Z
+conhost.exe,7140,8076,1,2026-10-31T03:20:28.8005400Z

@@ -1,5 +1,6 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 # Access R4.3b process-tree diagnostic. Campaign id access_r43b_process_tree.
+# script_rev=r43b.2 — do not use a copy that still has @($script:LastTreeRows)
 # Preserves access_r43_skewmask_diag. Fixes automatic $pid (use $procId).
 # Does NOT rerun the 9000. Does NOT change SkewMask.cpp. Does NOT install Pin 2.14.
 # DLL 4BBC6270. Snapshot tomware_go. Network off. Guest only.
@@ -126,6 +127,7 @@ function Measure-Window {
     $deadline = $t0.AddSeconds($WindowSec)
     $peakWs = [int64]0
     $lastTree = ""
+    $script:LastTreeRows = New-Object System.Collections.ArrayList
     while ((Get-Date) -lt $deadline) {
         Start-Sleep -Milliseconds $SampleMs
         $elapsed = [int]((Get-Date) - $t0).TotalMilliseconds
@@ -148,7 +150,10 @@ function Measure-Window {
                 } catch {}
             }
             $lastTree = Get-TreeText -RootPid $proc.Id
-            $script:LastTreeRows = $script:TreeRows
+            $script:LastTreeRows = New-Object System.Collections.ArrayList
+            if ($null -ne $script:TreeRows) {
+                foreach ($row in $script:TreeRows) { [void]$script:LastTreeRows.Add($row) }
+            }
         } catch {}
         if ($treeWs -gt $peakWs) { $peakWs = $treeWs }
         $res.Add(("{0},{1},{2},{3},{4},{5},{6},{7}" -f (Get-Date).ToUniversalTime().ToString("o"), $elapsed, $alive, $treeWs, $peakWs, $rootWs, $rootCpu, $nTree))
@@ -188,6 +193,7 @@ New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
 
 if ($Job -eq "Prepare") {
     $null = Assert-Dll $RepoRoot $ExpectedDllSha256
+    Write-Host "script_rev=r43b.2"
     Write-Host "campaign access_r43b_process_tree  window=60s  N=1 per arm"
     Write-Host "rule: persistent benign, TMW0 n_ok=0, TMW_DO n_ok>=6 in corpus_aligned_10k"
     Write-Host "not a malware case study; not an Arancino bake-off; not Pin 2.14"
@@ -236,20 +242,29 @@ if ($Mode -eq "Native") {
     $argList = @("-follow_execv", "1", "-t", $dll) + $knobs.Split(" ") + @("--", $exe)
 }
 
+Write-Host "script_rev=r43b.2"
 Write-Host ("RUN {0}" -f $label)
 Write-Host ("  {0} {1}" -f $file, (Join-Args $argList))
 $run = Measure-Window -FileName $file -ArgumentList $argList -WorkDir $dropDir `
     -StdoutPath $stdout -StderrPath $stderr -ResCsv $resCsv `
     -WindowSec $WindowSec -SampleMs $SampleMs
+if ($null -eq $run.tree_text) { $run.tree_text = "" }
 Set-Content -Path $treePath -Value $run.tree_text -Encoding ASCII
 $treeCsv = Join-Path $runDir "process_tree.csv"
 $treeJson = Join-Path $runDir "process_tree.jsonl"
-$rows = @($script:LastTreeRows)
-if ($rows.Count -gt 0) {
-    $rows | Export-Csv -Path $treeCsv -NoTypeInformation -Encoding ASCII
-    $rows | ForEach-Object { $_ | ConvertTo-Json -Compress } | Set-Content -Path $treeJson -Encoding ASCII
+$csvLines = New-Object System.Collections.ArrayList
+[void]$csvLines.Add("name,pid,parent_pid,depth")
+$jsonLines = New-Object System.Collections.ArrayList
+if ($null -ne $script:LastTreeRows) {
+    foreach ($row in $script:LastTreeRows) {
+        [void]$csvLines.Add(("{0},{1},{2},{3}" -f $row.name, $row.pid, $row.parent_pid, $row.depth))
+        [void]$jsonLines.Add(('{{"name":"{0}","pid":{1},"parent_pid":{2},"depth":{3}}}' -f $row.name, $row.pid, $row.parent_pid, $row.depth))
+    }
+}
+Set-Content -Path $treeCsv -Value $csvLines.ToArray() -Encoding ASCII
+if ($jsonLines.Count -gt 0) {
+    Set-Content -Path $treeJson -Value $jsonLines.ToArray() -Encoding ASCII
 } else {
-    Set-Content -Path $treeCsv -Value "name,pid,parent_pid,depth" -Encoding ASCII
     Set-Content -Path $treeJson -Value "" -Encoding ASCII
 }
 

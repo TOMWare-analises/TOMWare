@@ -1,0 +1,10 @@
+sample_id,sha256,mode,knobs,progress,timed_out,exit_code,elapsed_ms,peak_ws,identified,n_tree_max,named_tree,note
+BEN_28,0111d485351ef0deffd9403a0f8e123759a04a928fbd055b901de18164c4fa39,Native,,EXITED_BEFORE_WINDOW,False,-1073741511,3375,0,False,0,? parent=-1,dead before first sample; STATUS_ENTRYPOINT_NOT_FOUND
+BEN_28,0111d485351ef0deffd9403a0f8e123759a04a928fbd055b901de18164c4fa39,TMW0,-q,EXITED_BEFORE_WINDOW,False,-1073741511,1625,65306624,False,3,final ? parent=-1,live n_tree=3 during 1.5 s then post-mortem dump
+BEN_28,0111d485351ef0deffd9403a0f8e123759a04a928fbd055b901de18164c4fa39,TMW_DO,-do -q,EXITED_BEFORE_WINDOW,False,-1073741511,49344,79572992,False,3,final ? parent=-1,n_tree=3 until ~48.8 s then n_tree=2; EXITED STATUS_ENTRYPOINT_NOT_FOUND; not window fill
+BEN_46,0ab9f2923dac072716a8380ec909ea9f74b9f1755f149c2a41f61b49d93633a2,Native,,EXITED_BEFORE_WINDOW,False,-1073741511,1155,0,False,0,? parent=-1,dead before first sample; STATUS_ENTRYPOINT_NOT_FOUND
+BEN_46,0ab9f2923dac072716a8380ec909ea9f74b9f1755f149c2a41f61b49d93633a2,TMW0,-q,EXITED_BEFORE_WINDOW,False,-1073741511,1625,73228288,False,3,pin.exe -> sample.exe + conhost.exe,named tree; EXITED STATUS_ENTRYPOINT_NOT_FOUND
+BEN_46,0ab9f2923dac072716a8380ec909ea9f74b9f1755f149c2a41f61b49d93633a2,TMW_DO,-do -q,STILL_ALIVE_AT_WINDOW,True,-1,61063,70381568,False,3,pin.exe -> sample.exe + conhost.exe,named tree at window; identified=false; persistence is not progress
+BEN_47,0abd30c5a4a6f17c9f1f718da42435ed05927a3c0ee5430a8ff337027f875dfd,Native,,EXITED_BEFORE_WINDOW,False,-1073741511,437,0,False,0,? parent=-1,dead before first sample; STATUS_ENTRYPOINT_NOT_FOUND
+BEN_47,0abd30c5a4a6f17c9f1f718da42435ed05927a3c0ee5430a8ff337027f875dfd,TMW0,-q,EXITED_BEFORE_WINDOW,False,-1,719,10702848,False,1,final ? parent=-1,Pin fatal Win32 740 elevation required; not STATUS_ENTRYPOINT_NOT_FOUND
+BEN_47,0abd30c5a4a6f17c9f1f718da42435ed05927a3c0ee5430a8ff337027f875dfd,TMW_DO,-do -q,EXITED_BEFORE_WINDOW,False,-1,453,10829824,False,1,final ? parent=-1,Pin fatal Win32 740 elevation required; pin.log; n_tree=1

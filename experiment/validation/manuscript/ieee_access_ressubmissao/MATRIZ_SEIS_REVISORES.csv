@@ -21,7 +21,7 @@ R3,4,Tabela sistemas relacionados,Presente no PDF,CURRENT.pdf related work,atend
 R3,5,Lingua e formatacao,Fora do escopo experimental,CURRENT.pdf,parcial,Passo final no Overleaf/Word
 R4,1,Correr AntiDebug matched,Feito,antidebug_n3.csv,atendido,
 R4,2,Reportar todas as tentativas de timing,90/90 retidas,matched_timing_n30.csv,atendido,
-R4,3,Explicar -87.2 ou testar comportamento,"R4.3 N=1 NAT/TMW0/TMW_DO em BEN_28/46/47 (regra a priori TMW0 n_ok=0 TMW_DO n_ok>=6). Native e TMW0 exit -1073741511 ENTRYPOINT_NOT_FOUND. TMW_DO Pin STILL_ALIVE ~61 s. identified=false. -87.2 ausente do PDF.",r43_skewmask_diag/summary.csv; outcomes_by_stratum.csv TMW0 vs TMW_DO,parcial,Permanencia=espera/estado; sem traces API; process_tree.txt partido; N=1; nao reescreve 9000; CTRL_PE e JCVHT separado
+R4,3,Explicar -87.2 ou testar comportamento,"R4.3b N=1 named tree. BEN_46 TMW0/TMW_DO: pin.exe->sample+conhost; TMW_DO STILL_ALIVE 61063 ms. BEN_28 TMW_DO EXITED 49344 ms ENTRYPOINT. BEN_47 TMW0/TMW_DO Pin 740 elevation. identified=false. -87.2 ausente do PDF.",access_r43b/summary.csv; access_r43 preserved; outcomes_by_stratum.csv TMW0 vs TMW_DO,parcial,Permanencia=espera/estado; sem traces API; N=1; nao reescreve 9000; CTRL_PE e JCVHT separado
 R4,4,Regra de metrica a priori,Janelas 120/60 e N=10 a priori; filtro sample_count>0 ainda post hoc,campaign_audit_report.md,parcial,Declarar no Methods que o filtro de recursos e retrospectivo
 R4,d,Baseline NAT e Pin nu,NAT e EMPTY na campanha; Pin sem tool falhou no probe,completeness.json; protocol/empty_tool_and_pin_probe.md,parcial,EMPTY != custo exclusivo do motor Pin
 R4,e,Proveniencia corpus,SHA fonte data perfil em corpus.csv,corpus.csv,atendido,Rotulos Bazaar nao sao VT

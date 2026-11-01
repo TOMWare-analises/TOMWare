@@ -1,0 +1,15 @@
+﻿utc=2026-10-31T22:30:15.5885278Z
+computer=DESKTOP-U9O5R28
+command=C:\TOMWare\pin\pin.exe -- C:\TOMWare\Resultados\Apps-Teste\TestAntiDebug.exe
+pin_launcher_sha256=920A730ABAC4E30D13F2ED75C92F0538FB53FD85273C40B64991A89DCE0BB819
+pin_engine_path=C:\TOMWare\pin\intel64\bin\pin.exe
+pin_engine_sha256=FBA632E40F00FEEC1FAA7BC1A3BF8CC9A551AB1F17ABA6B07D31C67E602A741A
+oracle_sha256=3B25069EEBC099593905F6075AF210E9DAE53AD405A5D98C3BB0DFCC0CE1CECD
+pin_version=Pin: pin-3.28-98749-6643ecee5 | Copyright 2002-2023 Intel Corporation. | 
+script_sha256=F7F9B8E6DEF38298893267CEFD3E4B73D441E3FB1D524436971137F8FDCA8EC9
+n_ok=3/3
+n_assert=0/3
+overall=campaign_pin_technically_valid_omitted_from_9000_by_design
+pin\pin.exe (920A730A) completed pin.exe -- TestAntiDebug.exe on N=3. PIN was omitted from the 9,000 by design. Not incompatible.
+Host StartServer / FBA632E4 is not this classification.
+Do not rewrite campaign.json. identified=false. Not Arancino. Not the 9000.

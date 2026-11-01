@@ -1,0 +1,12 @@
+﻿Ocorr├¬ncias:
+
+Resumo de ocorr├¬ncias:
+IsDebuggerPresent          : 0
+CheckRemoteDebuggerPresent : 0
+ProcessDebugPort           : 0
+ProcessDebugObjectHandle   : 0
+PEB.BeingDebugged          : 0
+PEB.NtGlobalFlag           : 0
+OK - nenhuma anomalia
+-------------------------------
+

@@ -14,10 +14,11 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(r"d:\MMB\workspace\tomware-melhorias\TOMWare")
-SRC_R43 = Path(r"C:\Users\marge\Downloads\access_r43")
-PACK_NAME = "Access-2026-38745_ANALISE_AMIGO_2026-10-30b"
+PACK_NAME = "Access-2026-38745_ANALISE_AMIGO_2026-10-31"
 DST = Path(r"C:\Users\marge\Downloads") / PACK_NAME
-ORACLE_DST = ROOT / "experiment" / "results" / "oracles" / "access_r43"
+ORACLE_R43 = ROOT / "experiment" / "results" / "oracles" / "access_r43"
+ORACLE_R43B = ROOT / "experiment" / "results" / "oracles" / "access_r43b"
+ORACLE_R43C = ROOT / "experiment" / "results" / "oracles" / "access_r43c"
 MS = ROOT / "experiment" / "validation" / "manuscript" / "ieee_access_ressubmissao"
 MAN = ROOT / "experiment" / "validation" / "manuscript"
 
@@ -74,6 +75,7 @@ def main() -> None:
         "REPRODUCIBILITY.txt",
         "VERIFICACAO_7_ITENS.md",
         "STATUS_ITENS_TECNICOS.md",
+        "RELATORIO_TECNICO_ITENS_1_3.md",
         "TABELA_NAT_EMPTY_TMW0.md",
         "Access-2026-38745_REVISION_TABLES.tex",
         "Access-2026-38745_REVISION_BASE.pdf",
@@ -102,20 +104,15 @@ def main() -> None:
         if pdf.exists():
             copy_file(pdf, cartas / pdf.name)
 
-    r43_pack = DST / "r43_skewmask_diag"
-    if SRC_R43.exists():
-        copy_dir(SRC_R43, r43_pack)
-        copy_dir(SRC_R43, ORACLE_DST)
-    elif ORACLE_DST.exists():
-        copy_dir(ORACLE_DST, r43_pack)
-
-    rows = []
-    if r43_pack.exists():
-        for meta in sorted(r43_pack.glob("*/run_meta.json")):
+    def summarize_run_meta(campaign_dir: Path) -> list[dict]:
+        rows_out = []
+        if not campaign_dir.exists():
+            return rows_out
+        for meta in sorted(campaign_dir.glob("*/run_meta.json")):
             data = json.loads(meta.read_text(encoding="utf-8"))
             data["run_dir"] = meta.parent.name
             data["run_meta_sha256"] = sha256(meta)
-            rows.append(data)
+            rows_out.append(data)
         fieldnames = [
             "sample_id",
             "sha256",
@@ -134,11 +131,35 @@ def main() -> None:
             "run_dir",
             "run_meta_sha256",
         ]
-        with (r43_pack / "summary.csv").open("w", encoding="utf-8", newline="") as f:
+        with (campaign_dir / "summary_from_meta.csv").open("w", encoding="utf-8", newline="") as f:
             w = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
             w.writeheader()
-            for r in rows:
+            for r in rows_out:
                 w.writerow(r)
+        return rows_out
+
+    r43_pack = DST / "r43_skewmask_diag"
+    if ORACLE_R43.exists():
+        copy_dir(ORACLE_R43, r43_pack)
+    rows = summarize_run_meta(r43_pack)
+
+    r43b_pack = DST / "r43b_process_tree"
+    if ORACLE_R43B.exists():
+        copy_dir(ORACLE_R43B, r43b_pack)
+    rows_b = summarize_run_meta(r43b_pack)
+
+    r43c_pack = DST / "r43c_process_tree"
+    rows_c = []
+    if ORACLE_R43C.exists():
+        copy_dir(ORACLE_R43C, r43c_pack)
+        rows_c = [p.parent for p in r43c_pack.glob("*/run_meta.json")]
+        (r43c_pack / "NOT_TABLE_25.txt").write_text(
+            "access_r43c_process_tree is extra evidence. Do not paste into Table 25.\n"
+            "Table 25 remains access_r43b_process_tree (N=1).\n"
+            "behavioral_progress_observed=false on all 27. Persistence is not progress.\n"
+            "Pin FBA632E4 (intel64\\bin) is not campaign pin\\pin.exe 920A730A.\n",
+            encoding="utf-8",
+        )
 
     ev = DST / "evidencias"
     copies = [
@@ -159,6 +180,7 @@ def main() -> None:
         ROOT / "experiment" / "results" / "oracles" / "fidelity_by_run.csv",
         ROOT / "experiment" / "results" / "oracles" / "arancino" / "BLOQUEIO.md",
         ROOT / "experiment" / "results" / "oracles" / "identify_summary.csv",
+        ROOT / "experiment" / "results" / "oracles" / "commit_public_check.json",
         ROOT / "experiment" / "corpus" / "corpus.csv",
         ROOT / "experiment" / "protocol" / "empty_tool_and_pin_probe.md",
         ROOT / "experiment" / "validation" / "manuscript" / "notes" / "campaign_audit_report.md",
@@ -205,6 +227,12 @@ def main() -> None:
         scripts / "Run-PinBareProbe.ps1",
     )
     copy_file(ROOT / "experiment" / "scripts" / "runner" / "Invoke-SingleRun.ps1", scripts / "Invoke-SingleRun.ps1")
+    r43c_script = ROOT / "experiment" / "validation" / "scripts" / "Run-AccessR43c.ps1"
+    if r43c_script.exists():
+        copy_file(r43c_script, scripts / "Run-AccessR43c.ps1")
+    r43c_passo = ROOT / "experiment" / "validation" / "scripts" / "PASSO_A_PASSO_ACCESS_R43C_PINBARE.txt"
+    if r43c_passo.exists():
+        copy_file(r43c_passo, scripts / "PASSO_A_PASSO_ACCESS_R43C_PINBARE.txt")
 
     ident = {
         "pack": PACK_NAME,
@@ -220,6 +248,17 @@ def main() -> None:
         "git_head": git_commit(),
         "r43_campaign_id": "access_r43_skewmask_diag",
         "r43_n_runs": len(rows),
+        "r43_note": "preserved; process_tree.txt failed ($pid); not Table 25",
+        "r43b_campaign_id": "access_r43b_process_tree",
+        "r43b_n_runs": len(rows_b),
+        "r43b_script_rev": "r43b.2",
+        "r43b_note": "Table 25 source; named tree only BEN_46; BEN_47 Pin Win32 740",
+        "r43c_campaign_id": "access_r43c_process_tree",
+        "r43c_n_runs": len(rows_c),
+        "r43c_script_rev": "r43c.1",
+        "r43c_note": "extra only; not Table 25; 1/9 TMW_DO alive; pin FBA632E4 != 920A730A; progress=false",
+        "cited_commit_public": True,
+        "public_main_tip": "86e3994c586a9c5306d204485e839cc91e1def70",
         "contains_malware": False,
         "contains_9000_raw_json": False,
         "withdrawn": sorted(WITHDRAWN),
@@ -251,7 +290,9 @@ def main() -> None:
 
     print("PACK", DST)
     print("ZIP", zip_path, zip_path.stat().st_size)
-    print("RUNS", len(rows))
+    print("R43_RUNS", len(rows))
+    print("R43B_RUNS", len(rows_b))
+    print("R43C_RUNS", len(rows_c))
     print("FILES", len(sums))
     print("GIT", ident["git_head"])
 

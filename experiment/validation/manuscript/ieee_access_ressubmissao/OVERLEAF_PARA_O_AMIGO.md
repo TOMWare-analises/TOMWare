@@ -10,11 +10,13 @@ Integral compiled views in this pack:
 
 ## Paste, in this order
 
-1. `INSERCOES_FINAIS_EN.md` — delete the four English denials in V-B, V-D, VI-C, and VII-A; insert Tables 21–27; NAT/EMPTY/TMW0; Pin-without-tool stdout/stderr/exit; 6,517; manifesto; R4.3.
+1. `INSERCOES_FINAIS_EN.md` — delete the four English denials in V-B, V-D, VI-C, and VII-A; insert Tables 21–27; NAT/EMPTY/TMW0; Pin-without-tool stdout/stderr/exit; 6,517; manifesto; R4.3b named tree (`access_r43b_process_tree`). Table 25 is r43b, not the 29 Oct `access_r43` times and **not** r43c.
 2. `Access-2026-38745_REVISION_TABLES.tex` — LaTeX tables.
 3. `CARTA_FINAL_EN.md` — official point-by-point letter. Full answer for every reviewer. Do not write “Same as R1.1”.
 4. `FRASES_PROIBIDAS.txt`
-5. `REPRODUCIBILITY.txt` — git `a2ee6c9e509ce2d47ff68ba3ae9197a6529d66b3`.
+5. `REPRODUCIBILITY.txt` — git `a2ee6c9e509ce2d47ff68ba3ae9197a6529d66b3` (public). Do not cite `665aebba`.
+
+`r43c_process_tree/` is extra evidence only. Do **not** paste r43c numbers into Table 25. Persistence ≠ progress. Pin `FBA632E4` ≠ campaign `920A730A`.
 
 Withdrawn (do not paste): `PATCH_VB_VIC_VIIA_EN.md` Portuguese-excerpt block, `INSERCOES_EN.md`, `CARTA_PONTO_A_PONTO_EN.md`, `MATRIZ_SEIS_REVISORES.csv`, `RELATORIO_SEIS_REVISORES.md`.
 

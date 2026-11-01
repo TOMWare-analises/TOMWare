@@ -1,0 +1,13 @@
+{"utc":"2026-10-31T03:20:33.5268561Z","elapsed_ms":0,"name":"pin.exe","pid":6080,"parent_pid":5628,"depth":0,"creation_utc":"2026-10-31T03:20:33.5282580Z","state":"alive"}
+{"utc":"2026-10-31T03:20:33.5268561Z","elapsed_ms":0,"name":"0ab9f2923dac072716a8380ec909ea9f74b9f1755f149c2a41f61b49d93633a2.exe","pid":2872,"parent_pid":6080,"depth":1,"creation_utc":"2026-10-31T03:20:33.5687300Z","state":"alive"}
+{"utc":"2026-10-31T03:20:33.5268561Z","elapsed_ms":0,"name":"conhost.exe","pid":8180,"parent_pid":6080,"depth":1,"creation_utc":"2026-10-31T03:20:33.5315970Z","state":"alive"}
+{"utc":"2026-10-31T03:20:33.7300836Z","elapsed_ms":203,"name":"pin.exe","pid":6080,"parent_pid":5628,"depth":0,"creation_utc":"2026-10-31T03:20:33.5282580Z","state":"alive"}
+{"utc":"2026-10-31T03:20:33.7300836Z","elapsed_ms":203,"name":"0ab9f2923dac072716a8380ec909ea9f74b9f1755f149c2a41f61b49d93633a2.exe","pid":2872,"parent_pid":6080,"depth":1,"creation_utc":"2026-10-31T03:20:33.5687300Z","state":"alive"}
+{"utc":"2026-10-31T03:20:33.7300836Z","elapsed_ms":203,"name":"conhost.exe","pid":8180,"parent_pid":6080,"depth":1,"creation_utc":"2026-10-31T03:20:33.5315970Z","state":"alive"}
+{"utc":"2026-10-31T03:20:33.9174079Z","elapsed_ms":391,"name":"pin.exe","pid":6080,"parent_pid":5628,"depth":0,"creation_utc":"2026-10-31T03:20:33.5282580Z","state":"alive"}
+{"utc":"2026-10-31T03:20:33.9174079Z","elapsed_ms":391,"name":"0ab9f2923dac072716a8380ec909ea9f74b9f1755f149c2a41f61b49d93633a2.exe","pid":2872,"parent_pid":6080,"depth":1,"creation_utc":"2026-10-31T03:20:33.5687300Z","state":"alive"}
+{"utc":"2026-10-31T03:20:33.9174079Z","elapsed_ms":391,"name":"conhost.exe","pid":8180,"parent_pid":6080,"depth":1,"creation_utc":"2026-10-31T03:20:33.5315970Z","state":"alive"}
+{"utc":"2026-10-31T03:20:34.1206416Z","elapsed_ms":594,"name":"pin.exe","pid":6080,"parent_pid":5628,"depth":0,"creation_utc":"2026-10-31T03:20:33.5282580Z","state":"alive"}
+{"utc":"2026-10-31T03:20:34.1206416Z","elapsed_ms":594,"name":"0ab9f2923dac072716a8380ec909ea9f74b9f1755f149c2a41f61b49d93633a2.exe","pid":2872,"parent_pid":6080,"depth":1,"creation_utc":"2026-10-31T03:20:33.5687300Z","state":"alive"}
+{"utc":"2026-10-31T03:20:34.1206416Z","elapsed_ms":594,"name":"conhost.exe","pid":8180,"parent_pid":6080,"depth":1,"creation_utc":"2026-10-31T03:20:33.5315970Z","state":"alive"}
+{"utc":"2026-10-31T03:20:34.3392617Z","elapsed_ms":812,"name":"?","pid":6080,"parent_pid":-1,"depth":0,"creation_utc":"","state":"alive"}

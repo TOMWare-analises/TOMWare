@@ -1,0 +1,6 @@
+{"name":"pin.exe","pid":4476,"parent_pid":672,"depth":0,"creation_utc":"2026-10-31T22:41:02.7708720Z"}
+{"name":"pin.exe","pid":1680,"parent_pid":4476,"depth":1,"creation_utc":"2026-10-31T22:41:02.8130190Z"}
+{"name":"pin.exe","pid":6812,"parent_pid":1680,"depth":2,"creation_utc":"2026-10-31T22:41:02.8871970Z"}
+{"name":"conhost.exe","pid":3776,"parent_pid":6812,"depth":3,"creation_utc":"2026-10-31T22:41:02.8962990Z"}
+{"name":"0ab9f2923dac072716a8380ec909ea9f74b9f1755f149c2a41f61b49d93633a2.exe","pid":2156,"parent_pid":1680,"depth":2,"creation_utc":"2026-10-31T22:41:02.8431020Z"}
+{"name":"conhost.exe","pid":4936,"parent_pid":4476,"depth":1,"creation_utc":"2026-10-31T22:41:02.7792360Z"}

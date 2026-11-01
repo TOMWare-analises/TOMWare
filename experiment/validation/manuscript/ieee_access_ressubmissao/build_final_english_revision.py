@@ -415,16 +415,20 @@ def addendum_story(st):
         )
     )
 
-    s.append(Paragraph("SkewMask diagnostic access_r43 (BEN_28, BEN_46, BEN_47)", st["H"]))
+    s.append(Paragraph("Process-tree diagnostic access_r43b (BEN_28, BEN_46, BEN_47)", st["H"]))
     s.append(
         P(
             st,
             "N",
             "The TMW0 versus TMW_DO corpus contrast uses 2,000 attempts (1,000 per condition), not 9,000. An additional "
-            "diagnostic (access_r43_skewmask_diag) selected three persistent benign binaries a priori (campaign TMW0 "
-            "n_ok=0, TMW_DO n_ok≥6): BEN_28, BEN_46, BEN_47. Native and TMW0 terminated with −1073741511 "
-            "(STATUS_ENTRYPOINT_NOT_FOUND). TMW_DO kept the Pin process tree alive for about 61 s. identified=false. "
-            "Persistence is state or wait, not application progress.",
+            "diagnostic (access_r43b_process_tree, script_rev=r43b.2) selected the same three persistent benign binaries "
+            "a priori (campaign TMW0 n_ok=0, TMW_DO n_ok≥6): BEN_28, BEN_46, BEN_47. Native exited −1073741511 "
+            "(STATUS_ENTRYPOINT_NOT_FOUND) with peak WS = 0 and no named tree. TMW0 BEN_28 and BEN_46 exited with the "
+            "same code at 1625 ms; BEN_46 left a named tree pin.exe → sample + conhost.exe. TMW_DO BEN_46 remained "
+            "STILL_ALIVE_AT_WINDOW at 61063 ms with that named tree. TMW_DO BEN_28 had a live three-node tree for about "
+            "49 s and then exited −1073741511. BEN_47 under TMW0 and TMW_DO is a Pin launch failure (Win32 740, "
+            "elevation required), not a SkewMask hold. The earlier access_r43_skewmask_diag campaign is preserved; "
+            "its process_tree.txt failed. identified=false. Persistence is state or wait, not application progress.",
             True,
         )
     )
@@ -435,20 +439,21 @@ def addendum_story(st):
                     st,
                     ["Sample", "Mode", "Exit", "Elapsed (ms)", "Progress"],
                     [
-                        ["BEN_28", "Native", "−1073741511", "1609", "EXITED (peak WS = 0)"],
-                        ["BEN_28", "TMW0", "−1073741511", "1687", "EXITED"],
-                        ["BEN_28", "TMW_DO", "−1 (timeout)", "61016", "STILL_ALIVE Pin tree"],
-                        ["BEN_46", "Native", "−1073741511", "781", "EXITED (peak WS = 0)"],
-                        ["BEN_46", "TMW0", "−1073741511", "1938", "EXITED"],
-                        ["BEN_46", "TMW_DO", "−1 (timeout)", "61234", "STILL_ALIVE Pin tree"],
-                        ["BEN_47", "Native", "−1073741511", "750", "EXITED (peak WS = 0)"],
-                        ["BEN_47", "TMW0", "−1073741511", "1703", "EXITED"],
-                        ["BEN_47", "TMW_DO", "−1 (timeout)", "61062", "STILL_ALIVE Pin tree"],
+                        ["BEN_28", "Native", "−1073741511", "3375", "EXITED (WS = 0, no tree)"],
+                        ["BEN_28", "TMW0", "−1073741511", "1625", "EXITED (n_tree=3 then dead)"],
+                        ["BEN_28", "TMW_DO", "−1073741511", "49344", "EXITED after live n_tree=3"],
+                        ["BEN_46", "Native", "−1073741511", "1155", "EXITED (WS = 0, no tree)"],
+                        ["BEN_46", "TMW0", "−1073741511", "1625", "EXITED; pin.exe→sample+conhost"],
+                        ["BEN_46", "TMW_DO", "−1 (timeout)", "61063", "STILL_ALIVE; same named tree"],
+                        ["BEN_47", "Native", "−1073741511", "437", "EXITED (WS = 0, no tree)"],
+                        ["BEN_47", "TMW0", "−1", "719", "Pin fatal 740 (elevation)"],
+                        ["BEN_47", "TMW_DO", "−1", "453", "Pin fatal 740 (elevation)"],
                     ],
-                    [1.0 * inch, 1.0 * inch, 1.5 * inch, 1.3 * inch, 2.4 * inch],
+                    [1.0 * inch, 1.0 * inch, 1.4 * inch, 1.3 * inch, 2.5 * inch],
                 ),
                 Paragraph(
-                    "TABLE 25. SkewMask diagnostic access_r43_skewmask_diag, N=1, 60 s, DLL 4BBC6270. identified=false.",
+                    "TABLE 25. Process-tree diagnostic access_r43b_process_tree, N=1, 60 s, DLL 4BBC6270. "
+                    "identified=false. BEN_47 TMW0/TMW_DO is Pin Win32 740, not STATUS_ENTRYPOINT_NOT_FOUND.",
                     st["Cap"],
                 ),
             ]

@@ -1,0 +1,9 @@
+campaign=access_r43b_process_tree
+sample=BEN_28
+mode=TMW0
+progress=EXITED_BEFORE_WINDOW
+timed_out=False
+exit_code=-1073741511
+elapsed_ms=1625
+peak_ws=65306624
+identified=false

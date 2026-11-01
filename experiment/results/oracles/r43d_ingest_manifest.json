@@ -1,0 +1,21 @@
+{
+  "pack": "access_r43d_pinbare_closeout",
+  "cited_commit": "a2ee6c9e509ce2d47ff68ba3ae9197a6529d66b3",
+  "dll": "4BBC62707EE0B2EF922D4E8659A6392D92814EA0FC74F4682F1187562AE7F0E6",
+  "pin_launcher": "920A730ABAC4E30D13F2ED75C92F0538FB53FD85273C40B64991A89DCE0BB819",
+  "oracle": "3B25069EEBC099593905F6075AF210E9DAE53AD405A5D98C3BB0DFCC0CE1CECD",
+  "pin_bare_n": 3,
+  "pin_bare_n_ok": 3,
+  "pin_bare_classification": "campaign_pin_technically_valid_omitted_from_9000_by_design",
+  "r43d_n": 27,
+  "r43d_n_alive_60s": 9,
+  "r43d_behavioral_progress_observed": 0,
+  "r43c_note": "access_r43c used intel64 pin FBA632E4 as launcher; not Table 25",
+  "pending": [],
+  "contains_malware": false,
+  "not_a_claim": "alive_is_not_progress; host StartServer is not campaign incompatibility",
+  "raw": [
+    "experiment/results/oracles/access_r43d/",
+    "experiment/results/oracles/guest/pin_bare_guest_n3/"
+  ]
+}

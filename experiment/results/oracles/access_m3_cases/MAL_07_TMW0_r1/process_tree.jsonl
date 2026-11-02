@@ -1,0 +1,8 @@
+{"name":"pin.exe","pid":6484,"parent_pid":672,"depth":0,"threads":3,"creation_utc":"2026-11-02T01:52:10.5634700Z"}
+{"name":"pin.exe","pid":3776,"parent_pid":6484,"depth":1,"threads":4,"creation_utc":"2026-11-02T01:52:10.6217340Z"}
+{"name":"pin.exe","pid":8036,"parent_pid":3776,"depth":2,"threads":9,"creation_utc":"2026-11-02T01:52:10.7964800Z"}
+{"name":"conhost.exe","pid":1876,"parent_pid":8036,"depth":3,"threads":4,"creation_utc":"2026-11-02T01:52:10.9094380Z"}
+{"name":"153e11471f85de3df5135b0445014698333ff40a9d6c488d291d6517eb19800d.exe","pid":7360,"parent_pid":3776,"depth":2,"threads":1,"creation_utc":"2026-11-02T01:52:10.6869770Z"}
+{"name":"WerFault.exe","pid":8136,"parent_pid":7360,"depth":3,"threads":6,"creation_utc":"2026-11-02T01:52:20.6322240Z"}
+{"name":"153e11471f85de3df5135b0445014698333ff40a9d6c488d291d6517eb19800d.exe","pid":3856,"parent_pid":7360,"depth":3,"threads":0,"creation_utc":"2026-11-02T01:52:20.5695540Z"}
+{"name":"conhost.exe","pid":296,"parent_pid":6484,"depth":1,"threads":4,"creation_utc":"2026-11-02T01:52:10.5743660Z"}

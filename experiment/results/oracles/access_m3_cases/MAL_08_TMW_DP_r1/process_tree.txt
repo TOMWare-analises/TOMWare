@@ -1,0 +1,6 @@
+pin.exe pid=8128 parent=672 threads=1 created=2026-11-02T02:28:37.1011890Z
+  pin.exe pid=6780 parent=8128 threads=1 created=2026-11-02T02:28:37.2165530Z
+    pin.exe pid=4900 parent=6780 threads=8 created=2026-11-02T02:28:37.4431760Z
+      conhost.exe pid=3512 parent=4900 threads=2 created=2026-11-02T02:28:37.5655520Z
+    1693df9d970e011cf1c827fceaf49a3724f4478bc0ed7dc50f2d90ea417b6d38.exe pid=6776 parent=6780 threads=12 created=2026-11-02T02:28:37.3286660Z
+  conhost.exe pid=1952 parent=8128 threads=2 created=2026-11-02T02:28:37.1267790Z

@@ -1,0 +1,8 @@
+pin.exe pid=6484 parent=672 threads=3 created=2026-11-02T01:52:10.5634700Z
+  pin.exe pid=3776 parent=6484 threads=4 created=2026-11-02T01:52:10.6217340Z
+    pin.exe pid=8036 parent=3776 threads=9 created=2026-11-02T01:52:10.7964800Z
+      conhost.exe pid=1876 parent=8036 threads=4 created=2026-11-02T01:52:10.9094380Z
+    153e11471f85de3df5135b0445014698333ff40a9d6c488d291d6517eb19800d.exe pid=7360 parent=3776 threads=1 created=2026-11-02T01:52:10.6869770Z
+      WerFault.exe pid=8136 parent=7360 threads=6 created=2026-11-02T01:52:20.6322240Z
+      153e11471f85de3df5135b0445014698333ff40a9d6c488d291d6517eb19800d.exe pid=3856 parent=7360 threads=0 created=2026-11-02T01:52:20.5695540Z
+  conhost.exe pid=296 parent=6484 threads=4 created=2026-11-02T01:52:10.5743660Z

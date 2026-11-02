@@ -1,0 +1,7 @@
+sample_id,mode,hook_seen,result_changed,extra_vs_tmw0,chain_complete,extra_why,identified
+MAL_08,TMW_DP,False,False,False,False,no_extra_vs_tmw0,False
+MAL_08,TMW_DO,False,False,False,False,no_extra_vs_tmw0,False
+MAL_13,TMW_DP,False,False,False,False,no_extra_vs_tmw0,False
+MAL_13,TMW_DO,False,False,False,False,no_extra_vs_tmw0,False
+MAL_07,TMW_DP,False,False,False,False,no_extra_vs_tmw0,False
+MAL_07,TMW_DO,False,False,False,False,no_extra_vs_tmw0,False

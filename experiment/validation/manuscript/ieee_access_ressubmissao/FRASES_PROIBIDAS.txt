@@ -41,3 +41,8 @@ Pode escrever, com o ficheiro ao lado:
 - r43c extra: 27/27; TMW_DO vivo 1/9; behavioral_progress_observed=false; pin FBA632E4 ≠ 920A730A; não é Table 25
 - Arancino: comparação experimental bloqueada (Pin 2.14, só 32-bit, corpus 100% x64)
 - targeted_evasion = unverified; identified=false
+- os 100 executáveis usam as cinco checagens (3 SHA com -mc não são o corpus)
+- IAT/strings de MAL_08 / MAL_13 / MAL_07 como verificação executada
+- access_m3_cases vivo a 60 s / árvore pin+conhost como comportamento recuperado
+- identified=true no guest ou sem hook + mudança + extra versus TMW0
+- Run-M3-CaseStudy.ps1 (launcher intel64 FBA632E4) como evidência Access

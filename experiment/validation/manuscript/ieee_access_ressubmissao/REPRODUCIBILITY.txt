@@ -25,6 +25,10 @@ r43d_script: experiment/validation/scripts/Run-AccessR43d.ps1 (script_rev=r43d.1
 r43d_campaign_id: access_r43d_process_tree
 r43d_records: experiment/results/oracles/access_r43d/
 pin_bare_guest_n3: experiment/results/oracles/guest/pin_bare_guest_n3/
+m3_cases_script: experiment/validation/scripts/Run-AccessM3Cases.ps1 (script_rev=m3c.4)
+m3_cases_campaign_id: access_m3_cases
+m3_cases_records: experiment/results/oracles/access_m3_cases/
+m3_cases_summary: experiment/results/oracles/access_m3_cases_summary.csv
 fidelity_records: experiment/results/oracles/fidelity_by_run.csv
 da_records: experiment/results/oracles/da_n10.csv
 module32_records: experiment/results/oracles/module32_fixture.csv

@@ -1,0 +1,111 @@
+Access-2026-38745 — resposta aos 8 itens (01/11/2026)
+NÃO enviar à IEEE. Não é o suplemento double-blind. Sem malware. Sem as 9.000.
+
+Citação: git a2ee6c9e509ce2d47ff68ba3ae9197a6529d66b3
+DLL 4BBC62707EE0B2EF922D4E8659A6392D92814EA0FC74F4682F1187562AE7F0E6
+Snapshot tomware_go. Pin 3.28.98749. Launcher pin\pin.exe 920A730A…0BB819.
+Campanha access_m3_cases, script_rev=m3c.4, N=1, 60 s, -mc ligado, rede off.
+identified=false e chain_complete=false nas 9 células.
+
+Comece aqui: RESPOSTA_ITENS_1_8_M3.md
+CSV: csv/access_m3_cases_summary.csv  e  csv/access_m3_cases_pairs.csv
+Bruto: 3_casos_m3/  (9 pastas; sem PE)
+Frases a não escrever: FRASES_PROIBIDAS.txt
+
+SHA a priori (IAT = pista, não caso):
+  MAL_07  153e11471f85de3df5135b0445014698333ff40a9d6c488d291d6517eb19800d
+  MAL_13  2a2b6b75359f4b74de136bc2c3c3a31633d3fcc169f2e2789e4d3f776ebb9e24
+  MAL_08  1693df9d970e011cf1c827fceaf49a3724f4478bc0ed7dc50f2d90ea417b6d38
+
+================================================================
+1. Relacionar malware, verificação e contramedida
+================================================================
+Pedido: para algumas amostras, hook/API, verificação de Pin, módulo que respondeu.
+
+Resposta: EXECUTADO. 9/9 ingeridas. Cadeia AUSENTE.
+
+  Nenhum hook válido com result_changed=true.
+  MAL_07 TMW_DP: Pin não mapeou TOMWare.dll (Win32 216) — célula INVÁLIDA.
+  Só MAL_07 TMW0 e MAL_07 TMW_DP escreveram module_events.json.
+  TMW0 não instala hooks -dp/-do; zeros nesse braço são esperados.
+  Nas células de knob com timeout, o JSON não foi descarregado.
+  IAT de Toolhelp/SleepEx NÃO é ramo executado.
+
+Isto NÃO prova que os 100 PE usam as cinco checagens.
+Não se acrescentam amostras.
+
+Bruto: 3_casos_m3/
+
+================================================================
+2. Comportamento adicional em 2–3 malwares
+================================================================
+Pedido: TMW0 vs knob; desempacotamento, ficheiro, registo, rede, processo, fase.
+
+Resposta: EXECUTADO. NEGATIVO. 0/6 pares com extra versus TMW0.
+
+  Ficheiros novos com hash: 0
+  Delta Run/RunOnce: 0
+  TCP estabelecido: 0
+  Filho de aplicação (não pin/conhost): só WerFault no MAL_07 TMW0 (crash, não payload)
+  Árvore típica: pin.exe → pin.exe → sample + conhost
+  Vivo a 60 s NÃO é progresso.
+
+identified continua false.
+
+================================================================
+3. Explicar comportamentalmente o SkewMask
+================================================================
+Pedido: TMW0 vs TMW_DO; APIs, threads, descendentes, saídas, efeitos externos.
+
+Resposta: EXECUTADO nas 3 SHA. Sem prova de interceptação. Sem ganho.
+
+  MAL_07  TMW0 10969 ms (crash 0xC0000005)  /  TMW_DO 60204 ms vivo
+          duração maior = espera/estado; JSON do TMW_DO ausente; sem artefacto
+  MAL_13  TMW0 60329 ms  /  TMW_DO 60109 ms  — mesma janela
+  MAL_08  TMW0 62031 ms  /  TMW_DO 60422 ms  — mesma janela
+  sleep_calls / time_queries / corrections: não demonstrados no TMW_DO (JSON ausente)
+
+r43d (BEN_28/46/47) é benigno e fica à parte.
+
+================================================================
+4. Coerência temporal de SkewMask
+================================================================
+NÃO CORRIDO. Limitação.
+Timeouts sob Pin nas esperas concorrentes/sobrepostas/alertáveis continuam inconclusivos.
+SkewMask.cpp não foi alterado. Não se copiam células JCVHT.
+
+================================================================
+5. Pin sem Pintool no corpus
+================================================================
+NÃO é braço do corpus. Limitação.
+Controlo técnico já existente: guest N=3 TestAntiDebug, launcher 920A730A,
+3/3 exit 0, 1900–2963 ms. campaign.json pin_condition_valid=false não invertido.
+
+================================================================
+6. Metadados incompletos
+================================================================
+LIMITAÇÃO já declarada.
+Família Trojan_Bazaar / Backdoor_Bazaar; packer unknown;
+targeted_evasion=unverified nos 50 MAL. As 9 células não identificaram técnica em runtime.
+
+================================================================
+7. Comparação experimental externa
+================================================================
+LIMITAÇÃO / trabalho futuro.
+Sem bake-off Arancino, COBAI ou Peekaboo.
+Arancino: Pin 2.14, 32-bit; corpus Access 100% x64.
+
+================================================================
+8. Critérios de elegibilidade prospectivos
+================================================================
+As 3 SHA e os 3 braços foram fixados ANTES desta corrida.
+A campanha das 9.000 continua post hoc. Não se substitui por recolha nova do corpus.
+
+================================================================
+Já atendido (não repetir)
+================================================================
+AntiDebug pareado; SkewMask N=30 / 90; ICs; 100 PE; 9.000; Module32 (oráculo);
+rotinas; modo combinado; referências; tipografia; Figura 1; conclusões moderadas;
+pin-bare N=3 técnico; árvores r43d; correção 22/30.
+
+Não reescrito: artigo completo, carta ponto a ponto, as 9.000, N=30 timing.

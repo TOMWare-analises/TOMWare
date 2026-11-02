@@ -1,0 +1,1 @@
+[TOMWare] Excecao no thread 0 (#1): Exception Code: SINGLE_STEP_TRAP. Exception Address = 0x7ffe2eccfb10

@@ -35,7 +35,7 @@ $toolDll = Join-Path $repoRoot "x64/$Configuration/TOMWare.dll"
 
 if (-not $OutputDir) {
     $stamp = Get-Date -Format "yyyyMMdd-HHmmss"
-    $OutputDir = Join-Path $repoRoot "experiment/apps/evaluation/infected-$stamp"
+    $OutputDir = Join-Path $repoRoot "experiment/apps/local/infected-$stamp"
 }
 
 if (-not (Test-Path $SamplesDir)) {

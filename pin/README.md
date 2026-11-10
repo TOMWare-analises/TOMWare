@@ -1,4 +1,10 @@
-After unpacking Pin, place the extracted files in this repository's `pin/` folder:
+The Intel Pin kit is **not** in git. Download Pin **3.28.98749** (MSVC Windows)
+from Intel and unpack it here so that `pin\pin.exe` exists.
+
+Expected SHA-256 prefix of the campaign launcher `pin\pin.exe`: `920A730A…B819`.
+The engine binary is `pin\intel64\bin\pin.exe`.
+
+After unpacking, this folder should look like:
 
 ```text
 pin\

@@ -59,18 +59,24 @@ experiment/validation/**/ev_*/
 experiment/validation/**/pintool.log
 experiment/validation/**/tomware-envvars.log
 
-# Duplicate Access PDFs at repo root (canonical copies live under experiment/ieee_access_revision/)
+# Duplicate Access PDFs at repo root
 /Access-2026-*.pdf
 
-# Analysis zips (copies of evidence packs; kept on disk, not versioned)
-experiment/validation/manuscript/letters/*.zip
+# Journal working notes / letters (workspace _archive, not the public tree)
+experiment/validation/manuscript/
 
-# Local PDF extract / pack builders (not part of the article tree)
-experiment/validation/manuscript/jcvht_revision/_pdf7_extract.txt
-experiment/validation/manuscript/_access_pdf2_extract.txt
-experiment/validation/manuscript/jcvht_revision/__pycache__/
-experiment/validation/manuscript/jcvht_revision/ORIENTACOES.pdf
-experiment/validation/manuscript/jcvht_revision/O_QUE_MUDOU.pdf
-experiment/validation/manuscript/jcvht_revision/build_*.py
-experiment/validation/manuscript/notes/RELATORIO_M3_*.md
-experiment/validation/manuscript/notes/RELATORIO_PENDENCIAS_V10.md
+# Local PoC dumps (not published tables)
+experiment/apps/evaluation/
+experiment/apps/screenshots/
+experiment/apps/poc-logs/
+
+# Operator how-tos and journal pack builders (workspace _archive)
+experiment/validation/scripts/PASSO_A_PASSO_*.txt
+experiment/validation/scripts/build_pacote_*.py
+experiment/validation/scripts/build_manuscript_values.py
+experiment/validation/scripts/_patch_r43b.py
+experiment/validation/scripts/legacy/
+
+# Intel Pin 3.28 kit: unpack locally; do not rediscover in git
+/pin/**
+!/pin/README.md

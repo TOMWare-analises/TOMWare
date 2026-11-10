@@ -135,14 +135,12 @@ experiment/
   apps/                              # test apps (was root Resultados/)
     oracles/                         # Test*.exe (legacy: Resultados/Apps-Teste)
     src/                             # oracle sources
-    screenshots/ evaluation/ poc-logs/
     local/                           # VM dumps, gitignored
   campaigns/<campaign_id>/           # plan and manifest (campaign.json, execution_plan.csv)
   results/                           # only place for tables (corpus / oracles / campaign)
     oracles/ctrl_progress/           # TestRecoverWork + 5 Table-9 benigns (not a case study)
   validation/
     scripts/                         # Run-Oracles.ps1, Run-CtrlProgress.ps1
-    manuscript/jcvht_revision/       # CURRENT.pdf (article) + REVISION.tex
   scripts/
     planner/                         # generate_plan.py
     runner/                          # Run-Campaign.ps1, Invoke-SingleRun.ps1

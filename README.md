@@ -36,7 +36,7 @@ All measured tables are under **`experiment/results/`**. Two campaigns; **do not
 
 Access 100-PE identities (SHA-256, class, acquisition date, family/product, malware type, packer, protector, execution profile, targeted evasion): [`experiment/corpus/access_100_hashes.csv`](experiment/corpus/access_100_hashes.csv). Binaries stay under `samples/` — do not execute `samples/infected/` on a networked host.
 
-`oracles/collector/` is a **synthetic** 10 s PowerShell+PING smoke. It is not Table 9. Current JCVHT compile: `experiment/validation/manuscript/jcvht_revision/TOMWare_M_c05a1271_CURRENT.pdf`.
+`oracles/collector/` is a **synthetic** 10 s PowerShell+PING smoke. It is not Table 9. Article PDFs are not in this tree; measured figures are `experiment/results/oracles/manuscript_values.json`.
 
 **Smoke (no malware), after the campaign DLL is in place:**  
 `pin\pin.exe -t x64\Release\TOMWare.dll -q -- experiment\apps\oracles\TestOverhead.exe`
@@ -101,14 +101,13 @@ TOMWare.M implements five selectively activatable countermeasures (`-dd`, `-dp`,
 | Minimal test (no malware) | [§7](#7-minimal-test) |
 | Published tables | [§8.6](#86-published-result-evidence) |
 | Campaign runner / older `scripts/r2-*` | [§8.7](#87-experimental-infrastructure) and [`experiment/README.md`](experiment/README.md) |
-| Current JCVHT article PDF | `experiment/validation/manuscript/jcvht_revision/` |
 
 ## 1.2 Distributed artifacts
 
 * Source code of the **TOMWare** pintool (`TOMWare/`).
 * Pre-built test binaries (`experiment/apps/oracles/`), including `Loop_X_1000/` variants.
 * Sources of the test applications (`experiment/apps/src/`).
-* Intel Pin 3.28 MSVC x64 (`pin/`), when included in the distribution.
+* Intel Pin 3.28 MSVC x64 — unpack the Intel kit into `pin/` (not shipped in git; see [`pin/README.md`](pin/README.md)).
 * Signatures for memory masking (`config/signatures.txt`).
 * Execution and benchmark scripts (`scripts/`).
 * Current execution-flow diagram (`imgs/tomware-fluxo-execucao-23072026.png`).
@@ -132,17 +131,16 @@ The nested `TOMWare/TOMWare` is not a duplicated clone: the outer folder is the 
 | `TOMWare/` | Pintool sources (`AntiDebugMask.cpp`, …) | Building / reading the tool |
 | `EmptyPinTool/` | No-op pintool | `EMPTY` / `pin_empty` ladder |
 | `FidelityProbe/` | BBL / image / API counters | Fidelity probe |
-| `pin/` | Intel Pin 3.28 MSVC x64 | Runtime |
+| `pin/` | Unpack Intel Pin 3.28 here (`pin/README.md`) | Runtime |
 | `x64/Release/` | Compiled DLLs (**gitignored**) | Copy campaign `4BBC6270` here |
 | `config/` | `signatures.txt`, mappings | `-sf` |
 | `experiment/apps/oracles/` | Pre-built oracles, including `TestRecoverWork.exe` | Smoke / §7 |
 | `experiment/apps/src/` | Oracle sources | Rebuild test apps |
-| `experiment/apps/benchmarks/` | Local VM dumps | **Not** published tables |
+| `experiment/apps/local/` | Local VM dumps (**gitignored**) | **Not** published tables |
 | `scripts/` | Original guest helpers (`run-sample`, `r2-*`) | One-off VM runs; older path |
 | `experiment/scripts/` | Planner / host campaign runner / validators | 9 000-run campaign |
 | `experiment/validation/scripts/` | `Run-Oracles.ps1`, `Run-CtrlProgress.ps1` | N=10 oracles; CTRL/PROG |
 | `experiment/results/` | **Only** place for measured tables | Paper / README numbers |
-| `experiment/validation/manuscript/jcvht_revision/` | Current JCVHT PDF + English `.tex` | Article compile |
 | `samples/` | Corpus binaries | Copy to VM `malwares/` (§4.5). Access hash list: `experiment/corpus/access_100_hashes.csv` |
 | `imgs/` | README figures | Docs |
 
@@ -151,7 +149,7 @@ What looks repeated but is **not** the same data:
 | You see | Do not confuse with |
 |---------|---------------------|
 | `scripts/` vs `experiment/scripts/` vs `experiment/validation/scripts/` | Guest helpers vs 9 000-run host runner vs oracle/CTRL re-runs |
-| `experiment/apps/` vs `experiment/results/` | Test apps + local dumps vs **published** CSVs/PDFs |
+| `experiment/apps/` vs `experiment/results/` | Test apps (oracles + sources) vs **published** CSVs/PDFs |
 | `samples/` vs `experiment/corpus/corpus.csv` | Files on disk vs the **100-PE Access** catalog (the 31-PE JCVHT pack is the other cut) |
 | `oracles/collector/` vs Table 9 / Table 12 | Synthetic 10 s PING smoke vs corpus / five-benign recaptures |
 | Campaign DLL `4BBC6270` vs `main` / `D55EC952` | Measured tables vs `_memicmp_l` four-arg rebuild |
@@ -160,7 +158,7 @@ What looks repeated but is **not** the same data:
 TOMWare/                                 git root (this README, TOMWare.sln)
 ├── TOMWare/                             pintool C++ (TOMWare.vcxproj)
 ├── EmptyPinTool/   FidelityProbe/
-├── pin/                                 Intel Pin 3.28
+├── pin/                                 unpack Intel Pin 3.28 here (gitignored)
 ├── x64/Release/                         DLLs, gitignored; copy 4BBC6270
 ├── config/signatures.txt
 ├── scripts/                             guest helpers (r2-*, run-sample)
@@ -171,11 +169,8 @@ TOMWare/                                 git root (this README, TOMWare.sln)
 │   ├── apps/                            test apps (not paper tables)
 │   │   ├── oracles/                     Test*.exe, Loop_X_1000/
 │   │   ├── src/                         oracle sources
-│   │   ├── screenshots/ evaluation/ poc-logs/
 │   │   └── local/                       VM dumps, gitignored
-│   ├── validation/
-│   │   ├── scripts/                     Run-Oracles.ps1, Run-CtrlProgress.ps1
-│   │   └── manuscript/jcvht_revision/   CURRENT.pdf + REVISION.tex
+│   ├── validation/scripts/              Run-Oracles.ps1, Run-CtrlProgress.ps1
 │   └── results/                         published tables only
 │       ├── corpus/                      17+14 / 10 s
 │       ├── oracles/                     N=30, N=10, identify, build_id.json
@@ -211,7 +206,7 @@ Drive folder: **`demonstracao`** (demonstration videos; next to the [installer p
 | 10 | Configuration | VM network disabled (before samples) | `10-config-vm-rede-desligada.mp4` | §5.2 / §8.1 |
 | 11 | Configuration | Copy `pin.7z` + `TOMWare.7z` (Drive → host → VM) | `11-config-copia-pin-tomware-para-vm.mp4` | §4.1 / §8.1 |
 | 12 | Execution | Example: **benign** sample + **`-dm`** countermeasure | `12-execucao-amostra-benigna-dm.mp4` | §5 / §8.1–§8.2 |
-| 13 | Results | Collect CSV/JSON under `experiment\apps\benchmarks\` (+ copy to host) | `13-coleta-resultados-benchmark.mp4` | §8.2–§8.3 |
+| 13 | Results | Collect CSV/JSON under `experiment\apps\local\` (+ copy to host) | `13-coleta-resultados-benchmark.mp4` | §8.2–§8.3 |
 
 Naming convention: `NN-phase-topic.mp4` (lexicographic order = watch order). Items **01–05** may ship a sidecar `.srt`; **06–13** have burned-in subtitles.
 
@@ -655,18 +650,18 @@ The script prints, on the same console:
 .\scripts\benchmark-corpus.ps1 -SamplesDir C:\TOMWare\malwares\infected -FollowChild -TimeoutSeconds 120
 ```
 
-Typical outputs: `experiment\apps\evaluation\`, `experiment\apps\local\baseline-<cm>-<hash8>.log`.
+Typical outputs: `experiment\apps\local\` (gitignored; not published tables).
 
 With `-Repeat N`, each baseline and countermeasure starts as an independent
 process. Order alternates per round to reduce warm-up bias.
 Detailed reports are written to:
 
-* `experiment\apps\benchmarks\benchmark-<type>-<cm>-<hash8>-<date>.csv` — one row per run,
+* `experiment\apps\local\benchmark-<type>-<cm>-<hash8>-<date>.csv` — one row per run,
   including status, response, and a functional-evidence summary;
-* `experiment\apps\benchmarks\benchmark-<type>-<cm>-<hash8>-<date>.json` — runs, full
+* `experiment\apps\local\benchmark-<type>-<cm>-<hash8>-<date>.json` — runs, full
   functional evidence, and performance evaluation with mean, median, p95, standard
   deviation, min, max, and outcome counts;
-* `experiment\apps\benchmarks\benchmark-<type>-all-<hash8>-<date>.csv|json` — automatic
+* `experiment\apps\local\benchmark-<type>-all-<hash8>-<date>.csv|json` — automatic
   consolidation of all five countermeasures when using `-AllCountermeasures`.
 
 `-AllCountermeasures` runs `de`, `dm`, `do`, `dd`, and `dp` sequentially.
@@ -741,8 +736,7 @@ experiment/results/
 | CTRL/PROG recaptures | `experiment/results/oracles/ctrl_progress/` |
 | 9 000-run processed tables | `experiment/results/campaign/corpus_aligned_10k/` |
 | 100-PE catalog | `experiment/corpus/corpus.csv` |
-| JCVHT article compile | `experiment/validation/manuscript/jcvht_revision/TOMWare_M_c05a1271_CURRENT.pdf` |
-| Local VM dump (not published) | `experiment\apps\benchmarks\` |
+| Local VM dump (not published) | `experiment/apps/local/` |
 
 Samples: `samples/` (§4.5). How to re-run: **Reproduce** at the top of this README.
 
@@ -803,7 +797,7 @@ timing protocol. `SkewMask.cpp` stays as in the campaign source.
 
 This project is distributed for academic and research purposes. See [`LICENSE`](LICENSE) at the repository root.
 
-**Intel Pin** has its own license (see `pin/licensing/`).
+**Intel Pin** has its own license (in the unpacked kit under `pin/licensing/`).
 
 **Suggested citation (TOMWare.M / SBSeg 2026 Tools Fair):**
 

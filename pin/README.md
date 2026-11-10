@@ -1,4 +1,4 @@
-Depois de descompactar o Pin, organize os arquivos descompactados na pasta `pin/` deste repositório:
+After unpacking Pin, place the extracted files in this repository's `pin/` folder:
 
 ```text
 pin\

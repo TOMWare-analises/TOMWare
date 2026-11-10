@@ -34,6 +34,8 @@ All measured tables are under **`experiment/results/`**. Two campaigns; **do not
 | `oracles/ctrl_progress/` | `TestRecoverWork` triad + five Table-9 x64 Native/TMW0 recaptures | 30 s / 10 s | `4BBC6270` |
 | `campaign/corpus_aligned_10k/` | 100 PE (50+50) × 9 conditions × 10 = 9 000 processed tables | 120 s short / 60 s persistent | `4BBC6270` |
 
+Access 100-PE identities (SHA-256, class, acquisition date, family/product, malware type, packer, protector, execution profile, targeted evasion): [`experiment/corpus/access_100_hashes.csv`](experiment/corpus/access_100_hashes.csv). Binaries stay under `samples/` — do not execute `samples/infected/` on a networked host.
+
 `oracles/collector/` is a **synthetic** 10 s PowerShell+PING smoke. It is not Table 9. Current JCVHT compile: `experiment/validation/manuscript/jcvht_revision/TOMWare_M_c05a1271_CURRENT.pdf`.
 
 **Smoke (no malware), after the campaign DLL is in place:**  
@@ -115,7 +117,7 @@ TOMWare.M implements five selectively activatable countermeasures (`-dd`, `-dp`,
 * Installer package (Git, Visual Studio, 7-Zip, VMware, Pin, TOMWare, ISO) on [Google Drive — Installers](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing) — see §4.4.
 * Corpus of **benign** and **infected** samples in `samples/` in this repository — see §4.5.
   (Google Drive blocks public sharing of these files by policy; therefore the corpus is shipped via Git.)
-* Video playlist (download → installation → configuration → execution → results) in the Drive folder **`demonstracao`** — see §1.4.
+* Video playlist (download → installation → configuration → execution → results) in the Drive folder **`demonstracao`** (demonstration) — see §1.4.
 
 > The goal of the artifacts is to enable: (1) exploring the code; (2) verifying functionality (minimal test); (3) reproducing the paper experiments (test apps + real samples under Pin); (4) assessing the temporal impact of the countermeasures.
 
@@ -141,7 +143,7 @@ The nested `TOMWare/TOMWare` is not a duplicated clone: the outer folder is the 
 | `experiment/validation/scripts/` | `Run-Oracles.ps1`, `Run-CtrlProgress.ps1` | N=10 oracles; CTRL/PROG |
 | `experiment/results/` | **Only** place for measured tables | Paper / README numbers |
 | `experiment/validation/manuscript/jcvht_revision/` | Current JCVHT PDF + English `.tex` | Article compile |
-| `samples/` | Corpus hashes | Copy to VM `malwares/` (§4.5) |
+| `samples/` | Corpus binaries | Copy to VM `malwares/` (§4.5). Access hash list: `experiment/corpus/access_100_hashes.csv` |
 | `imgs/` | README figures | Docs |
 
 What looks repeated but is **not** the same data:
@@ -151,7 +153,7 @@ What looks repeated but is **not** the same data:
 | `scripts/` vs `experiment/scripts/` vs `experiment/validation/scripts/` | Guest helpers vs 9 000-run host runner vs oracle/CTRL re-runs |
 | `Resultados/` vs `experiment/results/` | Test apps + local dumps vs **published** CSVs/PDFs |
 | `samples/` vs `experiment/corpus/corpus.csv` | Files on disk vs the **100-PE Access** catalog (the 31-PE JCVHT pack is the other cut) |
-| `oracles/collector/` vs Table 9 / Tabela 12 | Synthetic 10 s PING smoke vs corpus / five-benign recaptures |
+| `oracles/collector/` vs Table 9 / Table 12 | Synthetic 10 s PING smoke vs corpus / five-benign recaptures |
 | Campaign DLL `4BBC6270` vs `main` / `D55EC952` | Measured tables vs `_memicmp_l` four-arg rebuild |
 
 ```text
@@ -187,7 +189,7 @@ TOMWare/                                 git root (this README, TOMWare.sln)
 
 Screencasts with **burned-in subtitles** (PT-BR). The playlist is a **flow demonstration** (download → installation → configuration → sample run → collection), aligned with this README — it does **not** cover every experiment in §8.
 
-Drive folder: **`demonstracao`** (next to the [installer package](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing)).
+Drive folder: **`demonstracao`** (demonstration videos; next to the [installer package](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing)).
 
 ### Watch order
 
@@ -325,7 +327,7 @@ Each experiment run follows **two stages**:
 
 | Stage | Target | Goal |
 |-------|--------|------|
-| **[1] Test app** | `TestAntiDebug.exe`, `TestProcessEnum.exe`, … | Functional evidence on the console (`Resumo` / alerts box) |
+| **[1] Test app** | `TestAntiDebug.exe`, `TestProcessEnum.exe`, … | Functional evidence on the console (summary / alerts box) |
 | **[2] Real sample** | `malwares\infected\<SHA256>.exe` | Exercise the sample under Pin ± countermeasure; time in the `Result` field |
 
 Comparison protocol:
@@ -386,7 +388,7 @@ To ease reproduction, environment installers are collected in the shared folder:
 
 Drive is a **mirror** of the official sites (Git, Microsoft, 7-Zip, Broadcom/VMware, Intel Pin). Prefer official pages when possible; use Drive to set up the environment faster.
 
-### Contents of the `Instaladores` folder
+### Contents of the Drive `Instaladores` (installers) folder
 
 | # | Drive file | What it is | Where to use | Note |
 |---|------------|------------|--------------|------|

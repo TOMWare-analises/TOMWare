@@ -89,7 +89,7 @@ To avoid cumulative contamination across runs:
 
 ## 6. Functional oracles
 
-Independent campaign on `Resultados/Apps-Teste/`:
+Independent campaign on `experiment/apps/oracles/`:
 
 - **AntiDebug:** Matched comparison under the same stimulus:
   - Baseline: `pin.exe -t TOMWare.dll -gdb -q -- TestAntiDebug.exe`

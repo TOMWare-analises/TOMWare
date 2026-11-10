@@ -40,7 +40,7 @@ $manifest = Get-TomwareManifest -ManifestPath (Join-Path $repoRoot $ManifestPath
 
 if (-not $OutputDir) {
     $stamp = Get-Date -Format "yyyyMMdd-HHmmss"
-    $OutputDir = Join-Path $repoRoot "Resultados/Avaliacao/corpus-$stamp"
+    $OutputDir = Join-Path $repoRoot "experiment/apps/evaluation/corpus-$stamp"
 }
 
 if (-not (Test-Path $SamplesDir)) {

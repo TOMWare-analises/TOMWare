@@ -7,14 +7,14 @@ param(
 $ErrorActionPreference = "Stop"
 $here = Split-Path -Parent $PSCommandPath
 $sibling = Join-Path $here "TestRecoverWork.cpp"
-$repoGuess = Join-Path $here "..\..\..\Resultados\Apps-Teste-src\TestRecoverWork\TestRecoverWork.cpp"
+$repoGuess = Join-Path $here "..\..\..\experiment\apps\src\TestRecoverWork\TestRecoverWork.cpp"
 if (-not $Src) {
     if (Test-Path -LiteralPath $sibling) { $Src = $sibling }
     elseif (Test-Path -LiteralPath $repoGuess) { $Src = (Resolve-Path $repoGuess).Path }
 }
 if (-not $OutExe) {
-    if (Test-Path -LiteralPath (Join-Path $here "..\..\..\Resultados\Apps-Teste")) {
-        $OutExe = Join-Path $here "..\..\..\Resultados\Apps-Teste\TestRecoverWork.exe"
+    if (Test-Path -LiteralPath (Join-Path $here "..\..\..\experiment\apps\oracles")) {
+        $OutExe = Join-Path $here "..\..\..\experiment\apps\oracles\TestRecoverWork.exe"
     } else {
         $OutExe = Join-Path $here "TestRecoverWork.exe"
     }

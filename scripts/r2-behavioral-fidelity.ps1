@@ -81,7 +81,7 @@ if (-not $OutDir) {
     else {
         $tag = "behavioral_fidelity"
     }
-    $OutDir = Join-Path $RepoRoot ("Resultados\evidencias_VM_R2\" + $tag)
+    $OutDir = Get-TomwareLocalOutDir -RepoRoot $RepoRoot -Sub ("r2\" + $tag)
 }
 New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
 $probeDir = Join-Path $OutDir "probe_outputs"

@@ -571,7 +571,7 @@ def build_pdf() -> Path:
 
 def main() -> None:
     path = build_pdf()
-    # Keep generator mirrored in Resultados
+    # Keep generator mirrored next to the published corpus tables
     src = Path(__file__).resolve()
     REPO_SCRIPT.write_text(src.read_text(encoding="utf-8"), encoding="utf-8")
     print(path)

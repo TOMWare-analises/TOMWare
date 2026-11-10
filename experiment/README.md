@@ -101,8 +101,9 @@ TOMWare/                           ← git root (RepoRoot / C:\TOMWare on the VM
   pin/                             ← Intel Pin 3.28
   x64/Release/                     ← compiled DLLs (**not in git**; copy 4BBC6270)
   samples/benign|infected          ← corpus (benign exe; packed malware)
-  experiment/                      ← campaign + oracles + measured tables
-  Resultados/Apps-Teste/           ← functional oracles (not the paper tables)
+  experiment/                      ← campaign + test apps + measured tables
+    apps/oracles/                  ← functional oracles (not the paper tables)
+    results/                       ← published CSVs/PDFs only
   config/signatures.txt
 ```
 
@@ -131,6 +132,11 @@ experiment/
     build_manifest.json              # tool and environment hashes
   schemas/
     run_record.schema.json           # formal JSON schema per run
+  apps/                              # test apps (was root Resultados/)
+    oracles/                         # Test*.exe (legacy: Resultados/Apps-Teste)
+    src/                             # oracle sources
+    screenshots/ evaluation/ poc-logs/
+    local/                           # VM dumps, gitignored
   campaigns/<campaign_id>/           # plan and manifest (campaign.json, execution_plan.csv)
   results/                           # only place for tables (corpus / oracles / campaign)
     oracles/ctrl_progress/           # TestRecoverWork + 5 Table-9 benigns (not a case study)

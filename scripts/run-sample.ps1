@@ -8,7 +8,7 @@
     opcional, contramedidas configuraveis e modo silencioso.
 
 .EXAMPLE
-    .\scripts\run-sample.ps1 -Sample .\Resultados\Apps-Teste\TestGetEnvironments.exe -DefendAll
+    .\scripts\run-sample.ps1 -Sample .\experiment\apps\oracles\TestGetEnvironments.exe -DefendAll
 
 .EXAMPLE
     .\scripts\run-sample.ps1 -Sample C:\Samples\alvo.exe -DefendAll -Quiet -FollowChild

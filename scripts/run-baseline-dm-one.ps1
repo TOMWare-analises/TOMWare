@@ -80,7 +80,7 @@ $PocByKnob = @{
     de = @{
         Module = "SanitizePinEnvVars"
         PocName = "TestGetEnvironments.exe"
-        RelPaths = @("Resultados/Apps-Teste/TestGetEnvironments.exe")
+        RelPaths = @("experiment/apps/oracles/TestGetEnvironments.exe")
         UsesMemscan = $false
         BaselineKnobs = @("-q")
         PocTimeout = 120
@@ -91,8 +91,8 @@ $PocByKnob = @{
         Module = "InstMemcmpMask"
         PocName = "TestMemoryScan.exe"
         RelPaths = @(
-            "Resultados/Apps-Teste/TestMemoryScan.exe",
-            "Resultados/Apps-Teste/TestMemoryScan/TestMemoryScan.exe"
+            "experiment/apps/oracles/TestMemoryScan.exe",
+            "experiment/apps/oracles/TestMemoryScan/TestMemoryScan.exe"
         )
         UsesMemscan = $true
         BaselineKnobs = @("-q")
@@ -103,7 +103,7 @@ $PocByKnob = @{
     do = @{
         Module = "SkewMask"
         PocName = "TestOverhead.exe"
-        RelPaths = @("Resultados/Apps-Teste/TestOverhead.exe")
+        RelPaths = @("experiment/apps/oracles/TestOverhead.exe")
         UsesMemscan = $false
         BaselineKnobs = @("-go", "-q")
         PocCmExtra = @("-go")
@@ -114,7 +114,7 @@ $PocByKnob = @{
     dd = @{
         Module = "AntiDebug"
         PocName = "TestAntiDebug.exe"
-        RelPaths = @("Resultados/Apps-Teste/TestAntiDebug.exe")
+        RelPaths = @("experiment/apps/oracles/TestAntiDebug.exe")
         UsesMemscan = $false
         BaselineKnobs = @("-gdb", "-q")
         # Keep -gdb in the CM condition so baseline and treatment share the same
@@ -127,7 +127,7 @@ $PocByKnob = @{
     dp = @{
         Module = "ProcessEnum"
         PocName = "TestProcessEnum.exe"
-        RelPaths = @("Resultados/Apps-Teste/TestProcessEnum.exe")
+        RelPaths = @("experiment/apps/oracles/TestProcessEnum.exe")
         UsesMemscan = $false
         # Functional vestige (test app). A real sample under Pin often times out — it is not in the quantitative comparison.
         FunctionalOnly = $true
@@ -140,8 +140,8 @@ $PocByKnob = @{
         Module = "All countermeasures"
         PocName = "TestMemoryScan.exe"
         RelPaths = @(
-            "Resultados/Apps-Teste/TestMemoryScan.exe",
-            "Resultados/Apps-Teste/TestMemoryScan/TestMemoryScan.exe"
+            "experiment/apps/oracles/TestMemoryScan.exe",
+            "experiment/apps/oracles/TestMemoryScan/TestMemoryScan.exe"
         )
         UsesMemscan = $true
         BaselineKnobs = @("-q")
@@ -230,7 +230,7 @@ function Resolve-PocPath {
     if ($Loop1000) {
         foreach ($rel in $cfg.RelPaths) {
             $leaf = Split-Path $rel -Leaf
-            $candidates += (Join-Path $repoRoot "Resultados/Apps-Teste/Loop_X_1000/$leaf")
+            $candidates += (Join-Path $repoRoot "experiment/apps/oracles/Loop_X_1000/$leaf")
         }
     }
     foreach ($rel in $cfg.RelPaths) {
@@ -557,8 +557,8 @@ function Get-FunctionalEvidenceResult {
 
 function Get-TestMemoryScanPath {
     @(
-        (Join-Path $repoRoot "Resultados/Apps-Teste/TestMemoryScan.exe"),
-        (Join-Path $repoRoot "Resultados/Apps-Teste/TestMemoryScan/TestMemoryScan.exe")
+        (Join-Path $repoRoot "experiment/apps/oracles/TestMemoryScan.exe"),
+        (Join-Path $repoRoot "experiment/apps/oracles/TestMemoryScan/TestMemoryScan.exe")
     ) | Where-Object { Test-Path $_ } | Select-Object -First 1
 }
 
@@ -815,7 +815,7 @@ function Write-RunSummaryLog {
         [object]$CmCounts
     )
 
-    $outDir = Join-Path $repoRoot "Resultados"
+    $outDir = (Get-TomwareLocalOutDir -RepoRoot $repoRoot)
     New-Item -ItemType Directory -Force -Path $outDir | Out-Null
     $logPath = Join-Path $outDir "baseline-$Knob-$Tag.log"
 
@@ -840,7 +840,7 @@ function Save-RunArtifacts {
         [object]$CmCounts
     )
 
-    $outDir = Join-Path $repoRoot "Resultados"
+    $outDir = (Get-TomwareLocalOutDir -RepoRoot $repoRoot)
     New-Item -ItemType Directory -Force -Path $outDir | Out-Null
 
     $safeBaseline = Get-JsonSafeRun $BaselineMalware
@@ -892,7 +892,7 @@ function Load-SavedRuns {
         [string]$Knob
     )
 
-    $combinedPath = Join-Path $repoRoot "Resultados\baseline-$Knob-$Tag.json"
+    $combinedPath = Join-Path (Get-TomwareLocalOutDir -RepoRoot $repoRoot) "baseline-$Knob-$Tag.json"
     if (Test-Path $combinedPath) {
         $saved = Get-Content $combinedPath -Raw -Encoding UTF8 | ConvertFrom-Json
         Assert-SavedCountermeasure -Saved $saved -Knob $Knob
@@ -909,7 +909,7 @@ function Load-SavedRuns {
 
     # Legacy: baseline-dm-*.json from older script versions
     if ($Knob -eq "dm") {
-        $legacyPath = Join-Path $repoRoot "Resultados\baseline-dm-$Tag.json"
+        $legacyPath = Join-Path (Get-TomwareLocalOutDir -RepoRoot $repoRoot) "baseline-dm-$Tag.json"
         if (Test-Path $legacyPath) {
             $saved = Get-Content $legacyPath -Raw -Encoding UTF8 | ConvertFrom-Json
             return @{
@@ -924,14 +924,14 @@ function Load-SavedRuns {
         }
     }
 
-    $basePath = Join-Path $repoRoot "Resultados\baseline-$Tag.json"
-    $cmPath = Join-Path $repoRoot "Resultados\$Knob-$Tag.json"
+    $basePath = Join-Path (Get-TomwareLocalOutDir -RepoRoot $repoRoot) "baseline-$Tag.json"
+    $cmPath = Join-Path (Get-TomwareLocalOutDir -RepoRoot $repoRoot) "$Knob-$Tag.json"
     if (-not (Test-Path $basePath) -or -not (Test-Path $cmPath)) {
         throw "Missing saved runs for -$Knob (expected $cmPath). Run without -ShowOnly first."
     }
 
     $usesMemscan = Test-CmUsesMemscan -Knob $Knob
-    $baseMemJson = Join-Path $repoRoot "Resultados\memscan-baseline.json"
+    $baseMemJson = Join-Path (Get-TomwareLocalOutDir -RepoRoot $repoRoot) "memscan-baseline.json"
     if (-not (Test-Path $baseMemJson)) {
         throw "Missing memscan-baseline.json. Run without -ShowOnly or -SkipMemscan."
     }
@@ -942,7 +942,7 @@ function Load-SavedRuns {
     $cmMemscan = $null
     $cmCounts = $null
     if ($usesMemscan) {
-        $cmMemJson = Join-Path $repoRoot "Resultados\memscan-$Knob.json"
+        $cmMemJson = Join-Path (Get-TomwareLocalOutDir -RepoRoot $repoRoot) "memscan-$Knob.json"
         if (-not (Test-Path $cmMemJson)) {
             throw "Missing memscan-$Knob.json. Run without -ShowOnly first."
         }
@@ -1381,7 +1381,7 @@ function Save-BenchmarkReports {
         [object]$CountermeasureCounts
     )
 
-    $outDir = Join-Path $repoRoot "Resultados\benchmarks"
+    $outDir = Join-Path $repoRoot "experiment\apps\benchmarks"
     New-Item -ItemType Directory -Force -Path $outDir | Out-Null
     $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
     $prefix = "benchmark-$SampleType-$Knob-$Tag-$timestamp"
@@ -1537,7 +1537,7 @@ function Save-ConsolidatedBenchmarkReports {
         [string]$Tag
     )
 
-    $outDir = Join-Path $repoRoot "Resultados\benchmarks"
+    $outDir = Join-Path $repoRoot "experiment\apps\benchmarks"
     New-Item -ItemType Directory -Force -Path $outDir | Out-Null
     $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
     $prefix = "benchmark-$SampleType-all-$Tag-$timestamp"
@@ -1631,7 +1631,7 @@ if ($AllCountermeasures) {
 
     $allReports = @()
     $allTag = $Sha256.Substring(0, 8)
-    $benchmarkDir = Join-Path $repoRoot "Resultados\benchmarks"
+    $benchmarkDir = Join-Path $repoRoot "experiment\apps\benchmarks"
     New-Item -ItemType Directory -Force -Path $benchmarkDir | Out-Null
 
     foreach ($priorKnob in $priorCountermeasures) {
@@ -1724,7 +1724,7 @@ $pocExe = $null
 if (-not $SkipMemscan) {
     $pocExe = Resolve-PocPath -Knob $Countermeasure -Loop1000:$Loop1000
     if (-not $pocExe) {
-        $hint = if ($Loop1000) { "Resultados/Apps-Teste/Loop_X_1000" } else { "Resultados/Apps-Teste" }
+        $hint = if ($Loop1000) { "experiment/apps/oracles/Loop_X_1000" } else { "experiment/apps/oracles" }
         throw "$($PocByKnob[$Countermeasure].PocName) not found under $hint"
     }
     if ($Loop1000 -and ($pocExe -notmatch 'Loop_X_1000')) {
@@ -1915,7 +1915,7 @@ try {
     }
 }
 catch {
-    $errDir = Join-Path $repoRoot "Resultados\benchmarks"
+    $errDir = Join-Path $repoRoot "experiment\apps\benchmarks"
     New-Item -ItemType Directory -Force -Path $errDir | Out-Null
     $errPath = Join-Path $errDir ("error-{0}-{1}-{2}.txt" -f $SampleType, $Countermeasure, $tag)
     $errText = @()

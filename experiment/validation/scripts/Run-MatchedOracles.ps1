@@ -11,7 +11,7 @@ if (-not $RepoRoot) {
 . (Join-Path $RepoRoot "experiment/scripts/collectors/ProcessCollector.ps1")
 $pin = Join-Path $RepoRoot "pin\pin.exe"
 $dll = Join-Path $RepoRoot "x64\Release\TOMWare.dll"
-$apps = Join-Path $RepoRoot "Resultados\Apps-Teste"
+$apps = Join-Path $RepoRoot "experiment\apps\oracles"
 $outDir = Join-Path $PSScriptRoot "results"
 New-Item -ItemType Directory -Force -Path $outDir | Out-Null
 

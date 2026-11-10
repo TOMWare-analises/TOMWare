@@ -1,12 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Gera manifesto do ambiente de build e hashes das ferramentas experimentais."""
+"""Build-environment manifest and hashes of the experimental tools."""
 import hashlib
 import json
 import platform
 from pathlib import Path
 
 repo_root = Path(__file__).resolve().parents[2]
+
+
+def oracles_dir(root: Path) -> Path:
+    for p in (root / "experiment" / "apps" / "oracles", root / "Resultados" / "Apps-Teste"):
+        if p.is_dir():
+            return p
+    return root / "experiment" / "apps" / "oracles"
+
 
 def get_hash(p: Path) -> str:
     if not p.exists():
@@ -41,11 +49,11 @@ manifest = {
         }
     },
     "oracles": {
-        "TestAntiDebug": get_hash(repo_root / "Resultados" / "Apps-Teste" / "TestAntiDebug.exe"),
-        "TestProcessEnum": get_hash(repo_root / "Resultados" / "Apps-Teste" / "TestProcessEnum.exe"),
-        "TestGetEnvironments": get_hash(repo_root / "Resultados" / "Apps-Teste" / "TestGetEnvironments.exe"),
-        "TestMemoryScan": get_hash(repo_root / "Resultados" / "Apps-Teste" / "TestMemoryScan.exe"),
-        "TestOverhead": get_hash(repo_root / "Resultados" / "Apps-Teste" / "TestOverhead.exe"),
+        "TestAntiDebug": get_hash(oracles_dir(repo_root) / "TestAntiDebug.exe"),
+        "TestProcessEnum": get_hash(oracles_dir(repo_root) / "TestProcessEnum.exe"),
+        "TestGetEnvironments": get_hash(oracles_dir(repo_root) / "TestGetEnvironments.exe"),
+        "TestMemoryScan": get_hash(oracles_dir(repo_root) / "TestMemoryScan.exe"),
+        "TestOverhead": get_hash(oracles_dir(repo_root) / "TestOverhead.exe"),
     }
 }
 
@@ -54,4 +62,4 @@ out_path.parent.mkdir(parents=True, exist_ok=True)
 with out_path.open("w", encoding="utf-8") as f:
     json.dump(manifest, f, indent=2)
 
-print(f"Manifesto gerado em: {out_path}")
+print(f"Manifest written to: {out_path}")

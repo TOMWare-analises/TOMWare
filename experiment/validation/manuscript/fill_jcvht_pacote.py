@@ -203,7 +203,7 @@ def main() -> None:
     )
 
     subjects = [
-        {"subject_id": "TestOverhead", "sha256": "", "group": "oracle", "source": "Resultados/Apps-Teste",
+        {"subject_id": "TestOverhead", "sha256": "", "group": "oracle", "source": "experiment/apps/oracles",
          "architecture": "x64", "planned_profile": "oracle", "selection_rule": "timing oracle M1a"},
         {"subject_id": "TestConcurrentWaits", "sha256": "", "group": "oracle", "source": "jcvht_revision",
          "architecture": "x64", "planned_profile": "oracle", "selection_rule": "wait model M1b session 1"},
@@ -215,7 +215,7 @@ def main() -> None:
          "architecture": "x64", "planned_profile": "oracle", "selection_rule": "Module32 M4a terminate"},
         {"subject_id": "TestModule32Fixture", "sha256": "", "group": "oracle", "source": "jcvht_revision",
          "architecture": "x64", "planned_profile": "oracle", "selection_rule": "Module32 dummy pinvm filter"},
-        {"subject_id": "TestProcessEnum", "sha256": "", "group": "oracle", "source": "Resultados/Apps-Teste",
+        {"subject_id": "TestProcessEnum", "sha256": "", "group": "oracle", "source": "experiment/apps/oracles",
          "architecture": "x64", "planned_profile": "oracle", "selection_rule": "Process32 pin.exe hide/show"},
         {"subject_id": "MAL_03", "sha256": "04e4e646de39b18d7a9b4fe567dfdc986e21e469813f0069220649d26aed862d",
          "group": "malicious", "source": "IEEE 100-PE corpus / MalwareBazaar",

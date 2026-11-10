@@ -48,7 +48,7 @@ function Find-SampleExe([string]$Sha256, [string]$Root) {
         (Join-Path $Root "samples\infected"),
         (Join-Path $Root "malwares\benign"),
         (Join-Path $Root "samples\benign"),
-        (Join-Path $Root "Resultados\Apps-Teste")
+        (Join-Path $Root "experiment\apps\oracles")
     )
     foreach ($d in $dirs) {
         if (-not (Test-Path $d)) { continue }
@@ -240,7 +240,7 @@ New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
 
 if ($Phase -eq "Smoke") {
     $label = "SMOKE_TestProcessEnum"
-    $exe = Join-Path $RepoRoot "Resultados\Apps-Teste\TestProcessEnum.exe"
+    $exe = Join-Path $RepoRoot "experiment\apps\oracles\TestProcessEnum.exe"
     if (-not (Test-Path $exe)) { throw "TestProcessEnum.exe missing: $exe" }
     $sha = (Get-FileHash $exe -Algorithm SHA256).Hash
 } else {

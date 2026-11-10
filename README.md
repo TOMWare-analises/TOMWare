@@ -39,7 +39,7 @@ Access 100-PE identities (SHA-256, class, acquisition date, family/product, malw
 `oracles/collector/` is a **synthetic** 10 s PowerShell+PING smoke. It is not Table 9. Current JCVHT compile: `experiment/validation/manuscript/jcvht_revision/TOMWare_M_c05a1271_CURRENT.pdf`.
 
 **Smoke (no malware), after the campaign DLL is in place:**  
-`pin\pin.exe -t x64\Release\TOMWare.dll -q -- Resultados\Apps-Teste\TestOverhead.exe`
+`pin\pin.exe -t x64\Release\TOMWare.dll -q -- experiment\apps\oracles\TestOverhead.exe`
 
 **Re-run oracles (guest `tomware_go`, no malware):**  
 `powershell -ExecutionPolicy Bypass -File experiment\validation\scripts\Run-Oracles.ps1 -Part All -WaitN 10 -CampaignId n10 -DoTimeoutSec 180`  
@@ -106,8 +106,8 @@ TOMWare.M implements five selectively activatable countermeasures (`-dd`, `-dp`,
 ## 1.2 Distributed artifacts
 
 * Source code of the **TOMWare** pintool (`TOMWare/`).
-* Pre-built test binaries (`Resultados/Apps-Teste/`), including `Loop_X_1000/` variants.
-* Sources of the test applications (`Resultados/Apps-Teste-src/`).
+* Pre-built test binaries (`experiment/apps/oracles/`), including `Loop_X_1000/` variants.
+* Sources of the test applications (`experiment/apps/src/`).
 * Intel Pin 3.28 MSVC x64 (`pin/`), when included in the distribution.
 * Signatures for memory masking (`config/signatures.txt`).
 * Execution and benchmark scripts (`scripts/`).
@@ -123,7 +123,7 @@ TOMWare.M implements five selectively activatable countermeasures (`-dd`, `-dp`,
 
 ## 1.3 Repository layout
 
-Paths below are **fixed**. `TOMWare.sln` includes `TOMWare\TOMWare.vcxproj`; guest scripts and Pin commands use `C:\TOMWare\scripts`, `Resultados\Apps-Teste`, and `x64\Release\TOMWare.dll`. Do not rename these folders.
+`TOMWare.sln` includes `TOMWare\TOMWare.vcxproj`. Guest scripts and Pin commands use `C:\TOMWare\scripts`, `experiment\apps\oracles` (legacy snapshot: `Resultados\Apps-Teste`), and `x64\Release\TOMWare.dll`. Do not rename `TOMWare/` (the pintool project) or `experiment/results/` (published tables).
 
 The nested `TOMWare/TOMWare` is not a duplicated clone: the outer folder is the git root (this README + `.sln` + Pin + experiments); the inner folder is the pintool C++ project.
 
@@ -135,9 +135,9 @@ The nested `TOMWare/TOMWare` is not a duplicated clone: the outer folder is the 
 | `pin/` | Intel Pin 3.28 MSVC x64 | Runtime |
 | `x64/Release/` | Compiled DLLs (**gitignored**) | Copy campaign `4BBC6270` here |
 | `config/` | `signatures.txt`, mappings | `-sf` |
-| `Resultados/Apps-Teste/` | Pre-built oracles, including `TestRecoverWork.exe` | Smoke / §7 |
-| `Resultados/Apps-Teste-src/` | Oracle sources | Rebuild test apps |
-| `Resultados/benchmarks/` | Local VM dumps | **Not** published tables |
+| `experiment/apps/oracles/` | Pre-built oracles, including `TestRecoverWork.exe` | Smoke / §7 |
+| `experiment/apps/src/` | Oracle sources | Rebuild test apps |
+| `experiment/apps/benchmarks/` | Local VM dumps | **Not** published tables |
 | `scripts/` | Original guest helpers (`run-sample`, `r2-*`) | One-off VM runs; older path |
 | `experiment/scripts/` | Planner / host campaign runner / validators | 9 000-run campaign |
 | `experiment/validation/scripts/` | `Run-Oracles.ps1`, `Run-CtrlProgress.ps1` | N=10 oracles; CTRL/PROG |
@@ -151,7 +151,7 @@ What looks repeated but is **not** the same data:
 | You see | Do not confuse with |
 |---------|---------------------|
 | `scripts/` vs `experiment/scripts/` vs `experiment/validation/scripts/` | Guest helpers vs 9 000-run host runner vs oracle/CTRL re-runs |
-| `Resultados/` vs `experiment/results/` | Test apps + local dumps vs **published** CSVs/PDFs |
+| `experiment/apps/` vs `experiment/results/` | Test apps + local dumps vs **published** CSVs/PDFs |
 | `samples/` vs `experiment/corpus/corpus.csv` | Files on disk vs the **100-PE Access** catalog (the 31-PE JCVHT pack is the other cut) |
 | `oracles/collector/` vs Table 9 / Table 12 | Synthetic 10 s PING smoke vs corpus / five-benign recaptures |
 | Campaign DLL `4BBC6270` vs `main` / `D55EC952` | Measured tables vs `_memicmp_l` four-arg rebuild |
@@ -168,6 +168,11 @@ TOMWare/                                 git root (this README, TOMWare.sln)
 │   ├── README.md                        campaign infrastructure
 │   ├── protocol/ corpus/ config/
 │   ├── scripts/                         9 000-run planner/runner
+│   ├── apps/                            test apps (not paper tables)
+│   │   ├── oracles/                     Test*.exe, Loop_X_1000/
+│   │   ├── src/                         oracle sources
+│   │   ├── screenshots/ evaluation/ poc-logs/
+│   │   └── local/                       VM dumps, gitignored
 │   ├── validation/
 │   │   ├── scripts/                     Run-Oracles.ps1, Run-CtrlProgress.ps1
 │   │   └── manuscript/jcvht_revision/   CURRENT.pdf + REVISION.tex
@@ -176,7 +181,6 @@ TOMWare/                                 git root (this README, TOMWare.sln)
 │       ├── oracles/                     N=30, N=10, identify, build_id.json
 │       │   └── ctrl_progress/           TestRecoverWork + five x64 recaptures
 │       └── campaign/corpus_aligned_10k/ 100 PE × 9 × 10
-├── Resultados/Apps-Teste/               Test*.exe, TestRecoverWork.exe
 ├── samples/benign|infected
 ├── imgs/
 ├── .env.example                         never commit .env
@@ -207,7 +211,7 @@ Drive folder: **`demonstracao`** (demonstration videos; next to the [installer p
 | 10 | Configuration | VM network disabled (before samples) | `10-config-vm-rede-desligada.mp4` | §5.2 / §8.1 |
 | 11 | Configuration | Copy `pin.7z` + `TOMWare.7z` (Drive → host → VM) | `11-config-copia-pin-tomware-para-vm.mp4` | §4.1 / §8.1 |
 | 12 | Execution | Example: **benign** sample + **`-dm`** countermeasure | `12-execucao-amostra-benigna-dm.mp4` | §5 / §8.1–§8.2 |
-| 13 | Results | Collect CSV/JSON under `Resultados\benchmarks\` (+ copy to host) | `13-coleta-resultados-benchmark.mp4` | §8.2–§8.3 |
+| 13 | Results | Collect CSV/JSON under `experiment\apps\benchmarks\` (+ copy to host) | `13-coleta-resultados-benchmark.mp4` | §8.2–§8.3 |
 
 Naming convention: `NN-phase-topic.mp4` (lexicographic order = watch order). Items **01–05** may ship a sidecar `.srt`; **06–13** have burned-in subtitles.
 
@@ -220,7 +224,7 @@ Badges from the SBSeg **Artifact Technical Committee (CTA)** ([official guidance
 | Badge | Criterion (CTA summary) | How this repository addresses it |
 |-------|-------------------------|----------------------------------|
 | **Available (SeloD)** | Code/data in a stable repository with a minimal README | Public GitHub; this README; corpus in `samples/`; [Installers](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing) and playlist on Drive; evidence under `experiment/results/` |
-| **Functional (SeloF)** | Runnable artifact; deps, environment, install, and minimal example | §3.5 / §4 (deps and versions), §6 (install), §7 (minimal test with apps in `Resultados/Apps-Teste/`) |
+| **Functional (SeloF)** | Runnable artifact; deps, environment, install, and minimal example | §3.5 / §4 (deps and versions), §6 (install), §7 (minimal test with apps in `experiment/apps/oracles/`) |
 | **Sustainable (SeloS)** | Modular, readable code mapped to paper claims | `TOMWare/` + `scripts/` layout; knobs `-dd/-dp/-de/-dm/-do`; diagram §3.3; published tables under `experiment/results/` |
 | **Reproducible (SeloR)** | Reproduce the main paper claims | **Reproduce** above (campaign DLL `4BBC6270`, tag `jcvht-dll-4bbc6270-candidate`); §8; playlist §1.4 as a flow demo |
 
@@ -312,7 +316,7 @@ The figure organizes the pintool lifecycle into three phases, aligned with `TOMW
 | **Main / TOMWare.M** | `PIN_Init` → start instrumentation | `TOMWare/TOMWare.cpp` |
 | **Instrumentation** | Parse parameters and register hooks | `TOMWare/Instrumentation.cpp` |
 | **Countermeasures** | Selective masking per surface | sources above |
-| **Test apps** | Functional oracles (console evidence) | `Resultados/Apps-Teste/` |
+| **Test apps** | Functional oracles (console evidence) | `experiment/apps/oracles/` |
 | **Harness** | Experiment `Result` / CSV / JSON report | `scripts/` |
 
 **Consistency with the code (verified):** parameter→init mapping matches `InitInstrumentation()`; ProcessEnum / InstMemcmpMask / SkewMask match panels (1)–(3); AntiDebug and SanitizePinEnvVars exist and are enabled by `-dd`/`-de`, though the figure emphasizes them more at initialization than in the lower panels. The **Result Report** block corresponds to the benchmark protocol (§3.4 / §8), not to an internal pintool module.
@@ -476,7 +480,7 @@ TOMWare.M **does not contain malicious code** — it is a C/C++ pintool that mas
 2. Dedicated VM; network disabled or Host-only during execution.
 3. Clean snapshot; restore after each sample.
 4. Disable shared folders/clipboard while malware runs; enable them only to copy logs **before** restoring.
-5. Test apps under `Resultados/Apps-Teste/` are benign and may run on the host.
+5. Test apps under `experiment/apps/oracles/` are benign and may run on the host.
 
 ## 5.3 Legal notice
 
@@ -551,10 +555,10 @@ Examples:
 
 ```powershell
 # AntiDebug
-.\pin\pin.exe -t .\x64\Release\TOMWare.dll -dd -q -- .\Resultados\Apps-Teste\TestAntiDebug.exe
+.\pin\pin.exe -t .\x64\Release\TOMWare.dll -dd -q -- .\experiment\apps\oracles\TestAntiDebug.exe
 
 # ProcessEnum
-.\pin\pin.exe -t .\x64\Release\TOMWare.dll -dp -q -- .\Resultados\Apps-Teste\TestProcessEnum.exe
+.\pin\pin.exe -t .\x64\Release\TOMWare.dll -dp -q -- .\experiment\apps\oracles\TestProcessEnum.exe
 
 # All countermeasures + follow child (real sample)
 .\scripts\run-sample.ps1 -Sample C:\TOMWare\malwares\infected\<SHA256>.exe -DefendAll -Quiet -FollowChild
@@ -570,7 +574,7 @@ Validates the installation **without malware**, using test apps on the host.
 
 * Windows 10/11 x64
 * `pin\` and `x64\Release\TOMWare.dll`
-* `Resultados\Apps-Teste\TestGetEnvironments.exe` (or another app from the table)
+* `experiment\apps\oracles\TestGetEnvironments.exe` (or another app from the table)
 
 ## 7.2 Step by step
 
@@ -578,13 +582,13 @@ Validates the installation **without malware**, using test apps on the host.
 cd C:\path\to\TOMWare
 
 # (1) Without Pin — reference
-.\Resultados\Apps-Teste\TestGetEnvironments.exe
+.\experiment\apps\oracles\TestGetEnvironments.exe
 
 # (2) Pin without countermeasure — should alert / detect traces
-.\pin\pin.exe -t .\x64\Release\TOMWare.dll -q -- .\Resultados\Apps-Teste\TestGetEnvironments.exe
+.\pin\pin.exe -t .\x64\Release\TOMWare.dll -q -- .\experiment\apps\oracles\TestGetEnvironments.exe
 
 # (3) Pin with countermeasure — indicator masked
-.\pin\pin.exe -t .\x64\Release\TOMWare.dll -de -q -- .\Resultados\Apps-Teste\TestGetEnvironments.exe
+.\pin\pin.exe -t .\x64\Release\TOMWare.dll -de -q -- .\experiment\apps\oracles\TestGetEnvironments.exe
 ```
 
 | Test app | Knob |
@@ -598,8 +602,8 @@ cd C:\path\to\TOMWare
 Via wrapper:
 
 ```powershell
-.\scripts\run-sample.ps1 -Sample .\Resultados\Apps-Teste\TestProcessEnum.exe -ProcessEnumDefend -Quiet
-.\scripts\run-sample.ps1 -Sample .\Resultados\Apps-Teste\TestAntiDebug.exe -DebugDefend -Quiet
+.\scripts\run-sample.ps1 -Sample .\experiment\apps\oracles\TestProcessEnum.exe -ProcessEnumDefend -Quiet
+.\scripts\run-sample.ps1 -Sample .\experiment\apps\oracles\TestAntiDebug.exe -DebugDefend -Quiet
 ```
 
 ---
@@ -651,18 +655,18 @@ The script prints, on the same console:
 .\scripts\benchmark-corpus.ps1 -SamplesDir C:\TOMWare\malwares\infected -FollowChild -TimeoutSeconds 120
 ```
 
-Typical outputs: `Resultados\Avaliacao\`, `Resultados\baseline-<cm>-<hash8>.log`.
+Typical outputs: `experiment\apps\evaluation\`, `experiment\apps\local\baseline-<cm>-<hash8>.log`.
 
 With `-Repeat N`, each baseline and countermeasure starts as an independent
 process. Order alternates per round to reduce warm-up bias.
 Detailed reports are written to:
 
-* `Resultados\benchmarks\benchmark-<type>-<cm>-<hash8>-<date>.csv` — one row per run,
+* `experiment\apps\benchmarks\benchmark-<type>-<cm>-<hash8>-<date>.csv` — one row per run,
   including status, response, and a functional-evidence summary;
-* `Resultados\benchmarks\benchmark-<type>-<cm>-<hash8>-<date>.json` — runs, full
+* `experiment\apps\benchmarks\benchmark-<type>-<cm>-<hash8>-<date>.json` — runs, full
   functional evidence, and performance evaluation with mean, median, p95, standard
   deviation, min, max, and outcome counts;
-* `Resultados\benchmarks\benchmark-<type>-all-<hash8>-<date>.csv|json` — automatic
+* `experiment\apps\benchmarks\benchmark-<type>-all-<hash8>-<date>.csv|json` — automatic
   consolidation of all five countermeasures when using `-AllCountermeasures`.
 
 `-AllCountermeasures` runs `de`, `dm`, `do`, `dd`, and `dp` sequentially.
@@ -701,7 +705,7 @@ executed a hooked check: identify on the 31-PE pack is 31/31 `identified=false`.
 ```powershell
 Measure-Command {
   .\pin\pin.exe -t .\x64\Release\TOMWare.dll -dm -q -- `
-    .\Resultados\Apps-Teste\Loop_X_1000\TestMemoryScan.exe
+    .\experiment\apps\oracles\Loop_X_1000\TestMemoryScan.exe
 }
 ```
 
@@ -738,7 +742,7 @@ experiment/results/
 | 9 000-run processed tables | `experiment/results/campaign/corpus_aligned_10k/` |
 | 100-PE catalog | `experiment/corpus/corpus.csv` |
 | JCVHT article compile | `experiment/validation/manuscript/jcvht_revision/TOMWare_M_c05a1271_CURRENT.pdf` |
-| Local VM dump (not published) | `Resultados\benchmarks\` |
+| Local VM dump (not published) | `experiment\apps\benchmarks\` |
 
 Samples: `samples/` (§4.5). How to re-run: **Reproduce** at the top of this README.
 
@@ -779,10 +783,10 @@ timing protocol. `SkewMask.cpp` stays as in the campaign source.
 
 ```powershell
 # Baseline (debugger indicators visible under -gdb)
-.\pin\pin.exe -t .\x64\Release\TOMWare.dll -gdb -q -- .\Resultados\Apps-Teste\TestAntiDebug.exe
+.\pin\pin.exe -t .\x64\Release\TOMWare.dll -gdb -q -- .\experiment\apps\oracles\TestAntiDebug.exe
 
 # Treatment (matched + AntiDebug countermeasure)
-.\pin\pin.exe -t .\x64\Release\TOMWare.dll -gdb -dd -q -- .\Resultados\Apps-Teste\TestAntiDebug.exe
+.\pin\pin.exe -t .\x64\Release\TOMWare.dll -gdb -dd -q -- .\experiment\apps\oracles\TestAntiDebug.exe
 ```
 
 **SkewMask fixed-N / VT (examples):**

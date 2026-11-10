@@ -6,6 +6,49 @@ function Get-TomwareRepoRoot {
     return $root.Path
 }
 
+function Get-TomwareGitRoot {
+    # scripts/lib -> repository root
+    return (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
+}
+
+function Get-TomwareOraclesDir {
+    param([string]$RepoRoot = (Get-TomwareGitRoot))
+    foreach ($rel in @("experiment\apps\oracles", "Resultados\Apps-Teste")) {
+        $p = Join-Path $RepoRoot $rel
+        if (Test-Path -LiteralPath $p) {
+            return (Resolve-Path $p).Path
+        }
+    }
+    return (Join-Path $RepoRoot "experiment\apps\oracles")
+}
+
+function Get-TomwareOracleSrcDir {
+    param([string]$RepoRoot = (Get-TomwareGitRoot))
+    foreach ($rel in @("experiment\apps\src", "Resultados\Apps-Teste-src")) {
+        $p = Join-Path $RepoRoot $rel
+        if (Test-Path -LiteralPath $p) {
+            return (Resolve-Path $p).Path
+        }
+    }
+    return (Join-Path $RepoRoot "experiment\apps\src")
+}
+
+function Get-TomwareLocalOutDir {
+    param(
+        [string]$RepoRoot = (Get-TomwareGitRoot),
+        [string]$Sub = ""
+    )
+    $preferredRoot = Join-Path $RepoRoot "experiment\apps\local"
+    $legacyRoot = Join-Path $RepoRoot "Resultados"
+    $root = $preferredRoot
+    if (-not (Test-Path -LiteralPath (Join-Path $RepoRoot "experiment\apps")) -and (Test-Path -LiteralPath $legacyRoot)) {
+        $root = $legacyRoot
+    }
+    if ($Sub) { $root = Join-Path $root $Sub }
+    New-Item -ItemType Directory -Force -Path $root | Out-Null
+    return $root
+}
+
 function Get-TomwareManifest {
     param([string]$ManifestPath)
     if (-not (Test-Path $ManifestPath)) {

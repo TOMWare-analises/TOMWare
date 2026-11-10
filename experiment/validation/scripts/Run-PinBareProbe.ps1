@@ -3,7 +3,7 @@
 # Guest: C:\TOMWare. Host allowed only with -AllowHost (label the machine).
 param(
     [string]$RepoRoot = "C:\TOMWare",
-    [string]$OracleRel = "Resultados\Apps-Teste\TestAntiDebug.exe",
+    [string]$OracleRel = "experiment\apps\oracles\TestAntiDebug.exe",
     [string]$OutDir = "",
     [int]$TimeoutSec = 30,
     [switch]$AllowHost

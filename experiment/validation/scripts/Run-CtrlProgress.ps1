@@ -44,7 +44,7 @@ function Find-HashExe([string]$Sha, [string]$Root) {
             (Join-Path $Root "malwares\benign"),
             (Join-Path $Root "samples\infected"),
             (Join-Path $Root "malwares\infected"),
-            (Join-Path $Root "Resultados\Apps-Teste")
+            (Join-Path $Root "experiment\apps\oracles")
         )) { $dirs.Add($d) }
     $benRoot = Join-Path $Root "samples\benign"
     if (Test-Path -LiteralPath $benRoot) {
@@ -92,7 +92,7 @@ function Invoke-V12 {
 New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
 $payload = Join-Path $OutDir "payload.bin"
 $stageDir = Join-Path $RepoRoot "samples\benign"
-$appsDir = Join-Path $RepoRoot "Resultados\Apps-Teste"
+$appsDir = Join-Path $RepoRoot "experiment\apps\oracles"
 
 if ($Job -eq "Prepare") {
     Assert-Dll $RepoRoot $ExpectedDllSha256

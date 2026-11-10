@@ -1,7 +1,7 @@
 # Guest helpers
 
 PowerShell/CMD used on the VM (`C:\TOMWare\scripts`). They write local dumps
-under `Resultados/benchmarks/`.
+under `experiment/apps/local/` (legacy guest: `Resultados\`).
 
 Published tables are **not** here. They live in `experiment/results/`.
 

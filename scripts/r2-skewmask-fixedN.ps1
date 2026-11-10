@@ -31,7 +31,7 @@ Set-Location $RepoRoot
 
 $pinExe = Join-Path $RepoRoot "pin/pin.exe"
 $toolDll = Join-Path $RepoRoot "x64/Release/TOMWare.dll"
-$oracle = Join-Path $RepoRoot "Resultados/Apps-Teste/TestOverhead.exe"
+$oracle = Join-Path $RepoRoot "experiment/apps/oracles/TestOverhead.exe"
 if (-not $OutDir) {
     $OutDir = Join-Path (Split-Path -Parent $RepoRoot) "evidencias_VM/skewmask_redesign_N$N"
 }

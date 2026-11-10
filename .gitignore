@@ -22,16 +22,21 @@ experiment/campaigns/*/raw/
 experiment/campaigns/*/logs/
 
 # PoC project build artifacts
-Resultados/Apps-Teste-src/**/x64/
-Resultados/Apps-Teste-src/**/Win32/
-Resultados/Apps-Teste-src/**/Debug/
-Resultados/Apps-Teste-src/**/Release/
-Resultados/Apps-Teste-src/**/*.obj
-Resultados/Apps-Teste-src/**/*.pdb
-Resultados/Apps-Teste-src/**/*.iobj
-Resultados/Apps-Teste-src/**/*.ipdb
-Resultados/Apps-Teste-src/**/*.tlog/
-Resultados/Apps-Teste-src/**/TestGetE.*/
+experiment/apps/src/**/x64/
+experiment/apps/src/**/Win32/
+experiment/apps/src/**/Debug/
+experiment/apps/src/**/Release/
+experiment/apps/src/**/*.obj
+experiment/apps/src/**/*.pdb
+experiment/apps/src/**/*.iobj
+experiment/apps/src/**/*.ipdb
+experiment/apps/src/**/*.tlog/
+experiment/apps/src/**/TestGetE.*/
+experiment/apps/oracles/pin.log
+experiment/apps/local/
+
+# Legacy guest path (snapshot tomware_go); do not re-add
+Resultados/
 
 malwares/
 

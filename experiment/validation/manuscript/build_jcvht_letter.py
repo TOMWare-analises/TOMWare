@@ -413,7 +413,7 @@ def story_pt(st):
             "Nao usar <font face='Courier'>matched_timing_summary.csv</font> (ainda tem o elemento inferior do par).",
         ),
         P(st, "Editor (Eric Filiol)", "H"),
-        P(st, "E.1 -- Resultados exactos, sem overclaim, limitacoes", "H2"),
+        P(st, "E.1 -- Exact results, no overclaim, limitations", "H2"),
     ]
     story += it(
         "Garantir numeros correctos, reescrever conclusoes infladas, explicar limitacoes; carta ponto a ponto.",

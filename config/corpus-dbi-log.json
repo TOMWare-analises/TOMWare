@@ -92,21 +92,21 @@
     {
       "id": "env",
       "name": "TestGetEnvironments",
-      "path": "Resultados/Apps-Teste/TestGetEnvironments.exe",
+      "path": "experiment/apps/oracles/TestGetEnvironments.exe",
       "knobs": ["-de"],
       "success_pattern": "OK - nenhuma anomalia"
     },
     {
       "id": "memscan",
       "name": "TestMemoryScan",
-      "path": "Resultados/Apps-Teste/TestMemoryScan.exe",
+      "path": "experiment/apps/oracles/TestMemoryScan.exe",
       "knobs": ["-dm"],
       "success_pattern": "Resumo de ocorr"
     },
     {
       "id": "overhead",
       "name": "TestOverhead",
-      "path": "Resultados/Apps-Teste/TestOverhead.exe",
+      "path": "experiment/apps/oracles/TestOverhead.exe",
       "baseline_knobs": ["-go"],
       "knobs": ["-do", "-go"],
       "timeout_seconds": 180,
@@ -115,7 +115,7 @@
     {
       "id": "antidebug",
       "name": "TestAntiDebug",
-      "path": "Resultados/Apps-Teste/TestAntiDebug.exe",
+      "path": "experiment/apps/oracles/TestAntiDebug.exe",
       "baseline_knobs": ["-gdb"],
       "knobs": ["-dd"],
       "success_pattern": "OK - nenhuma anomalia"
@@ -123,7 +123,7 @@
     {
       "id": "processenum",
       "name": "TestProcessEnum",
-      "path": "Resultados/Apps-Teste/TestProcessEnum.exe",
+      "path": "experiment/apps/oracles/TestProcessEnum.exe",
       "knobs": ["-dp"],
       "success_pattern": "OK - nenhuma anomalia"
     }

@@ -68,7 +68,7 @@ foreach ($rel in @("pin\intel64\bin\pinbin.exe", "pin\intel64\bin\pin.exe")) {
 }
 
 $oracleCandidates = @(
-    (Join-Path $RepoRoot "Resultados\Apps-Teste\TestAntiDebug.exe"),
+    (Join-Path $RepoRoot "experiment\apps\oracles\TestAntiDebug.exe"),
     (Join-Path $RepoRoot "oracles\TestAntiDebug.exe")
 )
 $oracle = $oracleCandidates | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1

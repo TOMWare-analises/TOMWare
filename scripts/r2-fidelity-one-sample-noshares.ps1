@@ -1,12 +1,12 @@
 #Requires -Version 5.1
 <#
 .SYNOPSIS
-  Guest: roda EXATAMENTE 1 amostra de fidelidade malware, sem shared folder.
+  Guest: run EXACTLY 1 malware fidelity sample, no shared folder.
 
 .DESCRIPTION
-  -Nao monta/espelha share. CSV fica so em C:\TOMWare\Resultados\...
-  Apos terminar, escreve READY_FOR_HOST.txt e encerra.
-  Host deve: copiar CSV -> reverter snapshot -> devolver CSV -> proximo.
+  Does not mount/mirror a share. CSV stays under C:\TOMWare\experiment\apps\local\r2\...
+  (legacy: C:\TOMWare\Resultados\...). After finishing, writes READY_FOR_HOST.txt and exits.
+  Host must: copy CSV -> revert snapshot -> copy CSV back -> next sample.
 
 .EXAMPLE
   cd C:\TOMWare
@@ -30,7 +30,11 @@ Set-Location $RepoRoot
 try { & shutdown.exe /a 2>$null | Out-Null } catch {}
 
 $tag = if ($Mode -eq "Subset66") { "behavioral_fidelity" } else { "behavioral_fidelity_expanded" }
-$outDir = Join-Path $RepoRoot ("Resultados\evidencias_VM_R2\" + $tag)
+$outDir = Join-Path $RepoRoot ("experiment\apps\local\r2\" + $tag)
+if (-not (Test-Path (Join-Path $RepoRoot "experiment\apps"))) {
+    $legacy = Join-Path $RepoRoot ("Resultados\evidencias_VM_R2\" + $tag)
+    if (Test-Path (Split-Path $legacy)) { $outDir = $legacy }
+}
 $csv = Join-Path $outDir "fidelity_results.csv"
 $ready = Join-Path $outDir "READY_FOR_HOST.txt"
 

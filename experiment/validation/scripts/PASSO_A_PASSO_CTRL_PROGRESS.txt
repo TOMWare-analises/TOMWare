@@ -15,7 +15,7 @@ What to copy to the VM (zip, not a share with Pin running)
 Alongside the v12 scripts:
   C:\TOMWare\m3_v12_scripts\Run-CtrlProgress.ps1
   C:\TOMWare\m3_v12_scripts\Compile-TestRecoverWork.ps1   (optional)
-  C:\TOMWare\Resultados\Apps-Teste\TestRecoverWork.exe
+  C:\TOMWare\experiment\apps\oracles\TestRecoverWork.exe
 
 The 5 PROG are x64 from the Table 9 catalog (not the i386 in TOMWare\samples\benign).
 Zip on the host: Downloads\JCVHT_PROG5_X64.zip

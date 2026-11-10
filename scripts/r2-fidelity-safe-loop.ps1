@@ -66,7 +66,8 @@ Write-Host @"
 Done one sample (or skip). CSV mirrored under %USERPROFILE%\Downloads\behavioral_fidelity*
 If guest is still healthy: re-run THIS script immediately for the next SHA.
 If guest died: restore snapshot, copy CSV back from Downloads into
-  C:\TOMWare\Resultados\evidencias_VM_R2\<folder>\fidelity_results.csv
+  C:\TOMWare\experiment\apps\local\r2\<folder>\fidelity_results.csv
+  (legacy: C:\TOMWare\Resultados\evidencias_VM_R2\<folder>\fidelity_results.csv)
 then re-run.
 
 "@ -ForegroundColor Green

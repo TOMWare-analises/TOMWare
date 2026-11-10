@@ -132,7 +132,7 @@ $scriptSha = if ($scriptPath) { Get-Sha $scriptPath } else { "" }
 New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
 
 $oracleCandidates = @(
-    (Join-Path $RepoRoot "Resultados\Apps-Teste\TestAntiDebug.exe"),
+    (Join-Path $RepoRoot "experiment\apps\oracles\TestAntiDebug.exe"),
     (Join-Path $RepoRoot "oracles\TestAntiDebug.exe")
 )
 $oracle = $oracleCandidates | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1

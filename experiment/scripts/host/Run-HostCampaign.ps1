@@ -484,4 +484,4 @@ foreach ($b in $blocks) {
     }
 }
 
-Write-HostLog "Campanha HOST concluida. Resultados em $hostRuns" "Green"
+Write-HostLog "HOST campaign finished. Results in $hostRuns" "Green"

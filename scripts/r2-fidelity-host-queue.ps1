@@ -44,7 +44,8 @@ $tag = if ($Mode -eq "Subset66") { "behavioral_fidelity" } else { "behavioral_fi
 $hostDir = Join-Path $HostEvidenceRoot $tag
 New-Item -ItemType Directory -Force -Path $hostDir | Out-Null
 $hostCsv = Join-Path $hostDir "fidelity_results.csv"
-$guestCsv = "C:\TOMWare\Resultados\evidencias_VM_R2\$tag\fidelity_results.csv"
+$guestCsv = "C:\TOMWare\experiment\apps\local\r2\$tag\fidelity_results.csv"
+$guestCsvLegacy = "C:\TOMWare\Resultados\evidencias_VM_R2\$tag\fidelity_results.csv"
 $guestScript = "C:\TOMWare\scripts\r2-fidelity-one-sample-noshares.ps1"
 
 function Get-CompleteCount([string]$CsvPath) {

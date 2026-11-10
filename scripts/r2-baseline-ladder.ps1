@@ -31,9 +31,9 @@ Set-Location $RepoRoot
 
 $pinExe = Join-Path $RepoRoot "pin/pin.exe"
 $toolDll = Join-Path $RepoRoot "x64/Release/TOMWare.dll"
-$apps = Join-Path $RepoRoot "Resultados/Apps-Teste"
+$apps = Join-Path $RepoRoot "experiment/apps/oracles"
 if (-not $OutDir) {
-    $OutDir = Join-Path $RepoRoot "Resultados\evidencias_VM_R2\baseline_ladder"
+    $OutDir = Get-TomwareLocalOutDir -RepoRoot $RepoRoot -Sub "r2\baseline_ladder"
 }
 New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
 

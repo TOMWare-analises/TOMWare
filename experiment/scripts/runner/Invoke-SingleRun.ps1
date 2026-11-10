@@ -83,6 +83,7 @@ $candidateDirs = @(
     (Join-Path $RepoRoot "samples/infected"),
     (Join-Path $RepoRoot "malwares/benign"),
     (Join-Path $RepoRoot "malwares/infected"),
+    (Join-Path $RepoRoot "experiment/apps/oracles"),
     (Join-Path $RepoRoot "Resultados/Apps-Teste")
 )
 

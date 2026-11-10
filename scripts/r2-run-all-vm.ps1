@@ -26,7 +26,11 @@ Write-Host "TOMWare R2 VM batch @ $RepoRoot" -ForegroundColor Cyan
 if (-not (Test-Path (Join-Path $RepoRoot "pin\pin.exe"))) { throw "pin.exe missing" }
 if (-not (Test-Path (Join-Path $RepoRoot "x64\Release\TOMWare.dll"))) { throw "TOMWare.dll missing - build Release|x64 first" }
 
-$evRoot = Join-Path $RepoRoot "Resultados\evidencias_VM_R2"
+$evRoot = Join-Path $RepoRoot "experiment\apps\local\r2"
+if (-not (Test-Path (Join-Path $RepoRoot "experiment\apps"))) {
+    $legacy = Join-Path $RepoRoot "Resultados\evidencias_VM_R2"
+    if (Test-Path $legacy) { $evRoot = $legacy }
+}
 New-Item -ItemType Directory -Force -Path $evRoot | Out-Null
 Write-Host "Evidence output: $evRoot" -ForegroundColor DarkCyan
 
@@ -78,6 +82,6 @@ if ($IncludeFidelity -and -not $SkipFidelity) {
         -OutDir (Join-Path $evRoot "behavioral_fidelity") -TimeoutSeconds 45 -Repeat 1
 }
 
-Write-Host "VM batch finished. Copy folders from Resultados\evidencias_VM_R2 back to host." -ForegroundColor Green
+Write-Host "VM batch finished. Copy folders from experiment\apps\local\r2 back to host." -ForegroundColor Green
 Write-Host "  - baseline_ladder" -ForegroundColor Green
 Write-Host "  - behavioral_fidelity (if -IncludeFidelity)" -ForegroundColor Green

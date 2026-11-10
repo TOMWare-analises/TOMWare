@@ -358,7 +358,8 @@ function Invoke-Memcmp {
 }
 
 function Invoke-DaSmoke {
-    $apps = Join-Path $RepoRoot "Resultados\Apps-Teste"
+    $apps = Join-Path $RepoRoot "experiment\apps\oracles"
+    if (-not (Test-Path -LiteralPath $apps)) { $apps = Join-Path $RepoRoot "Resultados\Apps-Teste" }
     $map = @(
         @{ name = "DA3_AD"; exe = "TestAntiDebug.exe"; knobs = "-gdb -da -q" },
         @{ name = "DA3_PE"; exe = "TestProcessEnum.exe"; knobs = "-da -q" },

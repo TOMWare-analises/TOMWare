@@ -9,7 +9,7 @@ import time
 from pathlib import Path
 
 PIN = Path(r"D:\MMB\workspace\tomware-melhorias\TOMWare\pin\intel64\bin\pin.exe")
-ORACLE = Path(r"D:\MMB\workspace\tomware-melhorias\TOMWare\Resultados\Apps-Teste\TestAntiDebug.exe")
+ORACLE = Path(r"D:\MMB\workspace\tomware-melhorias\TOMWare\experiment\apps\oracles\TestAntiDebug.exe")
 OUT = Path(r"D:\MMB\workspace\tomware-melhorias\TOMWare\experiment\results\oracles\guest\pin_bare_probe_host")
 TIMEOUT = 30
 

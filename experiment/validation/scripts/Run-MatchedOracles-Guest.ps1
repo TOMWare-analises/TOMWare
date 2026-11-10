@@ -13,7 +13,7 @@ $PinTimeoutSec = $TimeoutSec
 $pin = Join-Path $RepoRoot "pin\pin.exe"
 $dll = Join-Path $RepoRoot "x64\Release\TOMWare.dll"
 $empty = Join-Path $RepoRoot "x64\Release\EmptyPinTool.dll"
-$apps = Join-Path $RepoRoot "Resultados\Apps-Teste"
+$apps = Join-Path $RepoRoot "experiment\apps\oracles"
 New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
 
 function Join-Args([string[]]$ArgumentList) {

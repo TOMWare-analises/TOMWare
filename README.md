@@ -4,7 +4,7 @@
 
 Repository: [https://github.com/TOMWare-analises/TOMWare](https://github.com/TOMWare-analises/TOMWare)
 
-This tree is the pintool **and** the measured evidence. Folder map: [§1.3](#13-repository-layout). The nested `TOMWare/` directory is the Visual Studio pintool project, not a second clone. The tool was presented at the SBSeg 2026 Tools Fair. Tables under `experiment/results/` cover two campaigns (JCVHT 31-PE / 10 s and Access 100-PE / 9 000-run). Do not mix those cells.
+This tree is the pintool **and** the measured evidence. Folder map: [§1.3](#13-repository-layout). The nested `TOMWare/` directory is the Visual Studio pintool project, not a second clone. Tables under `experiment/results/` cover two campaigns (JCVHT 31-PE / 10 s and Access 100-PE / 9 000-run). Do not mix those cells.
 
 ---
 
@@ -70,7 +70,6 @@ TOMWare.M implements five selectively activatable countermeasures (`-dd`, `-dp`,
   * [1.2 Distributed artifacts](#12-distributed-artifacts)
   * [1.3 Repository layout](#13-repository-layout)
   * [1.4 Demonstration videos (playlist)](#14-demonstration-videos-playlist)
-* [2. Artifact badges considered](#2-artifact-badges-considered)
 * [3. Basic information](#3-basic-information)
   * [3.1 Introduction to execution and experiments](#31-introduction-to-execution-and-experiments)
   * [3.2 Main features](#32-main-features)
@@ -209,21 +208,6 @@ Drive folder: **`demonstracao`** (demonstration videos; next to the [installer p
 | 13 | Results | Collect CSV/JSON under `experiment\apps\local\` (+ copy to host) | `13-coleta-resultados-benchmark.mp4` | §8.2–§8.3 |
 
 Naming convention: `NN-phase-topic.mp4` (lexicographic order = watch order). Items **01–05** may ship a sidecar `.srt`; **06–13** have burned-in subtitles.
-
----
-
-# 2. Artifact badges considered
-
-Badges from the SBSeg **Artifact Technical Committee (CTA)** ([official guidance](https://doc-artefatos.github.io/sbseg2026/)). This artifact **competes for all four**:
-
-| Badge | Criterion (CTA summary) | How this repository addresses it |
-|-------|-------------------------|----------------------------------|
-| **Available (SeloD)** | Code/data in a stable repository with a minimal README | Public GitHub; this README; corpus in `samples/`; [Installers](https://drive.google.com/drive/folders/18bq-fFzjVcBa1-KuJIoL5KAmS_AHkAtB?usp=sharing) and playlist on Drive; evidence under `experiment/results/` |
-| **Functional (SeloF)** | Runnable artifact; deps, environment, install, and minimal example | §3.5 / §4 (deps and versions), §6 (install), §7 (minimal test with apps in `experiment/apps/oracles/`) |
-| **Sustainable (SeloS)** | Modular, readable code mapped to paper claims | `TOMWare/` + `scripts/` layout; knobs `-dd/-dp/-de/-dm/-do`; diagram §3.3; published tables under `experiment/results/` |
-| **Reproducible (SeloR)** | Reproduce the main paper claims | **Reproduce** above (campaign DLL `4BBC6270`, tag `jcvht-dll-4bbc6270-candidate`); §8; playlist §1.4 as a flow demo |
-
-Base work: SBSeg 2025 (TOMWare). Tool extension (**TOMWare.M**, SBSeg 2026 Tools Fair): **AntiDebug** (`-dd`) and **ProcessEnum** (`-dp`). Measured evidence in this repository also covers the JCVHT 31-PE pack and the 100-PE / 9 000-run campaign (same campaign DLL; do not mix cells).
 
 ---
 
@@ -435,7 +419,7 @@ samples/
 └── infected/    ← <SHA256>.zip  (+ password.txt)
 ```
 
-> **Why not Google Drive?** Public sharing of files classified as malware on Drive violates the platform policy and gets blocked. Therefore the corpus is versioned under `samples/` (academic use / Tools Fair).
+> **Why not Google Drive?** Public sharing of files classified as malware on Drive violates the platform policy and gets blocked. Therefore the corpus is versioned under `samples/` (academic use).
 
 | Repo folder | Destination on the VM | Format | Use |
 |-------------|----------------------|--------|-----|
@@ -798,14 +782,6 @@ timing protocol. `SkewMask.cpp` stays as in the campaign source.
 This project is distributed for academic and research purposes. See [`LICENSE`](LICENSE) at the repository root.
 
 **Intel Pin** has its own license (in the unpacked kit under `pin/licensing/`).
-
-**Suggested citation (TOMWare.M / SBSeg 2026 Tools Fair):**
-
-```text
-TOMWare.M: A Tool for Mitigating Anti-Instrumentation Techniques
-in DBI Environments — Tools Fair, SBSeg 2026.
-https://github.com/TOMWare-analises/TOMWare
-```
 
 Software identity for the measured tables: campaign DLL SHA-256 prefix `4BBC6270`;
 git tag `jcvht-dll-4bbc6270-candidate`. Do not cite git `3040df7` or `main` as that

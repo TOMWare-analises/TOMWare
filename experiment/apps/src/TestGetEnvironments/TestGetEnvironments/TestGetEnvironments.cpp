@@ -1,4 +1,4 @@
-// TestGetEnvironments.cpp — padrao de saida alinhado ao artigo SBSeg 2025
+// TestGetEnvironments.cpp — oracle stdout: Resumo then Alerta (baseline) / OK (with knob)
 #include <windows.h>
 #include <iostream>
 #include <string>

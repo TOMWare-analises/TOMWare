@@ -1,4 +1,4 @@
-// TestProcessEnum.cpp — padrao de saida alinhado ao artigo SBSeg 2025
+// TestProcessEnum.cpp — oracle stdout: Resumo then Alerta (baseline) / OK (with knob)
 #include <windows.h>
 #include <tlhelp32.h>
 #include <iostream>

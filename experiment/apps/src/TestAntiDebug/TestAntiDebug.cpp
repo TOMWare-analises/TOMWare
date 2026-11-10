@@ -1,4 +1,4 @@
-// TestAntiDebug.cpp — padrao de saida alinhado ao artigo SBSeg 2025
+// TestAntiDebug.cpp — oracle stdout: Resumo then Alerta (baseline) / OK (with knob)
 #include <windows.h>
 #include <winternl.h>
 #include <cstdio>

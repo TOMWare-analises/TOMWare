@@ -86,7 +86,7 @@ foreach ($test in $manifest.poc_tests) {
 
     switch ($test.id) {
         "env" {
-            # Padrao SBSeg 2025: Resumo + Alerta (baseline) / OK (stealth)
+            # Oracle stdout: Resumo + Alerta (baseline) / OK (with knob)
             $passBaseline = $baseline.Stdout -match "Alerta:"
             $passStealth = ($stealth.Stdout -notmatch "Alerta:") -and ($stealth.Stdout -match "OK - nenhuma anomalia")
         }

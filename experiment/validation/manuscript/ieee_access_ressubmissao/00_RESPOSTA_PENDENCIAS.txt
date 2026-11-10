@@ -1,112 +1,112 @@
-Access-2026-38745 — resposta às pendências (31/10/2026)
-NÃO enviar à IEEE. Não é o suplemento double-blind. Sem malware. Sem as 9.000.
+Access-2026-38745 — response to the pending items (31/10/2026)
+Do NOT send to IEEE. This is not the double-blind supplement. No malware. Not the 9,000.
 
-Citação: git a2ee6c9e509ce2d47ff68ba3ae9197a6529d66b3
+Citation: git a2ee6c9e509ce2d47ff68ba3ae9197a6529d66b3
 DLL 4BBC62707EE0B2EF922D4E8659A6392D92814EA0FC74F4682F1187562AE7F0E6
 Snapshot tomware_go. Pin 3.28.98749. Launcher pin\pin.exe 920A730A…0BB819.
 
-Comece aqui: RELATORIO_PENDENCIAS_R43D.md
-Tabelas para colar: TABELAS_25_26_27_R43D.md
+Start here: RELATORIO_PENDENCIAS_R43D.md
+Tables to paste: TABELAS_25_26_27_R43D.md
 22/30: CORRECAO_22_30.md
-Frases a não escrever: FRASES_PROIBIDAS.txt
+Phrases not to write: FRASES_PROIBIDAS.txt
 
 ================================================================
-1. Pin sem Pintool — N=3
+1. Pin without a Pintool — N=3
 ================================================================
-Pedido: três vezes, na VM/snapshot da campanha:
+Request: three times, on the campaign VM/snapshot:
   C:\TOMWare\pin\pin.exe -- TestAntiDebug.exe
   launcher SHA-256 920A730ABAC4E30D13F2ED75C92F0538FB53FD85273C40B64991A89DCE0BB819
-  registar comando, hashes launcher/motor/oráculo, versão, stdout, stderr, exit, duração, timeout.
-  Não usar o teste do host como prova de incompatibilidade.
+  record command, launcher/engine/oracle hashes, version, stdout, stderr, exit, duration, timeout.
+  Do not use the host test as proof of incompatibility.
 
-Resposta: EXECUTADO E INGERIDO. 3/3 completed_ok.
+Response: EXECUTED AND INGESTED. 3/3 completed_ok.
 
-  Comando:     C:\TOMWare\pin\pin.exe -- C:\TOMWare\Resultados\Apps-Teste\TestAntiDebug.exe
-  Launcher:    920A730ABAC4E30D13F2ED75C92F0538FB53FD85273C40B64991A89DCE0BB819  (bate)
-  Motor (ficheiro ao lado, NÃO foi o comando): intel64\bin\pin.exe FBA632E4…741A
-  Oráculo:     3B25069EEBC099593905F6075AF210E9DAE53AD405A5D98C3BB0DFCC0CE1CECD
-  Versão:      Pin 3.28.98749
+  Command:     C:\TOMWare\pin\pin.exe -- C:\TOMWare\Resultados\Apps-Teste\TestAntiDebug.exe
+  Launcher:    920A730ABAC4E30D13F2ED75C92F0538FB53FD85273C40B64991A89DCE0BB819  (matches)
+  Engine (file beside it, was NOT the command): intel64\bin\pin.exe FBA632E4…741A
+  Oracle:      3B25069EEBC099593905F6075AF210E9DAE53AD405A5D98C3BB0DFCC0CE1CECD
+  Version:     Pin 3.28.98749
   Exit:        0 / 0 / 0
   Timeout:     false / false / false
-  Duração:     2963 / 1948 / 1900 ms
-  stderr:      vazio nas três
-  stdout:      oráculo OK; campos PEB 0
+  Duration:    2963 / 1948 / 1900 ms
+  stderr:      empty on all three
+  stdout:      oracle OK; PEB fields 0
 
-Classificação: tecnicamente válido neste launcher; omitido das 9.000 por desenho.
-Incompatibilidade NÃO confirmada. Host StartServer / FBA632E4 como launcher está FORA da Table 27.
-campaign.json pin_condition_valid=false NÃO foi alterado.
+Classification: technically valid on this launcher; omitted from the 9,000 by design.
+Incompatibility NOT confirmed. Host StartServer / FBA632E4 as launcher is OUTSIDE Table 27.
+campaign.json pin_condition_valid=false was NOT changed.
 
-Bruto:  1_pin_sem_pintool/  (rep_1, rep_2, rep_3, summary.csv, classification.txt)
-Tabela: TABELAS_25_26_27_R43D.md  → Table 27
+Raw:    1_pin_sem_pintool/  (rep_1, rep_2, rep_3, summary.csv, classification.txt)
+Table:  TABELAS_25_26_27_R43D.md  → Table 27
 
 ================================================================
-2. Árvores de processos — 27 tentativas
+2. Process trees — 27 attempts
 ================================================================
-Pedido: BEN_28 / 46 / 47 × Native / TMW0 / TMW_DO × 3; sessão elevada;
-  mesma VM/snapshot/DLL 4BBC6270; amostragem imediata 50 ms;
-  launcher C:\TOMWare\pin\pin.exe nas instrumentadas; todas preservadas.
-  Registar PID/PPID/nomes/pai-filho/criação-fim/duração/exit/timeout/stdout/stderr/60 s.
-  Permanência ≠ progresso. behavioral_progress_observed=false sem evidência.
+Request: BEN_28 / 46 / 47 × Native / TMW0 / TMW_DO × 3; elevated session;
+  same VM/snapshot/DLL 4BBC6270; immediate 50 ms sampling;
+  launcher C:\TOMWare\pin\pin.exe on instrumented runs; all preserved.
+  Record PID/PPID/names/parent-child/create-end/duration/exit/timeout/stdout/stderr/60 s.
+  Persistence ≠ progress. behavioral_progress_observed=false without evidence.
 
-Resposta: EXECUTADO E INGERIDO. 27/27 preservadas. script_rev=r43d.1
+Response: EXECUTED AND INGESTED. 27/27 preserved. script_rev=r43d.1
   pin_sha256_matches_campaign=true. elevated=true. sample_ms=50.
-  behavioral_progress_observed=false nas 27. identified=false.
+  behavioral_progress_observed=false on the 27. identified=false.
 
-  Native 9/9:  EXITED −1073741511 (STATUS_ENTRYPOINT_NOT_FOUND), 187–1687 ms, dump final sem nome
-  TMW0   9/9:  EXITED −1073741511, 1375–2938 ms; árvore nomeada no fim 5/9
-  TMW_DO 9/9:  STILL_ALIVE ~60,2 s; árvore nomeada 9/9
+  Native 9/9:  EXITED −1073741511 (STATUS_ENTRYPOINT_NOT_FOUND), 187–1687 ms, unnamed final dump
+  TMW0   9/9:  EXITED −1073741511, 1375–2938 ms; named tree at the end 5/9
+  TMW_DO 9/9:  STILL_ALIVE ~60.2 s; named tree 9/9
 
-Árvore nomeada (quando existe):
-  pin.exe → pin.exe → pin.exe + sample.exe + dois conhost.exe
-  (o launcher da campanha envolve o motor; NÃO é GUI/progresso recuperado)
+Named tree (when present):
+  pin.exe → pin.exe → pin.exe + sample.exe + two conhost.exe
+  (the campaign launcher wraps the engine; this is NOT recovered GUI/progress)
 
-TMW_DO 9/9 vivo ≠ progresso. Não é Arancino. Não reescreve as 9.000.
-r43 / r43b / r43c (launcher FBA632E4) NÃO são a Table 25.
+TMW_DO 9/9 alive ≠ progress. Not Arancino. Does not rewrite the 9,000.
+r43 / r43b / r43c (launcher FBA632E4) are NOT Table 25.
 
-Bruto:  2_arvores_r43d/  (27 pastas: process_tree.*, process_lifetime.csv,
+Raw:    2_arvores_r43d/  (27 folders: process_tree.*, process_lifetime.csv,
           process_events.jsonl, stdout, stderr, run_meta.json, verdict.txt)
 CSV:    csv/access_r43d_summary.csv
-Tabela: TABELAS_25_26_27_R43D.md  → Table 25 (27 linhas)
+Table:  TABELAS_25_26_27_R43D.md  → Table 25 (27 rows)
 
 ================================================================
-3. Entregáveis obrigatórios
+3. Mandatory deliverables
 ================================================================
-* evidências brutas das 30 execuções
+* raw evidence of the 30 executions
     1_pin_sem_pintool/  (3)  +  2_arvores_r43d/  (27)
 
-* tabelas CSV consolidadas
+* consolidated CSV tables
     csv/access_r43d_summary.csv
     csv/access_r43d_cell_medians.csv
     csv/pin_bare_guest_n3_summary.csv
     csv/fidelity_pairs_2230.csv
 
-* hashes e protocolo
-    cada run_meta.json; PROTOCOLO.txt; REPRODUCIBILITY.txt
+* hashes and protocol
+    each run_meta.json; PROTOCOLO.txt; REPRODUCIBILITY.txt
 
-* manifesto atualizado
+* updated manifesto
     MANIFEST.json
 
-* nova Tabela 25 baseada no N=3, sem cherry-pick
-    TABELAS_25_26_27_R43D.md  (27 linhas). Resumo 3×3 no mesmo ficheiro.
+* new Table 25 based on N=3, no cherry-pick
+    TABELAS_25_26_27_R43D.md  (27 rows). 3×3 summary in the same file.
 
-* Tabela 26 com medianas e ICs
-    N=3: mediana + [min, max] por célula (n=3 é pequeno demais para IC bootstrap 95%).
-    ICs 95% do corpus NAT/EMPTY/TMW0 (n=25, bootstrap 2000, semente 705851366)
-    continuam em csv/nat_empty_tmw0_table.csv — não são a Table 26 das árvores.
+* Table 26 with medians and CIs
+    N=3: median + [min, max] per cell (n=3 is too small for a bootstrap 95% CI).
+    Corpus NAT/EMPTY/TMW0 95% CIs (n=25, bootstrap 2000, seed 705851366)
+    remain in csv/nat_empty_tmw0_table.csv — they are not the tree Table 26.
 
-* Tabela 27 somente com o teste guest validado
-    TABELAS_25_26_27_R43D.md  → Table 27 (3 linhas). Host fora.
+* Table 27 only with the validated guest test
+    TABELAS_25_26_27_R43D.md  → Table 27 (3 rows). Host out.
 
-* correção do diagnóstico 22/30
+* 22/30 diagnostic correction
     CORRECAO_22_30.md
-    0 bytes → campo de hash VAZIO, não SHA-256 do buffer vazio (e3b0c442).
-    Contagem inalterada: 22/30. Dos 22, 12 são campo vazio e 10 são SHA não vazio.
+    0 bytes → EMPTY hash field, not SHA-256 of the empty buffer (e3b0c442).
+    Count unchanged: 22/30. Of the 22, 12 are an empty field and 10 are a non-empty SHA.
 
-* relatório curto confirmado / inconclusivo
+* short confirmed / inconclusive report
     RELATORIO_PENDENCIAS_R43D.md
 
-Não reescrito: artigo completo, carta ponto a ponto, 9.000, N=30 timing,
-coerência temporal, matriz de interface, traces, caso evasivo real, bake-off.
+Not rewritten: full article, point-by-point letter, 9,000, N=30 timing,
+temporal coherence, interface matrix, traces, a real evasive case, bake-off.
 
-Trechos para os autores colarem: TABELAS_25_26_27_R43D.md, CORRECAO_22_30.md,
-INSERCOES_FINAIS_EN.md (secções VI / Table 24–27).
+Excerpts for the authors to paste: TABELAS_25_26_27_R43D.md, CORRECAO_22_30.md,
+INSERCOES_FINAIS_EN.md (sections VI / Table 24–27).

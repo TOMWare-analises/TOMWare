@@ -1,45 +1,45 @@
-Resposta ao pedido de passar as tarefas com criterio de conclusao.
+Reply to the request to pass the tasks with a completion criterion.
 
-Concordamos com os dois blocos. Eles podem sanar as lacunas centrais
-so se a evidencia for verificavel. A parte incerta continua a ser
-encontrar um executavel que demonstre o beneficio pratico.
+We agree with the two blocks. They can close the central gaps
+only if the evidence is verifiable. The uncertain part remains
+finding an executable that demonstrates the practical benefit.
 
-Estado actual, sem overclaim
+Current status, without overclaim
 ----------------------------
-Nao ha candidato com checagem ja identificada no codigo.
-MAL_03, MAL_07, MAL_10 e BEN_06 tiveram o modulo SkewMask a disparar
-num dump de contadores (outra DLL). Isso nao localiza a checagem,
-nao mostra o ramo e nao produz artefacto extra. Esses quatro ja
-correram NAT / TMW0 / -do: new_files=0, stdout vazio. Nao repetir
-o mesmo protocolo a espera de um drop.
+There is no candidate with a check already identified in the code.
+MAL_03, MAL_07, MAL_10 and BEN_06 had the SkewMask module fire
+in a counter dump (another DLL). That does not locate the check,
+does not show the branch and does not produce an extra artifact. Those four already
+ran NAT / TMW0 / -do: new_files=0, empty stdout. Do not repeat
+the same protocol waiting for a drop.
 
-Prioridade: primeiro identificar a checagem (imports, strings, RVA,
-API). So depois a escada nativo / instrumentado sem knob / com knob.
-Poucos casos bastam. Os mesmos casos leem o Major 2. Nao pedimos
-os cinco checks nas 14 amostras.
+Priority: first identify the check (imports, strings, RVA,
+API). Only then the native / instrumented without knob / with knob ladder.
+A few cases suffice. The same cases read Major 2. We do not ask for
+the five checks on the 14 samples.
 
-Os testes complementares (Major 1 e 4) nao dependem desse caso.
-O kit paralelo ja tem SleepEx (nao so WaitOne), rajada de 1000
-leituras de relogio, pass-through memcmp com n=8, e procura de
-export. Isso e T2, nao T1.
+The complementary tests (Major 1 and 4) do not depend on that case.
+The parallel kit already has SleepEx (not only WaitOne), a burst of 1000
+clock readings, memcmp pass-through with n=8, and export
+search. That is T2, not T1.
 
-Criterio de conclusao (resumo)
+Completion criterion (summary)
 ------------------------------
-T1 DONE  so com as quatro pecas no mesmo PE e entrada:
-         checagem localizada, ramo evasivo observado, contramedida
-         a atuar, comportamento adicional com hash. Mais marcos,
-         CPU, WS e filhos nomeados nesse mesmo caso.
-T1 FAIL  aceite e documentado: procura feita, cadeia incompleta.
-         "Ainda vivo aos 60 s" = FAIL, nao DONE.
-T2 DONE  cada interface PASS / MASKED / NOT_EXERCISED; SleepEx
-         exercitado; enumeracao termina; relogio em rajada;
-         build_id com SHA-256 completo; matriz preenchida.
-T2 FAIL  aceite nas rotinas ABSENT, desde que fiquem NOT_EXERCISED.
+T1 DONE  only with the four pieces on the same PE and input:
+         located check, observed evasive branch, countermeasure
+         acting, additional behavior with a hash. Plus milestones,
+         CPU, WS and named children on that same case.
+T1 FAIL  accepted and documented: search done, chain incomplete.
+         "Still alive at 60 s" = FAIL, not DONE.
+T2 DONE  each interface PASS / MASKED / NOT_EXERCISED; SleepEx
+         exercised; enumeration finishes; clock in burst;
+         build_id with full SHA-256; matrix filled.
+T2 FAIL  accepted on ABSENT routines, provided they stay NOT_EXERCISED.
 
-Entrega obrigatoria do agente: scripts, logs, brutos, traces,
-hashes, build_id, e evidence_matrix.csv ligando cada ficheiro
-ao comentario. Modelo no mesmo zip.
+Mandatory agent delivery: scripts, logs, raw files, traces,
+hashes, build_id, and evidence_matrix.csv linking each file
+to the comment. Template in the same zip.
 
-Plano A / v4b nao espera por isto. Corte do Plano B: 02/11/2026.
-Se o SkewMask mudar para obter T1, o N=30 cai e repe-te-se nesse
-build -- e so nessa altura.
+Plan A / v4b does not wait for this. Plan B cutoff: 02/11/2026.
+If SkewMask changes to obtain T1, N=30 falls and is repeated on that
+build -- and only then.

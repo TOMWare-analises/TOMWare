@@ -73,7 +73,7 @@ CPU under Pin is often 0 on short runs (`sample_count` too small). That filter i
 
 RQ2 is answered as: enabling a module rarely changes short-lived termination class; Pin (EMPTY) already changes malicious persistent survival versus NAT; SkewMask/`-da` change the **duration and resource path**, not proven payload fidelity.
 
-Future work that **remains**: `NtQueryInformationProcess` / `NtQuerySystemInformation`; `RDTSC`/`RDTSCP`; API-trace / coverage fidelity (Etapa 6 was an external observer only); **32-bit** TOMWare + Pin 3.28 `ia32` (oracles, then optional 32-bit corpus); **Arancino bake-off on a shared 32-bit protocol** (Pin 2.14+VS2010 or a documented port). The current 9,000-run x64 campaign is not that bake-off. Paste `revision_gap_closure/09_values/FUTURE_WORK.md`.
+Future work that **remains**: `NtQueryInformationProcess` / `NtQuerySystemInformation`; `RDTSC`/`RDTSCP`; API-trace / coverage fidelity (Stage 6 was an external observer only); **32-bit** TOMWare + Pin 3.28 `ia32` (oracles, then optional 32-bit corpus); **Arancino bake-off on a shared 32-bit protocol** (Pin 2.14+VS2010 or a documented port). The current 9,000-run x64 campaign is not that bake-off. Paste `revision_gap_closure/09_values/FUTURE_WORK.md`.
 
 Strike items 4 (combined `-da`), 5 (native/empty baselines), and the “expand corpus + CI” half of item 7 — they are in this revision, together with N=30 timing and AntiDebug 3+3.
 

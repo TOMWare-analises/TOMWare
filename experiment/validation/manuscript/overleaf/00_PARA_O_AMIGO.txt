@@ -1,21 +1,21 @@
-Amigo -- Plano A (v5). Mesmos numeros da v1. Explicacao: 00_EXPLICACAO_TUDO.txt
-O Plano B (VM) ainda nao comeca; nao precisa de esperar por ele.
+Friend -- Plan A (v5). Same numbers as v1. Explanation: 00_EXPLICACAO_TUDO.txt
+Plan B (VM) does not start yet; you do not need to wait for it.
 
-Regra unica:
-- NAO apagar numeros, linhas nem figuras ja existentes.
-- Timing: MOVER a tabela antiga (-go vs -do / Table 6) para APENDICE,
-  nota "confundida". Nao apagar os numeros.
-- Tabela N=30 (tab:timing_matched_n30) no CORPO como resultado principal.
-- Outras tabelas antigas ficam. Inserir as novas a seguir.
-- SUBSTITUIR (nao so anotar):
-  (1) conclusao ~49% / 4080 vs 2081;
-  (2) "-da nao foi avaliado".
-- TMW0 = Pin + TOMWare.dll, knobs desligados (-q). Nao "ordinary Pin".
-- Graficos opcionais: descomentar figure; anexar PDF/PNG a parte.
+Single rule:
+- DO NOT delete numbers, rows or figures that already exist.
+- Timing: MOVE the old table (-go vs -do / Table 6) to APPENDIX,
+  note "confounded". Do not delete the numbers.
+- N=30 table (tab:timing_matched_n30) in the BODY as the main result.
+- Other old tables stay. Insert the new ones after them.
+- REPLACE (do not only annotate):
+  (1) conclusion ~49% / 4080 vs 2081;
+  (2) "-da was not evaluated".
+- TMW0 = Pin + TOMWare.dll, knobs off (-q). Not "ordinary Pin".
+- Optional figures: uncomment figure; attach PDF/PNG separately.
 
-Tabelas novas:
-  tab:timing_matched_n30     corpo
-  app:timing_confounded      apendice = tabela antiga
+New tables:
+  tab:timing_matched_n30     body
+  app:timing_confounded      appendix = old table
   tab:wait_model_n5
   tab:module32_fixture
   tab:processenum_pin_counts
@@ -24,8 +24,8 @@ Tabelas novas:
   tab:wall_60s_5050
   tab:case_attempt
 
-Nao inventar numeros. Proibido: 05_FRASES_PROIBIDAS.md
-Colar 08_INSERCOES_REVISOR.tex. Conferir 04.
-Carta EN so DEPOIS desta edicao: 01_...pdf
-  (working set ~87%/74% separado de CPU ~38%/29%).
-Devolver o PDF.
+Do not invent numbers. Forbidden: 05_FRASES_PROIBIDAS.md
+Paste 08_INSERCOES_REVISOR.tex. Check 04.
+EN letter only AFTER this edit: 01_...pdf
+  (working set ~87%/74% separate from CPU ~38%/29%).
+Return the PDF.

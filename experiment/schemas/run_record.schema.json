@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://tomware.org/schemas/run_record.schema.json",
   "title": "TOMWare.M Experimental Run Record",
-  "description": "Registro completo, auditável e estruturado de uma execução experimental individual sob a infraestrutura TOMWare.M.",
+  "description": "Complete, auditable, structured record of one experimental run under the TOMWare.M infrastructure.",
   "type": "object",
   "required": [
     "schema_version",

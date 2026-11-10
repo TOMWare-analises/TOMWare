@@ -1,14 +1,14 @@
-# Etapa 11 (parcial) � conferencia das cartas vs valores
+# Stage 11 (partial) — cross-check of the letters vs values
 
-Data: 2026-10-23. Texto extraido dos tres PDF gerados.
+Date: 2026-10-23. Text extracted from the three generated PDFs.
 
-## Cartas vs MANUSCRIPT_VALUES
+## Letters vs MANUSCRIPT_VALUES
 
-Presentes: medianas 3,083.210 / 2,104.770 / 2,433.285; TMW_DO maligno persistente +37,387 [26,146]; 22/30; exit code unknown; sample_count post hoc.
+Present: medians 3,083.210 / 2,104.770 / 2,433.285; TMW_DO malicious persistent +37,387 [26,146]; 22/30; exit code unknown; sample_count post hoc.
 
-155/155, 9/31, �crash-exit� e �sample_count a priori� aparecem **so** como frases a apagar / nao afirmar.
+155/155, 9/31, “crash-exit” and “sample_count a priori” appear **only** as phrases to delete / not to assert.
 
-## Ainda nao feito
+## Still not done
 
-Conferencia do **manuscrito** Overleaf (ainda e o PDF de 13/10, hash `0FEF4163�`).
-Sem commit. Sem envio IEEE.
+Cross-check of the Overleaf **manuscript** (still the 13/10 PDF, hash `0FEF4163...`).
+No commit. No IEEE submission.

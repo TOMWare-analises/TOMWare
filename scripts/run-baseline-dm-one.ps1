@@ -54,8 +54,8 @@ $repoRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 Set-Location $repoRoot
 . (Join-Path $repoRoot "scripts/lib/TomwareBenchmark.ps1")
 
-# Preserva a evidência completa no CMD clássico. O comando
-# "mode con ... lines=58" reduz o histórico e impede rolar até resultados anteriores.
+# Keep the full evidence in classic CMD. The command
+# "mode con ... lines=58" shrinks the history and prevents scrolling back to earlier results.
 try {
     $rawUi = $Host.UI.RawUI
     $currentBuffer = $rawUi.BufferSize
@@ -64,7 +64,7 @@ try {
     $rawUi.BufferSize = New-Object System.Management.Automation.Host.Size($desiredWidth, $desiredHeight)
 }
 catch {
-    Write-Verbose "Nao foi possivel ampliar o buffer do console: $($_.Exception.Message)"
+    Write-Verbose "Could not enlarge the console buffer: $($_.Exception.Message)"
 }
 
 if ([string]::IsNullOrWhiteSpace($SamplesDir)) {
@@ -129,7 +129,7 @@ $PocByKnob = @{
         PocName = "TestProcessEnum.exe"
         RelPaths = @("Resultados/Apps-Teste/TestProcessEnum.exe")
         UsesMemscan = $false
-        # Vestigio funcional (app de teste). Amostra real sob Pin costuma timeout — nao entra na comparacao quantitativa.
+        # Functional vestige (test app). A real sample under Pin often times out — it is not in the quantitative comparison.
         FunctionalOnly = $true
         BaselineKnobs = @("-q")
         PocTimeout = 120
@@ -193,27 +193,27 @@ function Format-MalwareResultLine {
 
     if ($MalwareRun.RepeatCount -gt 1 -and $MalwareRun.Statistics) {
         $s = $MalwareRun.Statistics
-        $prefix = if ($functionalOnly) { "evidencia funcional = caixa acima | " } else { "" }
-        return ("    Result  : {0}validas={1}/{2} (complete={3}, observed={4}) | media={5}s | mediana={6}s | p95={7}s | desvio={8}s" -f `
+        $prefix = if ($functionalOnly) { "functional evidence = box above | " } else { "" }
+        return ("    Result  : {0}valid={1}/{2} (complete={3}, observed={4}) | mean={5}s | median={6}s | p95={7}s | stdev={8}s" -f `
             $prefix, $s.Valid, $s.Attempted, $s.Complete, $s.Observed, `
             $s.MeanSeconds, $s.MedianSeconds, $s.P95Seconds, $s.StdDevSeconds)
     }
 
     if ($functionalOnly) {
-        # Processo/enumeracao: evidencia na caixa do app de teste; tempo da amostra nao e metrica do -dp.
+        # Process/enumeration: evidence is in the test-app box; sample time is not a -dp metric.
         if ($MalwareRun.Outcome -eq "skipped") {
-            return "    Result  : evidência = caixa acima (pin.exe) | amostra real nao executada"
+            return "    Result  : evidence = box above (pin.exe) | real sample not executed"
         }
         if ($timeOk) {
-            return ("    Result  : evidência = caixa acima (pin.exe) | amostra outcome={0} time={1}s (nao metrica de -{2}) | exit={3}" -f `
+            return ("    Result  : evidence = box above (pin.exe) | sample outcome={0} time={1}s (not a -{2} metric) | exit={3}" -f `
                 $MalwareRun.Outcome, $MalwareRun.Seconds, $Knob, $exitDisp)
         }
-        return ("    Result  : evidência = caixa acima (pin.exe) | amostra outcome={0} (nao metrica de -{1}) | exit={2}" -f `
+        return ("    Result  : evidence = box above (pin.exe) | sample outcome={0} (not a -{1} metric) | exit={2}" -f `
             $MalwareRun.Outcome, $Knob, $exitDisp)
     }
 
     if (-not $timeOk) {
-        return ("    Result  : outcome={0} (tempo nao quantitativo; reexecutar ate complete) | wall={1}s | exit={2}" -f `
+        return ("    Result  : outcome={0} (time not quantitative; rerun until complete) | wall={1}s | exit={2}" -f `
             $MalwareRun.Outcome, $MalwareRun.Seconds, $exitDisp)
     }
 
@@ -267,13 +267,13 @@ function Get-PocTimeout {
         [switch]$Loop1000
     )
     $cfg = Get-PocConfig -Knob $Knob
-    # PocTimeout do knob e o piso tipico; -MemscanTimeoutSeconds sobe o teto quando o usuario pede mais tempo.
+    # The knob PocTimeout is the typical floor; -MemscanTimeoutSeconds raises the cap when the user asks for more time.
     $configured = if ($cfg.PocTimeout) { [int]$cfg.PocTimeout } else { 120 }
     $base = [Math]::Max($configured, [int]$MemscanTimeoutSeconds)
     if ($Loop1000) {
-        # Loop amplifica o tempo. Memscan x1000 sob Pin e muito pesado.
-        # O app imprime o Resumo apos a 1a varredura, mas continua executando
-        # as outras 999 varreduras reais para preservar a medicao.
+        # Loop amplifies time. Memscan x1000 under Pin is very heavy.
+        # The app prints the Summary after the 1st scan, but keeps running
+        # the other 999 real scans to preserve the measurement.
         switch ($Knob) {
             "do" { return [Math]::Max($base, 900) }
             "dm" { return [Math]::Max($base, 14400) }
@@ -380,13 +380,13 @@ function Write-RedBoxLines {
 
 function Format-PocDisplayLine {
     param([string]$Line)
-    # Mantem o padrao de saida do artigo (portugues), sem traduzir.
+    # Keep the article output pattern (Portuguese PoC text), without translating it.
     return $Line.Trim()
 }
 
 function Get-PocHighlightLines {
     param([string]$Stdout)
-    if (-not $Stdout) { return @("(sem stdout)") }
+    if (-not $Stdout) { return @("(no stdout)") }
     $hits = @()
     foreach ($line in ($Stdout -split "`r?`n")) {
         $t = $line.Trim()
@@ -396,7 +396,7 @@ function Get-PocHighlightLines {
         }
     }
     if ($hits.Count -eq 0) {
-        return @("(ver stdout completo)")
+        return @("(see full stdout)")
     }
     return $hits | Select-Object -Last 12
 }
@@ -431,7 +431,7 @@ function Show-PocEvidence {
             Write-RedBoxLines -Lines $boxLines
         }
         else {
-            # Timeout / stdout parcial: exibe o que veio do app de teste (Resumo impresso cedo).
+            # Timeout / partial stdout: show what came from the test app (Summary printed early).
             $displayLines = @(Get-PocHighlightLines -Stdout $PocRun.Stdout)
             Write-RedBoxLines -Lines $displayLines
         }
@@ -478,7 +478,7 @@ function Get-FunctionalEvidenceResult {
     )
 
     $cfg = Get-PocConfig -Knob $Knob
-    $question = "A contramedida ocultou o Pin?"
+    $question = "Did the countermeasure hide Pin?"
     $baselineHighlights = @(Get-PocHighlightLines -Stdout $BaselinePoc.Stdout)
     $cmHighlights = @(Get-PocHighlightLines -Stdout $CmPoc.Stdout)
     $baselineDetected = $false
@@ -509,16 +509,16 @@ function Get-FunctionalEvidenceResult {
 
     $answer = switch ($status) {
         "PASS" {
-            "Sim. O PoC detectou o Pin no baseline e confirmou a ocultacao com -$Knob."
+            "Yes. The PoC detected Pin at baseline and confirmed hiding with -$Knob."
         }
         "FAIL" {
-            "Nao. O PoC detectou o Pin no baseline, mas o vestigio permaneceu com -$Knob."
+            "No. The PoC detected Pin at baseline, but the vestige remained with -$Knob."
         }
         "SKIPPED" {
-            "Nao avaliado: o app de teste funcional foi omitido."
+            "Not evaluated: the functional test app was omitted."
         }
         default {
-            "Inconclusivo: o PoC nao produziu evidencias suficientes para validar baseline e -$Knob."
+            "Inconclusive: the PoC did not produce enough evidence to validate baseline and -$Knob."
         }
     }
 
@@ -599,7 +599,7 @@ function Show-BaselineReport {
     )
 
     Write-Host ""
-    Write-Host "[baseline] Pin + TOMWare (sem contramedida)" -ForegroundColor Red
+    Write-Host "[baseline] Pin + TOMWare (no countermeasure)" -ForegroundColor Red
     if ($SamplePath) {
         Write-Host ("    {0}" -f $SamplePath)
     }
@@ -643,7 +643,7 @@ function Get-ComparisonLogLines {
     $quantOk = (-not $functionalOnly) -and $baseOk -and $cmOk
 
     $deltaLine = if ($Repeat -gt 1) {
-        "  delta (-$Knob - base) : ver relatorio benchmark JSON/CSV (comparacao pareada por rodada)"
+        "  delta (-$Knob - base) : see the benchmark JSON/CSV report (paired comparison per round)"
     }
     elseif ($quantOk) {
         $delta = [math]::Round($CmMalware.Seconds - $BaselineMalware.Seconds, 3)
@@ -651,10 +651,10 @@ function Get-ComparisonLogLines {
         ("  delta (-{0} - base) : {1}{2}s" -f $Knob, $sign, $delta)
     }
     elseif ($functionalOnly) {
-        "  delta (-$Knob - base) : n/a (eficacia medida pela caixa pin.exe, nao pelo tempo)"
+        "  delta (-$Knob - base) : n/a (effectiveness measured by the pin.exe box, not by time)"
     }
     else {
-        "  delta (-$Knob - base) : n/a (timeout/early_exit — tempo nao quantitativo)"
+        "  delta (-$Knob - base) : n/a (timeout/early_exit — time not quantitative)"
     }
 
     $baseLine = if ($BaselineMalware.Outcome -eq "skipped") {
@@ -664,10 +664,10 @@ function Get-ComparisonLogLines {
         ("  {0} baseline : {1}s | outcome={2}" -f $script:sampleTypeLabel, $BaselineMalware.Seconds, $BaselineMalware.Outcome)
     }
     elseif ($functionalOnly) {
-        ("  {0} baseline : outcome={1} (executada; tempo nao e metrica de -{2})" -f $script:sampleTypeLabel, $BaselineMalware.Outcome, $Knob)
+        ("  {0} baseline : outcome={1} (executed; time is not a -{2} metric)" -f $script:sampleTypeLabel, $BaselineMalware.Outcome, $Knob)
     }
     else {
-        ("  {0} baseline : outcome={1} (tempo nao quantitativo; wall={2}s)" -f $script:sampleTypeLabel, $BaselineMalware.Outcome, $BaselineMalware.Seconds)
+        ("  {0} baseline : outcome={1} (time not quantitative; wall={2}s)" -f $script:sampleTypeLabel, $BaselineMalware.Outcome, $BaselineMalware.Seconds)
     }
 
     $cmLine = if ($CmMalware.Outcome -eq "skipped") {
@@ -677,10 +677,10 @@ function Get-ComparisonLogLines {
         ("  {0} -{1}      : {2}s | outcome={3}" -f $script:sampleTypeLabel, $Knob, $CmMalware.Seconds, $CmMalware.Outcome)
     }
     elseif ($functionalOnly) {
-        ("  {0} -{1}      : outcome={2} (executada; tempo nao e metrica de -{1})" -f $script:sampleTypeLabel, $Knob, $CmMalware.Outcome)
+        ("  {0} -{1}      : outcome={2} (executed; time is not a -{1} metric)" -f $script:sampleTypeLabel, $Knob, $CmMalware.Outcome)
     }
     else {
-        ("  {0} -{1}      : outcome={2} (tempo nao quantitativo; wall={3}s)" -f $script:sampleTypeLabel, $Knob, $CmMalware.Outcome, $CmMalware.Seconds)
+        ("  {0} -{1}      : outcome={2} (time not quantitative; wall={3}s)" -f $script:sampleTypeLabel, $Knob, $CmMalware.Outcome, $CmMalware.Seconds)
     }
 
     return @(
@@ -1075,8 +1075,8 @@ function Invoke-BenchmarkSampleRun {
         [string]$ProgressLabel
     )
 
-    # A janela curta funciona para CLI e GUI: processos que encerram antes dela
-    # preservam o outcome normal; processos persistentes viram "observed".
+    # The short window works for CLI and GUI: processes that exit before it
+    # keep the normal outcome; persistent processes become "observed".
     $effectiveTimeout = [Math]::Min($TimeoutSeconds, $ObservationSeconds)
     $run = Invoke-TomwarePinRun -PinExe $PinExe -ToolDll $ToolDll -SamplePath $SamplePath `
         -Knobs $Knobs -FollowChild:$FollowChild -TimeoutSeconds $effectiveTimeout `
@@ -1090,7 +1090,7 @@ function Invoke-BenchmarkSampleRun {
             $run.ExitCode = $null
             $run | Add-Member -NotePropertyName ObservationCompleted -NotePropertyValue $true -Force
             $run | Add-Member -NotePropertyName ObservationSeconds -NotePropertyValue $ObservationSeconds -Force
-            Write-Host ("    janela de observacao concluida: {0}s ({1})" -f $ObservationSeconds, $ProgressLabel) -ForegroundColor DarkGray
+            Write-Host ("    observation window completed: {0}s ({1})" -f $ObservationSeconds, $ProgressLabel) -ForegroundColor DarkGray
         }
         else {
             Write-Warning "Sample process remained active after observation window; keeping outcome=timeout."
@@ -1426,23 +1426,23 @@ function Save-BenchmarkReports {
         $wsCm = $countermeasureResourceStats.PeakWorkingSetMB.Median
         $wsDelta = $pairedResourceStats.PeakWorkingSetDeltaMB.Median
         $wsPercent = $pairedResourceStats.PeakWorkingSetChangePercent.Median
-        "Recursos na janela: CPU mediana $cpuBase -> $cpuCm s (delta $cpuDelta s; $cpuPercent%); " +
-        "pico de memoria $wsBase -> $wsCm MB (delta $wsDelta MB; $wsPercent%)."
+        "Window resources: median CPU $cpuBase -> $cpuCm s (delta $cpuDelta s; $cpuPercent%); " +
+        "peak memory $wsBase -> $wsCm MB (delta $wsDelta MB; $wsPercent%)."
     }
     else {
-        "Metricas de CPU/memoria indisponiveis ou incompletas."
+        "CPU/memory metrics unavailable or incomplete."
     }
     $performanceAnswer = if ($comparisonValid) {
-        "Tempo total: impacto mediano de $medianDelta s ($medianPercent%) em comparacao pareada. $resourceAnswer"
+        "Total time: median impact of $medianDelta s ($medianPercent%) in paired comparison. $resourceAnswer"
     }
     elseif ($resourceComparisonValid) {
-        "$resourceAnswer O tempo total permanece invalido: $comparisonReason."
+        "$resourceAnswer Total time remains invalid: $comparisonReason."
     }
     else {
-        "Nao foi possivel medir o impacto no desempenho: $comparisonReason. $resourceAnswer"
+        "Could not measure the performance impact: $comparisonReason. $resourceAnswer"
     }
     $performanceAssessment = [PSCustomObject]@{
-        Question            = "Qual foi o impacto no desempenho?"
+        Question            = "What was the performance impact?"
         Status              = $performanceStatus
         Answer              = $performanceAnswer
         Basis               = if ($comparisonValid -and $resourceComparisonValid) {
@@ -1594,8 +1594,8 @@ function Save-ConsolidatedBenchmarkReports {
         SamplePath   = (Join-Path $SamplesDir "$Sha256.exe")
         Repeat       = $Repeat
         Questions    = [PSCustomObject]@{
-            Functional  = "A contramedida ocultou o Pin?"
-            Performance = "Qual foi o impacto no desempenho?"
+            Functional  = "Did the countermeasure hide Pin?"
+            Performance = "What was the performance impact?"
         }
         Summary      = @($summaryRows)
         Countermeasures = @($Reports)
@@ -1640,26 +1640,26 @@ if ($AllCountermeasures) {
             Sort-Object LastWriteTime -Descending |
             Select-Object -First 1
         if (-not $priorJson) {
-            throw "Nao ha JSON previo de -$priorKnob em $benchmarkDir. Rode sem -StartFrom ou comece em -$priorKnob."
+            throw "No previous JSON for -$priorKnob in $benchmarkDir. Run without -StartFrom or start at -$priorKnob."
         }
-        Write-Host ("Reusando relatorio previo -$priorKnob : {0}" -f $priorJson.Name) -ForegroundColor DarkGray
+        Write-Host ("Reusing previous -$priorKnob report: {0}" -f $priorJson.Name) -ForegroundColor DarkGray
         $allReports += Get-Content $priorJson.FullName -Raw -Encoding UTF8 | ConvertFrom-Json
     }
 
     Write-Host ""
-    Write-Host "Benchmark completo: $Repeat repeticoes para cada contramedida." -ForegroundColor Cyan
-    Write-Host "Ordem por rodada alternada para reduzir vies de aquecimento/deriva." -ForegroundColor DarkGray
+    Write-Host "Full benchmark: $Repeat repetitions for each countermeasure." -ForegroundColor Cyan
+    Write-Host "Alternating order per round to reduce warmup/drift bias." -ForegroundColor DarkGray
     if ($StartFrom -ne "de") {
-        Write-Host "Retomando a partir de -$StartFrom." -ForegroundColor Yellow
+        Write-Host "Resuming from -$StartFrom." -ForegroundColor Yellow
     }
 
     foreach ($knob in $countermeasures) {
         Write-Host ""
         Write-Host "============================================================" -ForegroundColor Cyan
-        Write-Host " Iniciando benchmark -$knob ($Repeat repeticoes)" -ForegroundColor Cyan
+        Write-Host " Starting -$knob benchmark ($Repeat repetitions)" -ForegroundColor Cyan
         Write-Host "============================================================" -ForegroundColor Cyan
 
-        # Processo separado: um 'exit' no benchmark filho nao encerra o orquestrador.
+        # Separate process: an 'exit' in the child benchmark does not stop the orchestrator.
         $childArgs = @(
             "-NoProfile",
             "-ExecutionPolicy", "Bypass",
@@ -1690,20 +1690,20 @@ if ($AllCountermeasures) {
             Select-Object -First 1
 
         if (-not $childJson) {
-            throw "Benchmark failed for countermeasure -$knob (exit=$childExit); relatorio JSON nao foi gerado."
+            throw "Benchmark failed for countermeasure -$knob (exit=$childExit); JSON report was not generated."
         }
         if ($childExit -ne 0) {
-            # Pin/kill as vezes deixa exit code residual no processo filho mesmo com relatorio OK.
-            Write-Warning ("Filho -$knob terminou com exit=$childExit, mas o JSON existe; seguindo em frente.")
+            # Pin/kill sometimes leaves a residual exit code in the child even with a good report.
+            Write-Warning ("Child -$knob ended with exit=$childExit, but the JSON exists; continuing.")
         }
         $allReports += Get-Content $childJson.FullName -Raw -Encoding UTF8 | ConvertFrom-Json
     }
 
     $consolidatedReport = Save-ConsolidatedBenchmarkReports -Reports $allReports -Tag $allTag
     Write-Host ""
-    Write-Host "Todos os benchmarks foram concluidos." -ForegroundColor Green
-    Write-Host ("CSV consolidado  : {0}" -f $consolidatedReport.CsvPath) -ForegroundColor Green
-    Write-Host ("JSON consolidado : {0}" -f $consolidatedReport.JsonPath) -ForegroundColor Green
+    Write-Host "All benchmarks completed." -ForegroundColor Green
+    Write-Host ("Consolidated CSV  : {0}" -f $consolidatedReport.CsvPath) -ForegroundColor Green
+    Write-Host ("Consolidated JSON : {0}" -f $consolidatedReport.JsonPath) -ForegroundColor Green
     exit 0
 }
 
@@ -1728,7 +1728,7 @@ if (-not $SkipMemscan) {
         throw "$($PocByKnob[$Countermeasure].PocName) not found under $hint"
     }
     if ($Loop1000 -and ($pocExe -notmatch 'Loop_X_1000')) {
-        Write-Warning "Loop_X_1000 pedido, mas app de teste sem loop encontrado: $pocExe"
+        Write-Warning "Loop_X_1000 requested, but a non-loop test app was found: $pocExe"
     }
 }
 
@@ -1750,30 +1750,30 @@ if ($ShowOnly) {
 
 Show-InvocationHeader -Sha256 $Sha256 -Knob $Countermeasure -ShowOnly:$false
 
-Write-Host "Fluxo desta execucao (2 etapas):" -ForegroundColor Cyan
-Write-Host "  [1] App de teste (evidencia no console)  : $(if ($pocExe) { $pocExe } else { '(omitido)' })"
+Write-Host "Flow for this run (2 steps):" -ForegroundColor Cyan
+Write-Host "  [1] Test app (evidence on the console)  : $(if ($pocExe) { $pocExe } else { '(omitted)' })"
 if ($Loop1000) {
-    Write-Host "      -> variante Loop_X_1000 (1000 iteracoes para medir tempo)" -ForegroundColor Cyan
+    Write-Host "      -> Loop_X_1000 variant (1000 iterations to measure time)" -ForegroundColor Cyan
 }
-Write-Host "  [2] Amostra real ($SampleType)             : $sample"
+Write-Host "  [2] Real sample ($SampleType)             : $sample"
 Write-Host ""
 
 $pocTimeout = Get-PocTimeout -Knob $Countermeasure -Loop1000:$Loop1000
-Write-Host ("  timeout do app de teste       : {0}s (MemscanTimeoutSeconds={1})" -f $pocTimeout, $MemscanTimeoutSeconds) -ForegroundColor DarkGray
+Write-Host ("  test-app timeout       : {0}s (MemscanTimeoutSeconds={1})" -f $pocTimeout, $MemscanTimeoutSeconds) -ForegroundColor DarkGray
 $pocBaseKnobs = Get-PocBaselineKnobs -Knob $Countermeasure
 $pocCmKnobs = Get-PocCmKnobs -Knob $Countermeasure -SignatureFile $SignatureFile
 $usesMemscan = Test-CmUsesMemscan -Knob $Countermeasure
 
 if (-not $SkipMemscan) {
-    Write-Host "[1/2] Executando app de teste (baseline e -$Countermeasure)..." -ForegroundColor Yellow
+    Write-Host "[1/2] Running test app (baseline and -$Countermeasure)..." -ForegroundColor Yellow
     $baseMemscan = Invoke-TomwarePinRun -PinExe $pinExe -ToolDll $toolDll -SamplePath $pocExe `
         -Knobs $pocBaseKnobs -TimeoutSeconds $pocTimeout -Scenario "testapp_baseline_$Countermeasure" `
-        -ProgressLabel "app teste baseline"
+        -ProgressLabel "test app baseline"
     $baseCounts = if ($usesMemscan) { Parse-MemscanCounts -Stdout $baseMemscan.Stdout } else { $null }
 
     $cmMemscan = Invoke-TomwarePinRun -PinExe $pinExe -ToolDll $toolDll -SamplePath $pocExe `
         -Knobs $pocCmKnobs -TimeoutSeconds $pocTimeout -Scenario "testapp_$Countermeasure" `
-        -ProgressLabel "app teste -$Countermeasure"
+        -ProgressLabel "test app -$Countermeasure"
     $cmCounts = if ($usesMemscan) { Parse-MemscanCounts -Stdout $cmMemscan.Stdout } else { $null }
 }
 else {
@@ -1783,17 +1783,17 @@ else {
     $cmMemscan = [PSCustomObject]@{ Seconds = 0; Outcome = "skipped"; Stdout = "" }
 }
 
-Write-Host "[2/2] Executando amostra real ($SampleType): $Repeat rodada(s), baseline e -$Countermeasure..." -ForegroundColor Yellow
+Write-Host "[2/2] Running real sample ($SampleType): $Repeat round(s), baseline and -$Countermeasure..." -ForegroundColor Yellow
 $baselineRuns = @()
 $countermeasureRuns = @()
 $benchmarkRows = @()
 
 for ($iteration = 1; $iteration -le $Repeat; $iteration++) {
     if ($iteration -eq 1 -or $iteration -eq $Repeat -or ($iteration % 10) -eq 0) {
-        Write-Host ("    rodada {0}/{1}" -f $iteration, $Repeat) -ForegroundColor DarkGray
+        Write-Host ("    round {0}/{1}" -f $iteration, $Repeat) -ForegroundColor DarkGray
     }
 
-    # Alterna qual cenario executa primeiro para reduzir vies de aquecimento e deriva temporal.
+    # Alternate which scenario runs first to reduce warmup and temporal-drift bias.
     $executionOrder = if (($iteration % 2) -eq 1) {
         @("baseline", "countermeasure")
     }
@@ -1807,14 +1807,14 @@ for ($iteration = 1; $iteration -le $Repeat; $iteration++) {
             $run = Invoke-BenchmarkSampleRun -PinExe $pinExe -ToolDll $toolDll -SamplePath $sample `
                 -Knobs @() -FollowChild $FollowChild -TimeoutSeconds $TimeoutSeconds `
                 -ObservationSeconds $SampleObservationSeconds `
-                -Scenario "pin_baseline_$iteration" -ProgressLabel "baseline rodada $iteration/$Repeat"
+                -Scenario "pin_baseline_$iteration" -ProgressLabel "baseline round $iteration/$Repeat"
             $baselineRuns += $run
         }
         else {
             $run = Invoke-BenchmarkSampleRun -PinExe $pinExe -ToolDll $toolDll -SamplePath $sample `
                 -Knobs $cmKnobs -FollowChild $FollowChild -TimeoutSeconds $TimeoutSeconds `
                 -ObservationSeconds $SampleObservationSeconds `
-                -Scenario "pin_$($Countermeasure)_$iteration" -ProgressLabel "-$Countermeasure rodada $iteration/$Repeat"
+                -Scenario "pin_$($Countermeasure)_$iteration" -ProgressLabel "-$Countermeasure round $iteration/$Repeat"
             $countermeasureRuns += $run
         }
 
@@ -1863,8 +1863,8 @@ $cmPinCmd = Get-PinCommandFromRun -Run $cmMemscan -PinExe $pinExe -ToolDll $tool
 Show-BaselineReport -Knob $Countermeasure -PocRun $baseMemscan -Counts $baseCounts -MalwareRun $baseMalware -PinCommand $basePinCmd -SamplePath $sample
 Show-CmReport -Knob $Countermeasure -PocRun $cmMemscan -Counts $cmCounts -MalwareRun $cmMalware -PinCommand $cmPinCmd -SamplePath $sample
 
-# Limpeza agressiva antes de gravar: residuos do malware (follow_execv) podem
-# derrubar o PowerShell no ConvertTo-Json/Export-Csv sem mensagem clara.
+# Aggressive cleanup before writing: malware leftovers (follow_execv) can
+# crash PowerShell in ConvertTo-Json/Export-Csv with no clear message.
 [void](Stop-ResidualSampleProcesses -SamplePath $sample)
 Start-Sleep -Milliseconds 500
 
@@ -1882,33 +1882,33 @@ try {
             -BaselineCounts $baseCounts -CountermeasureCounts $cmCounts
 
         Write-Host ""
-        Write-Host "Respostas do relatorio:" -ForegroundColor Cyan
-        Write-Host ("  funcional      : {0} - {1}" -f `
+        Write-Host "Report answers:" -ForegroundColor Cyan
+        Write-Host ("  functional     : {0} - {1}" -f `
             $benchmarkReport.FunctionalEvidence.Status, $benchmarkReport.FunctionalEvidence.Answer) `
             -ForegroundColor $(if ($benchmarkReport.FunctionalEvidence.Status -eq "PASS") { "Green" } else { "Yellow" })
-        Write-Host ("  evidencia      : " + [string]$benchmarkReport.FunctionalEvidence.EvidenceSummary)
-        Write-Host ("  desempenho     : {0} - {1}" -f `
+        Write-Host ("  evidence       : " + [string]$benchmarkReport.FunctionalEvidence.EvidenceSummary)
+        Write-Host ("  performance    : {0} - {1}" -f `
             $benchmarkReport.PerformanceAssessment.Status, $benchmarkReport.PerformanceAssessment.Answer) `
             -ForegroundColor $(if ($benchmarkReport.PerformanceAssessment.Status -eq "VALID") { "Green" } else { "Yellow" })
         Write-Host ""
-        Write-Host "Estatisticas da amostra:" -ForegroundColor Cyan
-        Write-Host ("  baseline       : media={0}s | mediana={1}s | p95={2}s | validas={3}/{4} (observed={5})" -f `
+        Write-Host "Sample statistics:" -ForegroundColor Cyan
+        Write-Host ("  baseline       : mean={0}s | median={1}s | p95={2}s | valid={3}/{4} (observed={5})" -f `
             $benchmarkReport.Baseline.MeanSeconds, $benchmarkReport.Baseline.MedianSeconds, `
             $benchmarkReport.Baseline.P95Seconds, $benchmarkReport.Baseline.Valid, `
             $benchmarkReport.Baseline.Attempted, $benchmarkReport.Baseline.Observed)
-        Write-Host ("  -{0}             : media={1}s | mediana={2}s | p95={3}s | validas={4}/{5} (observed={6})" -f `
+        Write-Host ("  -{0}             : mean={1}s | median={2}s | p95={3}s | valid={4}/{5} (observed={6})" -f `
             $Countermeasure, $benchmarkReport.CountermeasureResult.MeanSeconds, `
             $benchmarkReport.CountermeasureResult.MedianSeconds, $benchmarkReport.CountermeasureResult.P95Seconds, `
             $benchmarkReport.CountermeasureResult.Valid, $benchmarkReport.CountermeasureResult.Attempted, `
             $benchmarkReport.CountermeasureResult.Observed)
-        Write-Host ("  pares validos  : {0}/{1}" -f `
+        Write-Host ("  valid pairs    : {0}/{1}" -f `
             $benchmarkReport.PairedEffect.ValidPairs, $benchmarkReport.PairedEffect.AttemptedPairs)
         if ($benchmarkReport.ComparisonValid) {
-            Write-Host ("  delta pareado  : mediana={0}s | variacao mediana={1}%" -f `
+            Write-Host ("  paired delta   : median={0}s | median change={1}%" -f `
                 $benchmarkReport.MedianDeltaSeconds, $benchmarkReport.MedianChangePercent)
         }
         else {
-            Write-Host ("  comparacao     : INVALIDA - {0}" -f $benchmarkReport.ComparisonReason) -ForegroundColor Yellow
+            Write-Host ("  comparison     : INVALID - {0}" -f $benchmarkReport.ComparisonReason) -ForegroundColor Yellow
         }
         Write-Host ("  CSV            : {0}" -f $benchmarkReport.CsvPath) -ForegroundColor Green
         Write-Host ("  JSON           : {0}" -f $benchmarkReport.JsonPath) -ForegroundColor Green
@@ -1931,12 +1931,12 @@ catch {
     $errText += ($_.InvocationInfo.PositionMessage)
     $errText | Set-Content -Path $errPath -Encoding UTF8
     Write-Host ""
-    Write-Host ("ERRO ao salvar relatorio -$Countermeasure : {0}" -f $_.Exception.Message) -ForegroundColor Red
-    Write-Host ("Detalhes: {0}" -f $errPath) -ForegroundColor Yellow
+    Write-Host ("ERROR saving -$Countermeasure report: {0}" -f $_.Exception.Message) -ForegroundColor Red
+    Write-Host ("Details: {0}" -f $errPath) -ForegroundColor Yellow
     throw
 }
 
-# Evita que exit code residual do pin.exe (ex.: apos Kill na janela de observacao)
-# vaze para o orquestrador -AllCountermeasures.
+# Prevent a residual pin.exe exit code (e.g. after Kill in the observation window)
+# from leaking into the -AllCountermeasures orchestrator.
 exit 0
 

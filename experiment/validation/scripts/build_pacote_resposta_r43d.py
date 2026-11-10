@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Resposta-pack Access: itens 1–3 do prompt. Nao IEEE. Sem malware. Sem artigo completo."""
+"""Access response pack: prompt items 1–3. Not IEEE. No malware. Not the full article."""
 from __future__ import annotations
 
 import hashlib

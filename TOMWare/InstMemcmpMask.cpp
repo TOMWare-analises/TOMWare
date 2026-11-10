@@ -1,5 +1,5 @@
 /********************************************************************************
- *  InstMemcmpMask.cpp – contramedida para varreduras de assinaturas na memória *
+ *  InstMemcmpMask.cpp – countermeasure for in-memory signature scans *
  ********************************************************************************/
 #include "InstMemcmpMask.h"
 #include "TomwareLog.h"

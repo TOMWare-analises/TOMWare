@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Etapa 1: SHA-256 freeze of protocol, scripts, corpus, oracles, and 9000 raws."""
+"""Stage 1: SHA-256 freeze of protocol, scripts, corpus, oracles, and 9000 raws."""
 from __future__ import annotations
 
 import csv

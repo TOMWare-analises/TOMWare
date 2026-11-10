@@ -1,48 +1,48 @@
-Não escrever (Access-2026-38745)
+Do not write (Access-2026-38745)
 
-- 31 binários / 3 100 / 10 s / 155/155 / 9/31
-- −87,2 % / −38,5 % como ganho
-- as 6 517 como crash
-- equivalência de API / syscalls / cobertura / transparência
-- 22/30 como fidelidade comportamental
-- stdout de 0 bytes como SHA-256 do buffer vazio (`e3b0c442`) — o campo de hash fica vazio
-- o malware usou as cinco checagens
-- TOMWare supera Arancino / COBAI / Peekaboo
-- TMW_DO a 60 s = a GUI persistente trabalhou / recuperou comportamento
-- TMW_DO ~61 s nos três SHA da Table 25 r43b (só BEN_46 ficou STILL_ALIVE)
-- BEN_47 TMW0/TMW_DO como STATUS_ENTRYPOINT_NOT_FOUND (é Pin 740)
-- árvore nomeada em BEN_28 TMW_DO ou BEN_47 na Table 25 r43b (dump final é `?` / Pin 740)
-- r43c 1/9 STILL_ALIVE (BEN_47 TMW_DO r1) como progresso / GUI recuperada / Table 25
-- r43d TMW_DO 9/9 STILL_ALIVE ~60 s como progresso / GUI recuperada
-- r43d como o launcher intel64 `FBA632E4` (o comando foi `pin\pin.exe` `920A730A`)
-- Pin-without-tool incompatível depois do guest N=3 (3/3 exit 0 no `920A730A`)
-- pin r43c `FBA632E4` (intel64) como o `pin\pin.exe` da campanha `920A730A`
-- Pin-without-tool incompatível com base no probe host / r43c
-- R4.3 reescreve as 9 000
-- Native −1073741511 como sucesso nativo
-- misturar células JCVHT (CTRL_PE, wait 4/10, TestRecoverWork) nas tabelas Access
-- “não incluem controles positivos Module32” / “a ausência dos módulos-alvo impede confirmar Module32” (negação ainda no CFD80 inglês; o fixture já existe — Table 21)
-- `da_n10.csv` como dez repetições de `-da` (são cinco linhas, uma por oráculo)
-- validar as 9 000 com a DLL `D55EC952` (`_memicmp_l` de 4 argumentos)
-- “9,000 TMW0 versus TMW_DO” (são 2 000 tentativas, 1 000 por condição)
+- 31 binaries / 3,100 / 10 s / 155/155 / 9/31
+- −87.2% / −38.5% as a gain
+- the 6,517 as crash
+- API / syscall / coverage / transparency equivalence
+- 22/30 as behavioral fidelity
+- 0-byte stdout as SHA-256 of the empty buffer (`e3b0c442`) — the hash field stays empty
+- the malware used the five checks
+- TOMWare outperforms Arancino / COBAI / Peekaboo
+- TMW_DO at 60 s = the persistent GUI worked / recovered behavior
+- TMW_DO ~61 s on the three SHA of Table 25 r43b (only BEN_46 stayed STILL_ALIVE)
+- BEN_47 TMW0/TMW_DO as STATUS_ENTRYPOINT_NOT_FOUND (it is Pin 740)
+- named tree on BEN_28 TMW_DO or BEN_47 in Table 25 r43b (final dump is `?` / Pin 740)
+- r43c 1/9 STILL_ALIVE (BEN_47 TMW_DO r1) as progress / recovered GUI / Table 25
+- r43d TMW_DO 9/9 STILL_ALIVE ~60 s as progress / recovered GUI
+- r43d as the intel64 launcher `FBA632E4` (the command was `pin\pin.exe` `920A730A`)
+- Pin-without-tool incompatible after guest N=3 (3/3 exit 0 on `920A730A`)
+- r43c pin `FBA632E4` (intel64) as the campaign `pin\pin.exe` `920A730A`
+- Pin-without-tool incompatible based on the host probe / r43c
+- R4.3 rewrites the 9,000
+- Native −1073741511 as native success
+- mixing JCVHT cells (CTRL_PE, wait 4/10, TestRecoverWork) into Access tables
+- “do not include Module32 positive controls” / “the absence of the target modules prevents confirming Module32” (denial still in English CFD80; the fixture already exists — Table 21)
+- `da_n10.csv` as ten repetitions of `-da` (they are five rows, one per oracle)
+- validating the 9,000 with DLL `D55EC952` (4-argument `_memicmp_l`)
+- “9,000 TMW0 versus TMW_DO” (they are 2,000 attempts, 1,000 per condition)
 - “Same as R1.1” / “Optional. No unread citations added”
-- “baseline ladder table” sem a Table 26 no artigo
-- Pin sem Pintool como sempre impossível (o probe de 22 Oct saiu 0, stderr vazio)
-- instruções sobre “trechos ainda em português” (o CFD80 já é inglês; o 5CBC foi retirado)
-- citar git `e382a6c` ou `58ea738` / `cf735e1` / `665aebba` depois do commit único em REPRODUCIBILITY.txt
+- “baseline ladder table” without Table 26 in the article
+- Pin without a Pintool as always impossible (the 22 Oct probe exited 0, empty stderr)
+- instructions about “passages still in Portuguese” (CFD80 is already English; 5CBC was withdrawn)
+- citing git `e382a6c` or `58ea738` / `cf735e1` / `665aebba` after the single commit in REPRODUCIBILITY.txt
+- the 100 executables use the five checks (3 SHA with -mc are not the corpus)
+- IAT/strings of MAL_08 / MAL_13 / MAL_07 as an executed check
+- access_m3_cases alive at 60 s / pin+conhost tree as recovered behavior
+- identified=true on the guest or without hook + change + extra versus TMW0
+- Run-M3-CaseStudy.ps1 (intel64 launcher FBA632E4) as Access evidence
 
-Pode escrever, com o ficheiro ao lado:
+You may write, with the file alongside:
 
-- AntiDebug pareado 3+3, estímulo −gdb, campos PEB (antidebug_n3.csv)
-- Timing N=30 todas as 90 retidas: TMW0 30/30, GO 11/30, GO_DO 30/30
-- 9 000 JSON completos; 6 517 = término sem código (coletor); crash verdadeiro com código = 0
-- Table 19: persistentes benignos TMW0 24/250 → TMW_DO 132/250 (estado/espera, não ganho)
-- R4.3b Table 25: Native ENTRYPOINT_NOT_FOUND; árvore nomeada só BEN_46 (pin.exe → sample + conhost); TMW_DO BEN_28 EXITED 49344 ms; BEN_47 TMW0/TMW_DO = Pin 740 (elevação), identified=false
-- r43c extra: 27/27; TMW_DO vivo 1/9; behavioral_progress_observed=false; pin FBA632E4 ≠ 920A730A; não é Table 25
-- Arancino: comparação experimental bloqueada (Pin 2.14, só 32-bit, corpus 100% x64)
+- matched AntiDebug 3+3, −gdb stimulus, PEB fields (antidebug_n3.csv)
+- Timing N=30 all 90 retained: TMW0 30/30, GO 11/30, GO_DO 30/30
+- 9,000 complete JSON; 6,517 = termination without a code (collector); true crash with a code = 0
+- Table 19: persistent benign TMW0 24/250 → TMW_DO 132/250 (state/wait, not a gain)
+- R4.3b Table 25: Native ENTRYPOINT_NOT_FOUND; named tree only BEN_46 (pin.exe → sample + conhost); TMW_DO BEN_28 EXITED 49344 ms; BEN_47 TMW0/TMW_DO = Pin 740 (elevation), identified=false
+- r43c extra: 27/27; TMW_DO alive 1/9; behavioral_progress_observed=false; pin FBA632E4 ≠ 920A730A; not Table 25
+- Arancino: experimental comparison blocked (Pin 2.14, 32-bit only, corpus 100% x64)
 - targeted_evasion = unverified; identified=false
-- os 100 executáveis usam as cinco checagens (3 SHA com -mc não são o corpus)
-- IAT/strings de MAL_08 / MAL_13 / MAL_07 como verificação executada
-- access_m3_cases vivo a 60 s / árvore pin+conhost como comportamento recuperado
-- identified=true no guest ou sem hook + mudança + extra versus TMW0
-- Run-M3-CaseStudy.ps1 (launcher intel64 FBA632E4) como evidência Access

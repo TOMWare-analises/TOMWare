@@ -1,56 +1,56 @@
-# Relatorio curto - pendencias v8 (2026-10-27)
+# Short report - open items v8 (2026-10-27)
 
-Identidade. Pin 3.28.98749. Snapshot `tomware_go`.
+Identity. Pin 3.28.98749. Snapshot `tomware_go`.
 TOMWare.dll SHA-256 `4BBC62707EE0B2EF922D4E8659A6392D92814EA0FC74F4682F1187562AE7F0E6`.
-Git HEAD `3040df722967fb0e699be6f279837a0611c4ad38` (25/09/2026) NAO gera esta DLL. Sem tag. Nao recompilamos so para criar tag.
+Git HEAD `3040df722967fb0e699be6f279837a0611c4ad38` (25/09/2026) does NOT produce this DLL. No tag. We did not rebuild only to create a tag.
 
-Fonte dos numeros: `C:\Users\marge\Downloads\jcvht_t2_n10_v7b` (campanha `t2_n10_v7b`), identify em `jcvht_identify`, coletor em `jcvht_coletor_fumo_v7`. Sem campanha N=10/N=30 nova.
+Source of the numbers: `C:\Users\marge\Downloads\jcvht_t2_n10_v7b` (campaign `t2_n10_v7b`), identify in `jcvht_identify`, collector in `jcvht_coletor_fumo_v7`. No new N=10/N=30 campaign.
 
 ## 1. SkewMask
 
-### TickCount em DO03, DO05, DO07, DO09
+### TickCount on DO03, DO05, DO07, DO09
 
-Causa provavel (consistente com todos os dados). `Hook_GTC` devolve `pGTC() - (DWORD)msOff`, com `msOff` truncado a ms inteiro. `CalibratedSleep` aumenta `g_qpcSkewTicks` quando os sleeps paralelos terminam. O GetTickCount real so avanca a cada ~15.6 ms; se o skew cruza uma fronteira de ms inteiro entre duas leituras sem o GTC real ter avancado, o valor aparente recua 1 ms. O QPC usa subtracao 64-bit fina e avanca ~0.78 ms entre leituras, por isso `qpc_regress=0` no mesmo intervalo.
+Probable cause (consistent with all the data). `Hook_GTC` returns `pGTC() - (DWORD)msOff`, with `msOff` truncated to an integer ms. `CalibratedSleep` increases `g_qpcSkewTicks` when the parallel sleeps finish. Real GetTickCount only advances every ~15.6 ms; if the skew crosses an integer-ms boundary between two readings without real GTC having advanced, the apparent value recedes 1 ms. QPC uses a fine 64-bit subtraction and advances ~0.78 ms between readings, so `qpc_regress=0` in the same interval.
 
-Evidencia (`experiment/results/oracles/waits_clock_n10.csv`):
-- `clock_during_overlap`: `tick_regress=1` so em DO 03/05/07/09; 0 nas outras 36 corridas.
-- `tick_first < tick_last` nessas quatro (ex. DO03 779187 -> 779391). Nao e wrap de 32 bit.
-- `clock_burst1000` (sem sleep concorrente): `tick_regress=0` em 40/40.
-- NAT / EMPTY / TMW0: zero regressoes (sem hook de GTC).
+Evidence (`experiment/results/oracles/waits_clock_n10.csv`):
+- `clock_during_overlap`: `tick_regress=1` only on DO 03/05/07/09; 0 on the other 36 runs.
+- `tick_first < tick_last` on those four (e.g. DO03 779187 -> 779391). Not a 32-bit wrap.
+- `clock_burst1000` (no concurrent sleep): `tick_regress=0` on 40/40.
+- NAT / EMPTY / TMW0: zero regressions (no GTC hook).
 
-Correcao. Nenhuma em `Hook_GTC`. Um clamp monotonico mudaria a semantica da Table 6. DLL antiga intacta.
+Fix. None in `Hook_GTC`. A monotonic clamp would change the semantics of Table 6. Old DLL left intact.
 
-### SleepEx alertavel, 10/10 timeout 180 s
+### Alertable SleepEx, 10/10 timeout 180 s
 
-Localizacao, nao causa confirmada. O hang e especifico de `SleepEx(500, alertable=true)` sob `-do`. O `SleepEx(200, alertable=false)` da mesma corrida RETORNA (`sleepex_nonalert` ~200-270 ms) e os `Thread.Sleep` paralelos tambem retornam. O teste imprime `openthread_ok=True` e `queueuserapc_rv=1` e depois bloqueia em `sleeper.Join()`: o thread em SleepEx alertavel sob `CalibratedSleep` nao acorda com o APC.
+Location, cause not confirmed. The hang is specific to `SleepEx(500, alertable=true)` under `-do`. The `SleepEx(200, alertable=false)` of the same run RETURNS (`sleepex_nonalert` ~200-270 ms) and the parallel `Thread.Sleep` also return. The test prints `openthread_ok=True` and `queueuserapc_rv=1` and then blocks on `sleeper.Join()`: the thread in alertable SleepEx under `CalibratedSleep` does not wake on the APC.
 
-Evidencia. DO 10/10: 12 eventos, ultimo `sleepex_nonalert`, sem `sleepex_alert`. NAT/EMPTY/TMW0 30/30: `rv=192`, `apc_callback=1`, ~45-230 ms. Sem falta em stderr (nao e crash). Collector mata a 180 s -> `exit=-2`. Nao e falha de OpenThread nem de QueueUserAPC.
+Evidence. DO 10/10: 12 events, last `sleepex_nonalert`, no `sleepex_alert`. NAT/EMPTY/TMW0 30/30: `rv=192`, `apc_callback=1`, ~45-230 ms. No fault in stderr (not a crash). Collector kills at 180 s -> `exit=-2`. Not an OpenThread failure nor a QueueUserAPC failure.
 
-O que NAO se confirmou. Testei a hipotese de reentrada no `PatchApi` (ultimo trampolim a sobrescrever `pSleepEx`) e REVERTI: o ponteiro devolvido por `RTN_Replace` chama o original, nao o hook, por isso a hipotese nao se sustenta. `SkewMask.cpp` ficou igual a fonte da DLL 4BBC6270. A questao em aberto e se o wrapper `CalibratedSleep` quebra a entrega alertavel do APC. Confirmar exige build instrumentada + so o teste DO/SleepEx. Sem alterar SkewMask e sem recompilar enquanto a causa nao for provada. O hang de N=10 continua a ser o resultado registado.
+What was NOT confirmed. I tested the `PatchApi` re-entry hypothesis (last trampoline overwriting `pSleepEx`) and REVERTED: the pointer returned by `RTN_Replace` calls the original, not the hook, so the hypothesis does not hold. `SkewMask.cpp` remained the same as the source of DLL 4BBC6270. The open question is whether the `CalibratedSleep` wrapper breaks alertable APC delivery. Confirming that requires an instrumented build + only the DO/SleepEx test. Without changing SkewMask and without rebuilding until the cause is proven. The N=10 hang remains the recorded result.
 
 ## 2. InstMemcmpMask
 
-Causa do exit 2 (evidenciada pelo stderr). `_memicmp_l` tem 4 argumentos. O hook usava `wMemcmpI` com `argc=3`. `memicmp_l_PIN` passa pelo ramo MASKED (nao chama o original) e imprime `MASKED ret=1`. O controlo seguinte (`memicmp_l_same`) encaminha para o original com prototipo errado: o 4.o argumento (locale) fica com lixo `0xffffffffffffffff` -> `RECEIVED_ACCESS_FAULT`. Apos 64 faltas no mesmo IP, `Instrumentation.cpp` faz `exit(2)`.
+Cause of exit 2 (evidenced by stderr). `_memicmp_l` has 4 arguments. The hook used `wMemcmpI` with `argc=3`. `memicmp_l_PIN` takes the MASKED branch (does not call the original) and prints `MASKED ret=1`. The following control (`memicmp_l_same`) forwards to the original with the wrong prototype: the 4th argument (locale) is garbage `0xffffffffffffffff` -> `RECEIVED_ACCESS_FAULT`. After 64 faults at the same IP, `Instrumentation.cpp` does `exit(2)`.
 
-Evidencia.
+Evidence.
 - MC3_NAT / MC3_TMW0: exit 0; `memicmp_l_PIN=PASS`; `memicmp_l_same=OK`; `memicmp_l_passthrough=DIFF_OK ret=-1`.
-- MC3_DM / MC3_DA: `memcmp` / `_memicmp` / `RtlCompareMemory` MASKED + same/passthrough OK; `memicmp_l_PIN=MASKED`; sem `memicmp_l_same`; stderr ACCESS_FAULT em `0xffffffffffffffff`; `timed_out=false`; exit 2.
-- Exportos ABSENT (`RtlEqualMemory`, `wmemcmp`, `memcmp_s`, `bcmp`) permanecem `NOT_EXERCISED`. `_memicmp_l_export=FOUND`.
+- MC3_DM / MC3_DA: `memcmp` / `_memicmp` / `RtlCompareMemory` MASKED + same/passthrough OK; `memicmp_l_PIN=MASKED`; no `memicmp_l_same`; stderr ACCESS_FAULT at `0xffffffffffffffff`; `timed_out=false`; exit 2.
+- ABSENT exports (`RtlEqualMemory`, `wmemcmp`, `memcmp_s`, `bcmp`) remain `NOT_EXERCISED`. `_memicmp_l_export=FOUND`.
 
-Correcao no source: wrapper `wMemcmpIL` a 4 args + `RTN_ReplaceSignature` com `argc==4`. NAO validado: nao ha build nova nesta maquina.
+Source fix: 4-arg `wMemcmpIL` wrapper + `RTN_ReplaceSignature` with `argc==4`. NOT validated: there is no new build on this machine.
 
-## 3. Beneficio pratico
+## 3. Practical benefit
 
-Nao resolvido. 31/31 `identified=false`. Imports/strings sao pistas (MAL_08 Toolhelp, MAL_12 FindWindow, MAL_14 NtQuerySystemInformation). Sem ramo executado, sem triade NAT / TMW0 / knob, sem artefacto extra com hash. Permanecer activo nao conta.
+Unresolved. 31/31 `identified=false`. Imports/strings are leads (MAL_08 Toolhelp, MAL_12 FindWindow, MAL_14 NtQuerySystemInformation). No executed branch, no NAT / TMW0 / knob triad, no extra artifact with a hash. Remaining active does not count.
 
-## 4. Recursos / Table 9
+## 4. Resources / Table 9
 
-Limitacao declarada. O coletor de 10 s (`experiment/results/oracles/collector/`) e fumo sintetico (powershell + PING + ficheiro). Table 9 e 17+14 PE / 10 s. Nao ha o mesmo executavel benigno e malicioso com marcos + CPU + WS + pico + arvore sob NAT / TMW0 / knob. Nao da para dizer se as diferencas da Table 9 sao trabalho comparavel ou progresso alterado.
+Declared limitation. The 10 s collector (`experiment/results/oracles/collector/`) is synthetic smoke (powershell + PING + file). Table 9 is 17+14 PE / 10 s. There is no same benign and malicious executable with milestones + CPU + WS + peak + tree under NAT / TMW0 / knob. It is not possible to say whether the Table 9 differences are comparable work or altered progress.
 
-## 5. Entrega
+## 5. Delivery
 
-- `experiment/validation/manuscript/notes/evidence_matrix.csv` actualizado.
-- `experiment/results/oracles/omitted_files.csv` + `freeze_manifest.py` aponta a `results/oracles` e ja nao apaga o catalogo dos 9000 JSON.
-- Codigo: commit `3040df7`, sem tag. DLL: SHA-256 acima.
-- Unica alteracao de source mantida: `InstMemcmpMask.cpp` (`_memicmp_l` como 4 args). `SkewMask.cpp` NAO foi alterado.
-- Pendencias que NAO se marcam resolvidas: T1 (beneficio), Table 9 (recursos), causa confirmada do hang do SleepEx alertavel, e validacao do fix de `_memicmp_l` numa DLL nova.
+- `experiment/validation/manuscript/notes/evidence_matrix.csv` updated.
+- `experiment/results/oracles/omitted_files.csv` + `freeze_manifest.py` points at `results/oracles` and no longer deletes the catalog of the 9000 JSON.
+- Code: commit `3040df7`, no tag. DLL: SHA-256 above.
+- Only source change kept: `InstMemcmpMask.cpp` (`_memicmp_l` as 4 args). `SkewMask.cpp` was NOT changed.
+- Open items that are NOT marked resolved: T1 (benefit), Table 9 (resources), confirmed cause of the alertable SleepEx hang, and validation of the `_memicmp_l` fix on a new DLL.

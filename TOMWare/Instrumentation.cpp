@@ -39,7 +39,7 @@ void InitStrategies() {
 
     if (memoryDefend) {
         InstMemcmpMask_LoadSignatures(KnobSignatureFile.Value().c_str());
-        // Estrategias para o scan de memoria. Todas na lógica da classe InstMemcmpMask
+        // Memory-scan strategies. All in the InstMemcmpMask class logic.
         strategyMap["memcmp"] = &InstMemcmpMask::InstrumentFunction;
         strategyMap["_memcmp"] = &InstMemcmpMask::InstrumentFunction;
         strategyMap["__acrt_memcmp"] = &InstMemcmpMask::InstrumentFunction;

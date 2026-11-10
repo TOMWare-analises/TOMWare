@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Testes unitários do motor estatístico e gerador de figuras."""
+"""Unit tests for the statistical engine and figure generator."""
 from __future__ import annotations
 
 import csv
@@ -68,7 +68,7 @@ class TestAnalysisEngine(unittest.TestCase):
                 w.writeheader()
                 w.writerows(plan_rows)
 
-            # Criar 4 JSONs sintéticos
+            # Create 4 synthetic JSON records
             for i, p in enumerate(plan_rows, start=1):
                 rec = {
                     "identification": {"run_id": p["run_id"], "sample_id": p["sample_id"], "condition": p["condition"], "repetition": 1, "block_id": "b1"},
@@ -88,7 +88,7 @@ class TestAnalysisEngine(unittest.TestCase):
             self.assertEqual(res["total_runs_analyzed"], 4)
             self.assertEqual(res["samples_analyzed"], 1)
 
-            # Verificar arquivos gerados
+            # Check generated files
             self.assertTrue((temp_dir / "processed" / "sample_metrics.csv").exists())
             self.assertTrue((temp_dir / "processed" / "paired_contrasts.csv").exists())
             self.assertTrue((temp_dir / "reports" / "tables" / "table_01_corpus_composition.csv").exists())

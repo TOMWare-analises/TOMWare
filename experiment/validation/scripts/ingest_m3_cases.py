@@ -99,94 +99,94 @@ def pair_note(base: dict | None, treat: dict | None) -> dict:
 
 
 def render_awaiting() -> str:
-    return """# Resposta item a item — Access (cadeia 1–3 ainda sem guest)
+    return """# Item-by-item response — Access (chain 1–3 still without guest)
 
-Não enviar à IEEE. Não é o suplemento double-blind. Sem malware. Sem as 9.000.
-Citação: git a2ee6c9e509ce2d47ff68ba3ae9197a6529d66b3. DLL 4BBC6270. Pin launcher 920A730A.
+Do not send to IEEE. This is not the double-blind supplement. No malware. Not the 9,000.
+Citation: git a2ee6c9e509ce2d47ff68ba3ae9197a6529d66b3. DLL 4BBC6270. Pin launcher 920A730A.
 
-**Itens 1–3: protocolo pronto, evidência ainda não ingerida.**
-Pasta esperada no host: `C:\\Users\\marge\\Downloads\\access_m3_cases`
-Depois de copiar, correr `ingest_m3_cases.py`. Até lá, `identified=false`.
+**Items 1–3: protocol ready, evidence not yet ingested.**
+Expected folder on the host: `C:\\Users\\marge\\Downloads\\access_m3_cases`
+After copying, run `ingest_m3_cases.py`. Until then, `identified=false`.
 
-## 1. Relacionar malware, verificação e contramedida
+## 1. Relate malware, check, and countermeasure
 
-**Ainda não demonstrado em runtime.** Nas 9.000, `-mc` esteve desligado. IAT/strings em `identify_summary.csv` não são ramo executado.
+**Not yet demonstrated at runtime.** In the 9,000, `-mc` was off. IAT/strings in `identify_summary.csv` are not an executed branch.
 
-Protocolo a priori (não se acrescentam amostras):
-| Amostra | SHA-256 | Pista IAT (não é caso) | Braços |
+A priori protocol (do not add samples):
+| Sample | SHA-256 | IAT lead (not a case) | Arms |
 |---|---|---|---|
 | MAL_08 | 1693df9d…417b6d38 | Toolhelp + timing | TMW0 / TMW_DP / TMW_DO |
 | MAL_13 | 2a2b6b75…ebb9e24 | Toolhelp + timing | TMW0 / TMW_DP / TMW_DO |
 | MAL_07 | 153e1147…19800d | SleepEx / QPC / IsDebuggerPresent | TMW0 / TMW_DP / TMW_DO |
 
-N=1, 60 s, DLL 4BBC6270, launcher `pin\\pin.exe` 920A730A, `-mc` ligado, rede desligada, restore `tomware_go` entre modos.
-TMW0 (`-q -mc`) não instala os hooks de `-dp`/`-do`; o “chamou a verificação” só pode aparecer em TMW_DP ou TMW_DO.
+N=1, 60 s, DLL 4BBC6270, launcher `pin\\pin.exe` 920A730A, `-mc` on, network off, restore `tomware_go` between modes.
+TMW0 (`-q -mc`) does not install the `-dp`/`-do` hooks; “called the check” can appear only under TMW_DP or TMW_DO.
 
-Isto **não** autoriza escrever que os 100 executáveis usam as cinco checagens.
+This does **not** authorize writing that the 100 executables use the five checks.
 
-## 2. Comportamento adicional em casos seleccionados
+## 2. Additional behavior in selected cases
 
-**Ainda não demonstrado.** r43d é benigno (BEN_28/46/47) e `behavioral_progress_observed=false`. Vivo a 60 s não conta.
+**Not yet demonstrated.** r43d is benign (BEN_28/46/47) and `behavioral_progress_observed=false`. Alive at 60 s does not count.
 
-O guest compara TMW0 com o knob e regista ficheiros com hash (0 bytes = campo vazio), delta de Run/RunOnce, filhos que não são pin/conhost, TCP estabelecido (deve ser 0 com rede off).
-Caso só se: hook + resultado mudou + extra **versus TMW0** no mesmo PE. Sem os três, `identified` continua false.
+The guest compares TMW0 with the knob and records hashed files (0 bytes = empty field), Run/RunOnce delta, children that are not pin/conhost, established TCP (should be 0 with network off).
+A case only if: hook + result changed + extra **versus TMW0** on the same PE. Without all three, `identified` stays false.
 
-## 3. Explicar comportamentalmente o SkewMask
+## 3. Explain SkewMask behaviorally
 
-**Ainda não demonstrado em malware.** Table 25/r43d não responde isto.
+**Not yet demonstrated on malware.** Table 25/r43d does not answer this.
 
-Braço TMW_DO (`-do -q -mc`) nas três SHA. Lê-se `sleep_calls_intercepted`, `time_queries_intercepted`, `corrections_applied`, duração, árvore, hashes, filhos.
-Duração maior sob `-do` é custo/espera até haver artefacto extra versus TMW0. Sem chamadas de tempo, o item 3 fica: “SkewMask não foi acionado nestas amostras”.
+TMW_DO arm (`-do -q -mc`) on the three SHA. Read `sleep_calls_intercepted`, `time_queries_intercepted`, `corrections_applied`, duration, tree, hashes, children.
+Longer duration under `-do` is cost/wait until there is extra artifact versus TMW0. With no time calls, item 3 stays: “SkewMask was not triggered on these samples”.
 
-## 4. Coerência temporal de SkewMask
+## 4. SkewMask temporal coherence
 
-**Não corrido. Limitação.** Timeouts sob Pin nas esperas concorrentes/sobrepostas/alertáveis continuam inconclusivos. Não se altera `SkewMask.cpp` (invalida Table 6 / N=30). Não se copiam células JCVHT (TickCount 4/10, SleepEx 0/10).
+**Not run. Limitation.** Timeouts under Pin on concurrent/overlapping/alertable waits remain inconclusive. Do not change `SkewMask.cpp` (invalidates Table 6 / N=30). Do not copy JCVHT cells (TickCount 4/10, SleepEx 0/10).
 
-## 5. Pin sem Pintool no corpus
+## 5. Pin without Pintool on the corpus
 
-**Não é braço do corpus.** Existe só o controlo técnico guest N=3 em `TestAntiDebug.exe` (launcher 920A730A, 3/3 exit 0, 1900–2963 ms). Isso mostra que o launcher funciona; não dá duração/recursos/desfechos nos 100 PE. Pode permanecer limitação. `campaign.json` `pin_condition_valid=false` não foi invertido.
+**Not a corpus arm.** Only the technical guest N=3 control on `TestAntiDebug.exe` exists (launcher 920A730A, 3/3 exit 0, 1900–2963 ms). That shows the launcher works; it does not give duration/resources/outcomes on the 100 PE. May remain a limitation. `campaign.json` `pin_condition_valid=false` was not inverted.
 
-## 6. Metadados incompletos
+## 6. Incomplete metadata
 
-**Limitação já declarada.** `corpus.csv`: família `Trojan_Bazaar` / `Backdoor_Bazaar` (rótulo MalwareBazaar, não família VirusTotal); packer/protector `unknown` nos 50 MAL; `targeted_evasion=unverified`. Os três SHA deste protocolo não mudam isso até haver verificação empírica da técnica **em runtime**.
+**Limitation already declared.** `corpus.csv`: family `Trojan_Bazaar` / `Backdoor_Bazaar` (MalwareBazaar label, not a VirusTotal family); packer/protector `unknown` on the 50 MAL; `targeted_evasion=unverified`. The three SHA of this protocol do not change that until the technique is empirically verified **at runtime**.
 
-## 7. Comparação experimental externa
+## 7. External experimental comparison
 
-**Limitação / trabalho futuro.** Arancino, COBAI e Peekaboo não foram executados. Arancino pede Pin 2.14 e é 32-bit; o corpus Access é 100% x64. A comparação actual é conceptual.
+**Limitation / future work.** Arancino, COBAI, and Peekaboo were not executed. Arancino requires Pin 2.14 and is 32-bit; the Access corpus is 100% x64. The current comparison is conceptual.
 
-## 8. Critérios de elegibilidade prospectivos
+## 8. Prospective eligibility criteria
 
-**Limitação já concedida.** Os critérios foram explicados e são independentes da direcção do resultado, mas a recolha das 9.000 foi post hoc. Este protocolo **fixa as três SHA e os braços antes da corrida**. Não substitui uma campanha de confirmação do corpus.
+**Limitation already conceded.** The criteria were explained and are independent of result direction, but collection of the 9,000 was post hoc. This protocol **fixes the three SHA and the arms before the run**. It does not replace a corpus confirmation campaign.
 
-## O que já está atendido (não repetir)
+## What is already addressed (do not repeat)
 
-AntiDebug pareado; SkewMask fixed-N 90 tentativas; ICs; corpus 100 PE; 9.000; Module32 (oráculo); rotinas de comparação; modo combinado; referências; tipografia; Figura 1; moderação das conclusões; pin-bare N=3 técnico; árvores r43d (benignas); correcção 22/30.
+Paired AntiDebug; SkewMask fixed-N 90 attempts; CIs; 100 PE corpus; 9,000; Module32 (oracle); comparison routines; combined mode; references; typography; Figure 1; moderated conclusions; technical pin-bare N=3; r43d trees (benign); 22/30 correction.
 
-## Frases proibidas neste fecho
+## Forbidden phrases in this close-out
 
-- “os 100 executáveis usam as cinco checagens”
-- IAT de MAL_08/13/07 = verificação executada
-- TMW_DO / TMW_DP vivo a 60 s = comportamento recuperado
-- árvore pin → sample + conhost = progresso
-- r43d / BEN_28/46/47 como caso de malware
-- `identified=true` sem os quatro elos
-- bake-off Arancino
+- “the 100 executables use the five checks”
+- IAT of MAL_08/13/07 = executed check
+- TMW_DO / TMW_DP alive at 60 s = recovered behavior
+- pin → sample + conhost tree = progress
+- r43d / BEN_28/46/47 as a malware case
+- `identified=true` without the four links
+- Arancino bake-off
 """
 
 
 def render_from_runs(rows: list[dict]) -> str:
     by = {(r.get("sample_id"), r.get("mode")): r for r in rows}
     lines = [
-        "# Resposta item a item — Access após ingest access_m3_cases",
+        "# Item-by-item response — Access after ingesting access_m3_cases",
         "",
-        "Não enviar à IEEE. Não é o suplemento double-blind. Sem malware. Sem as 9.000.",
-        "Citação: git a2ee6c9e509ce2d47ff68ba3ae9197a6529d66b3. DLL 4BBC6270. Pin launcher 920A730A.",
+        "Do not send to IEEE. This is not the double-blind supplement. No malware. Not the 9,000.",
+        "Citation: git a2ee6c9e509ce2d47ff68ba3ae9197a6529d66b3. DLL 4BBC6270. Pin launcher 920A730A.",
         "",
-        f"Corridas ingeridas: {len(rows)}. `identified=false` em todas (o ingest não promove caso).",
+        f"Ingested runs: {len(rows)}. `identified=false` on all of them (ingest does not promote a case).",
         "",
-        "## 1. Relacionar malware, verificação e contramedida",
+        "## 1. Relate malware, check, and countermeasure",
         "",
-        "| Amostra | Modo | hook_seen | módulo (contagens) | result_changed | verdict |",
+        "| Sample | Mode | hook_seen | module (counts) | result_changed | verdict |",
         "|---|---|---|---|---|---|",
     ]
     any_hook = False
@@ -212,7 +212,7 @@ def render_from_runs(rows: list[dict]) -> str:
                 )
             if as_int(r.get("memcmp_intercepted")):
                 bits.append(f"Memcmp {r.get('memcmp_intercepted')}")
-            mod = "; ".join(bits) if bits else "nenhum contador > 0"
+            mod = "; ".join(bits) if bits else "no counter > 0"
             if r.get("hook_seen"):
                 any_hook = True
             lines.append(
@@ -221,20 +221,20 @@ def render_from_runs(rows: list[dict]) -> str:
     if not any_hook:
         lines.append("")
         lines.append(
-            "**Resultado:** nenhum hook válido em TMW_DP/TMW_DO até agora. "
-            "Célula com falha de mapa da DLL (Win32 216) é inconclusiva, não é prova de que a amostra não chamou a API. "
-            "IAT continua a não ser ramo executado. Não se acrescentam amostras. "
-            "Não se escreve que os 100 usam as cinco checagens."
+            "**Result:** no valid hook in TMW_DP/TMW_DO so far. "
+            "A cell with a DLL map failure (Win32 216) is inconclusive, not proof that the sample did not call the API. "
+            "IAT is still not an executed branch. Do not add samples. "
+            "Do not write that the 100 use the five checks."
         )
     else:
         lines.append("")
         lines.append(
-            "Hook em runtime é o único ‘usou a verificação’. TMW0 com contadores a zero é esperado "
-            "(hooks de -dp/-do não instalados). Continua proibido generalizar aos 100 PE."
+            "A runtime hook is the only ‘used the check’. TMW0 with counters at zero is expected "
+            "(-dp/-do hooks not installed). It remains forbidden to generalize to the 100 PE."
         )
 
-    lines += ["", "## 2. Comportamento adicional em casos seleccionados", ""]
-    lines.append("| Amostra | Knob | extra vs TMW0 | cadeia completa | nota |")
+    lines += ["", "## 2. Additional behavior in selected cases", ""]
+    lines.append("| Sample | Knob | extra vs TMW0 | chain complete | note |")
     lines.append("|---|---|---|---|---|")
     any_chain = False
     for sid in SAMPLES:
@@ -249,18 +249,18 @@ def render_from_runs(rows: list[dict]) -> str:
     lines.append("")
     if any_chain:
         lines.append(
-            "**Candidato a cadeia** (hook + mudança + extra vs TMW0). "
-            "`identified` continua false até revisão humana do artefacto (não pin/conhost). "
-            "Não reescreve as 9.000."
+            "**Chain candidate** (hook + change + extra vs TMW0). "
+            "`identified` stays false until human review of the artifact (not pin/conhost). "
+            "Does not rewrite the 9,000."
         )
     else:
         lines.append(
-            "**Nenhuma cadeia completa.** Persistência, árvore pin→sample+conhost e vivo a 60 s "
-            "não são comportamento adicional. Item 2 permanece aberto / negativo."
+            "**No complete chain.** Persistence, pin→sample+conhost tree, and alive at 60 s "
+            "are not additional behavior. Item 2 remains open / negative."
         )
 
-    lines += ["", "## 3. Explicar comportamentalmente o SkewMask", ""]
-    lines.append("| Amostra | TMW0 ms | TMW_DO ms | sleep | time | corrections | extra vs TMW0 | leitura |")
+    lines += ["", "## 3. Explain SkewMask behaviorally", ""]
+    lines.append("| Sample | TMW0 ms | TMW_DO ms | sleep | time | corrections | extra vs TMW0 | reading |")
     lines.append("|---|---|---|---|---|---|---|---|")
     skew_fired = False
     for sid in SAMPLES:
@@ -273,51 +273,51 @@ def render_from_runs(rows: list[dict]) -> str:
         if sleep or tq:
             skew_fired = True
         if as_int(b.get("json_ok")) == 0 and b:
-            read = "module_events.json ausente; 60 s vivo não é progresso; contadores não demonstrados"
+            read = "module_events.json missing; alive at 60 s is not progress; counters not demonstrated"
         elif sleep or tq:
-            read = "SkewMask acionado; duração extra só é progresso se extra_vs_tmw0"
+            read = "SkewMask triggered; extra duration is progress only if extra_vs_tmw0"
         else:
-            read = "SkewMask não acionado; duração extra = espera/custo"
+            read = "SkewMask not triggered; extra duration = wait/cost"
         lines.append(
             f"| {sid} | {a.get('elapsed_ms', '')} | {b.get('elapsed_ms', '')} | {sleep} | {tq} | {corr} | {p['extra_vs_tmw0']} | {read} |"
         )
     lines.append("")
     if not skew_fired:
         lines.append(
-            "**Item 3:** nestas três amostras o SkewMask não interceptou Sleep/QPC. "
-            "Não se interpreta TMW_DO mais longo como progresso. r43d (benigno) continua à parte."
+            "**Item 3:** on these three samples SkewMask did not intercept Sleep/QPC. "
+            "Do not interpret a longer TMW_DO as progress. r43d (benign) remains separate."
         )
     else:
         lines.append(
-            "Houve interceptação temporal. Comparar artefactos da tabela do item 2; "
-            "sem extra vs TMW0 a duração maior continua espera/custo."
+            "There was a timing interception. Compare artifacts from the item 2 table; "
+            "without extra vs TMW0 the longer duration remains wait/cost."
         )
 
     lines += [
         "",
-        "## 4. Coerência temporal de SkewMask",
+        "## 4. SkewMask temporal coherence",
         "",
-        "**Não corrido. Limitação.** Este protocolo não substitui a bateria de esperas concorrentes/sobrepostas/alertáveis. `SkewMask.cpp` não foi alterado.",
+        "**Not run. Limitation.** This protocol does not replace the concurrent/overlapping/alertable wait battery. `SkewMask.cpp` was not changed.",
         "",
-        "## 5. Pin sem Pintool no corpus",
+        "## 5. Pin without Pintool on the corpus",
         "",
-        "**Limitação.** Só existe o N=3 técnico em TestAntiDebug (920A730A, 3/3 exit 0). Não é braço dos 100 PE.",
+        "**Limitation.** Only the technical N=3 on TestAntiDebug exists (920A730A, 3/3 exit 0). It is not an arm of the 100 PE.",
         "",
-        "## 6. Metadados incompletos",
+        "## 6. Incomplete metadata",
         "",
-        "**Limitação.** Família MalwareBazaar grosseira; packer unknown; targeted_evasion=unverified nos 50 MAL.",
+        "**Limitation.** Coarse MalwareBazaar family; packer unknown; targeted_evasion=unverified on the 50 MAL.",
         "",
-        "## 7. Comparação experimental externa",
+        "## 7. External experimental comparison",
         "",
-        "**Limitação.** Sem bake-off Arancino/COBAI/Peekaboo. Arancino: Pin 2.14, 32-bit vs corpus x64.",
+        "**Limitation.** No Arancino/COBAI/Peekaboo bake-off. Arancino: Pin 2.14, 32-bit vs x64 corpus.",
         "",
-        "## 8. Critérios prospectivos",
+        "## 8. Prospective criteria",
         "",
-        "As três SHA e os braços foram fixados **antes** desta corrida. Isso não torna prospectiva a campanha das 9.000.",
+        "The three SHA and the arms were fixed **before** this run. That does not make the 9,000 campaign prospective.",
         "",
-        "## Frases que continuam proibidas",
+        "## Phrases that remain forbidden",
         "",
-        "- os 100 usam as cinco checagens; IAT = verificação; vivo 60 s = ganho; pin+conhost = progresso; identified=true sem os quatro elos.",
+        "- the 100 use the five checks; IAT = check; alive 60 s = gain; pin+conhost = progress; identified=true without the four links.",
     ]
     return "\n".join(lines) + "\n"
 

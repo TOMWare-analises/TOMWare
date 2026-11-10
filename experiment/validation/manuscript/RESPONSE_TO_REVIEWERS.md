@@ -183,7 +183,7 @@ Range GO: 2,722–3,845. Range GO_DO: 2,073–2,146. The old 9/31 figure must no
 
 ### R4 additional — native baseline; figure internals; hook counts; `-da`
 
-**(a)–(c).** Native/EMPTY/TMW0/`-da`: in the 9,000-run ladder. Hook-invocation counters were **off** in those 9,000 JSON. A later 600-run diagnostic (Etapa 5, different DLL) showed ProcessEnum 0/269 and memcmp 0 PIN_ matches; we still do **not** claim the corpus used the five checks. Figure locale (comma vs period) to be normalized in Overleaf.
+**(a)–(c).** Native/EMPTY/TMW0/`-da`: in the 9,000-run ladder. Hook-invocation counters were **off** in those 9,000 JSON. A later 600-run diagnostic (Stage 5, different DLL) showed ProcessEnum 0/269 and memcmp 0 PIN_ matches; we still do **not** claim the corpus used the five checks. Figure locale (comma vs period) to be normalized in Overleaf.
 
 ---
 
@@ -195,7 +195,7 @@ Range GO: 2,722–3,845. Range GO_DO: 2,073–2,146. The old 9/31 figure must no
 
 ### R5.2 — Moderate behavioural-preservation claims
 
-**(a)–(c).** Abstract and §VI-D: operational criteria ≠ equivalence of system calls, control flow, or external effects. Etapa 6: TMW0 vs TMW_ALL same exit+stdout in 22/30 pairs (external observer only). The 6,517/9,000 label is exit-code unknown, not crash.
+**(a)–(c).** Abstract and §VI-D: operational criteria ≠ equivalence of system calls, control flow, or external effects. Stage 6: TMW0 vs TMW_ALL same exit+stdout in 22/30 pairs (external observer only). The 6,517/9,000 label is exit-code unknown, not crash.
 
 ### R5.3 — Performance results are descriptive and may reflect execution-state changes
 

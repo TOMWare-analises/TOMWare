@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Etapa 2: audit 9000 raw JSON without modifying them.
+"""Stage 2: audit 9000 raw JSON without modifying them.
 
 Reclassifies collector-artifact 'exception_crash' (exit_code null, exception_code '0x')
 as exited_before_limit_exit_code_unknown. Reports effective n per metric.
@@ -409,37 +409,37 @@ def ws_bool(flag, n):
 
 def write_report(summary, outcomes, avail, contrasts):
     lines = []
-    lines.append("# Auditoria da campanha corpus_aligned_10k (Etapa 2)")
+    lines.append("# Audit of campaign corpus_aligned_10k (Stage 2)")
     lines.append("")
-    lines.append("Os 9.000 JSON brutos **nao foram alterados**. Esta pasta so contem reclassificacao e agregados.")
+    lines.append("The 9,000 raw JSON files **were not modified**. This folder only contains reclassification and aggregates.")
     lines.append("")
-    lines.append("## Desfechos")
+    lines.append("## Outcomes")
     lines.append("")
-    lines.append(f"- JSON: {summary['n_json']} / esperados {summary['n_expected']}; triples unicos: {summary['n_unique_triples']}.")
-    lines.append(f"- `raw crash=true`: {summary['raw_crash_true']}; desses, `exit_code` nulo: {summary['raw_crash_exit_code_null']}.")
-    lines.append(f"- Reclassificados para `exited_before_limit_exit_code_unknown`: {summary['reclassified_exit_code_unknown']}.")
-    lines.append(f"- `exception_crash` verdadeiro (codigo de saida conhecido): {summary['true_exception_crash']}.")
-    lines.append("- Motivo: `Invoke-SingleRun.ps1` le `$proc.ExitCode` depois do redirecionamento; nulo comparado com `< 0` vira crash e `exception_code` `0x`.")
-    lines.append("- **Nao escrever** no artigo que a maioria das amostras curtas crashou.")
+    lines.append(f"- JSON: {summary['n_json']} / expected {summary['n_expected']}; unique triples: {summary['n_unique_triples']}.")
+    lines.append(f"- `raw crash=true`: {summary['raw_crash_true']}; of those, null `exit_code`: {summary['raw_crash_exit_code_null']}.")
+    lines.append(f"- Reclassified to `exited_before_limit_exit_code_unknown`: {summary['reclassified_exit_code_unknown']}.")
+    lines.append(f"- True `exception_crash` (known exit code): {summary['true_exception_crash']}.")
+    lines.append("- Reason: `Invoke-SingleRun.ps1` reads `$proc.ExitCode` after redirection; a null compared with `< 0` becomes crash and `exception_code` `0x`.")
+    lines.append("- **Do not write** in the article that most short-lived samples crashed.")
     lines.append("")
-    lines.append("## Reclassificacao usada")
+    lines.append("## Reclassification used")
     lines.append("")
-    lines.append("| audited_outcome | criterio |")
+    lines.append("| audited_outcome | criterion |")
     lines.append("|---|---|")
     lines.append("| launch_failed | launch_success = false |")
     lines.append("| timeout_expired | timeout = true |")
-    lines.append("| window_controlled_termination | persistent chegou ao fim da janela |")
-    lines.append("| exited_before_limit_exit_code_unknown | crash=true e exit_code nulo e exception_code `0x` |")
-    lines.append("| exception_crash | crash=true com codigo de saida conhecido |")
-    lines.append("| natural_exit | natural_completion sem o artefato acima |")
+    lines.append("| window_controlled_termination | persistent reached the end of the window |")
+    lines.append("| exited_before_limit_exit_code_unknown | crash=true and null exit_code and exception_code `0x` |")
+    lines.append("| exception_crash | crash=true with a known exit code |")
+    lines.append("| natural_exit | natural_completion without the artifact above |")
     lines.append("")
-    lines.append("## Recursos")
+    lines.append("## Resources")
     lines.append("")
-    lines.append("- Filtro `sample_count > 0` e **post hoc**. Nao consta em `experiment.config.json`.")
-    lines.append("- Tempo de parede persistente descreve duracao observada, nao desempenho.")
-    lines.append("- `n_pairs_*` nas tabelas de contraste e o n efetivo. Nao usar `n_binaries = 25` quando so 2 pares tem recursos.")
+    lines.append("- Filter `sample_count > 0` is **post hoc**. It is not in `experiment.config.json`.")
+    lines.append("- Persistent wall-clock describes observed duration, not performance.")
+    lines.append("- `n_pairs_*` in the contrast tables is the effective n. Do not use `n_binaries = 25` when only 2 pairs have resources.")
     lines.append("")
-    lines.append("## Contraste que NAO inclui zero (nao generalizar como nulo)")
+    lines.append("## Contrast whose CI does NOT include zero (do not generalize as null)")
     lines.append("")
     tmw_dm = [
         c for c in contrasts
@@ -448,18 +448,18 @@ def write_report(summary, outcomes, avail, contrasts):
     if tmw_dm:
         c = tmw_dm[0]
         lines.append(
-            f"- TMW_DM - TMW0, malignos curtos, WS: {c['median_d_ws_mb']} MB "
-            f"IC95% [{c['ws_ci_lo']}, {c['ws_ci_hi']}] "
-            f"(n_pairs_ws={c['n_pairs_ws']}; exclui zero={c['ws_ci_excludes_zero']})."
+            f"- TMW_DM - TMW0, short-lived malicious, WS: {c['median_d_ws_mb']} MB "
+            f"95% CI [{c['ws_ci_lo']}, {c['ws_ci_hi']}] "
+            f"(n_pairs_ws={c['n_pairs_ws']}; excludes zero={c['ws_ci_excludes_zero']})."
         )
     lines.append("")
-    lines.append("## Frases proibidas nesta revisao")
+    lines.append("## Forbidden phrases in this revision")
     lines.append("")
-    lines.append("- 31 binarios / 3100 lancamentos / 10 s / 155/155 / -87% / -38% / 9/31.")
-    lines.append("- frase: short-lived runs are mostly crash-exit.")
-    lines.append("- frase: sample_count > 0 estava fixado a priori no experiment.config.json.")
+    lines.append("- 31 binaries / 3100 launches / 10 s / 155/155 / -87% / -38% / 9/31.")
+    lines.append("- phrase: short-lived runs are mostly crash-exit.")
+    lines.append("- phrase: sample_count > 0 was fixed a priori in experiment.config.json.")
     lines.append("")
-    lines.append("Medianas: convencionais (media dos dois centrais se n par). Bootstrap 2000, seed 705851366. Wilson 95% nas proporcoes.")
+    lines.append("Medians: conventional (mean of the two central values if n is even). Bootstrap 2000, seed 705851366. Wilson 95% on proportions.")
     (OUT / "campaign_audit_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 

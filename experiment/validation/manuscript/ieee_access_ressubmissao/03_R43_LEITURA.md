@@ -1,20 +1,20 @@
-# Leitura permitida — R4.3 process tree
+# Permitted reading — R4.3 process tree
 
-Três campaign ids. Table 25 do artigo/carta usa **só** `access_r43b_process_tree`.
-`access_r43c_process_tree` é evidência extra (N=3, elevação). **Não** colar r43c na Table 25.
-`identified=false` em todas. Permanência ≠ progresso. Não reescreve as 9 000. Não é Arancino.
+Three campaign ids. Table 25 of the article/letter uses **only** `access_r43b_process_tree`.
+`access_r43c_process_tree` is extra evidence (N=3, elevation). Do **not** paste r43c into Table 25.
+`identified=false` on all. Persistence ≠ progress. Does not rewrite the 9,000. Is not Arancino.
 
 DLL: `4BBC62707EE0B2EF922D4E8659A6392D92814EA0FC74F4682F1187562AE7F0E6`.
-Janela 60 s. N=1. Knobs: Native = (vazio); TMW0 = `-q`; TMW_DO = `-do -q`.
+Window 60 s. N=1. Knobs: Native = (empty); TMW0 = `-q`; TMW_DO = `-do -q`.
 Snapshot `tomware_go`.
 
 ---
 
 ## A. Preserved: `access_r43_skewmask_diag` (29/10/2026)
 
-Pasta no pack: `r43_skewmask_diag/`.
+Folder in the pack: `r43_skewmask_diag/`.
 
-`process_tree.txt` em todas as nove: `tree_error` — `$pid` é variável automática só de leitura no PowerShell. A evidência de árvore nessa campanha é só `n_tree` no `resources.csv`. Não usar estes números como árvore pai/filho nomeada.
+`process_tree.txt` on all nine: `tree_error` — `$pid` is a read-only automatic variable in PowerShell. Tree evidence in that campaign is only `n_tree` in `resources.csv`. Do not use these numbers as a named parent/child tree.
 
 | sample | mode | progress | exit_code | elapsed_ms | peak_ws |
 |---|---|---|---|---|---|
@@ -32,7 +32,7 @@ Pasta no pack: `r43_skewmask_diag/`.
 
 ## B. Table 25: `access_r43b_process_tree` (30/10/2026, `script_rev=r43b.2`)
 
-Pasta no pack: `r43b_process_tree/`. Script: `Run-AccessR43b.ps1` (`$procId`; CSV `name,pid,parent_pid,depth`).
+Folder in the pack: `r43b_process_tree/`. Script: `Run-AccessR43b.ps1` (`$procId`; CSV `name,pid,parent_pid,depth`).
 
 SHA:
 - BEN_28 `0111d485351ef0deffd9403a0f8e123759a04a928fbd055b901de18164c4fa39`
@@ -51,7 +51,7 @@ SHA:
 | BEN_47 | TMW0 | EXITED_BEFORE_WINDOW | -1 | 719 | 10702848 | Pin fatal Win32 740 (elevation) |
 | BEN_47 | TMW_DO | EXITED_BEFORE_WINDOW | -1 | 453 | 10829824 | Pin fatal Win32 740 (elevation) |
 
-Árvore nomeada (BEN_46 TMW0 e TMW_DO), `process_tree.csv`:
+Named tree (BEN_46 TMW0 and TMW_DO), `process_tree.csv`:
 
 ```
 name,pid,parent_pid,depth
@@ -60,17 +60,17 @@ pin.exe,<pid>,<parent>,0
 conhost.exe,<pid>,<pin>,1
 ```
 
-BEN_47 TMW0/TMW_DO `stdout.txt` / `drop/pin.log`: `System error 740 : A operação solicitada requer elevação.` Isto **não** é `STATUS_ENTRYPOINT_NOT_FOUND` e **não** é um hold do SkewMask.
+BEN_47 TMW0/TMW_DO `stdout.txt` / `drop/pin.log`: `System error 740 : A operação solicitada requer elevação.` (verbatim Windows message: “The requested operation requires elevation.”). This is **not** `STATUS_ENTRYPOINT_NOT_FOUND` and is **not** a SkewMask hold.
 
-N=1. Tempos Native/TMW0 diferem da campanha r43; não misturar as duas tabelas.
+N=1. Native/TMW0 times differ from the r43 campaign; do not mix the two tables.
 
 ---
 
 ## C. Extra only: `access_r43c_process_tree` (31/10/2026, `script_rev=r43c.1`)
 
-Pasta no pack: `r43c_process_tree/`. **Não é Table 25.** N=3, sessão elevada, sample 50 ms, primeiro sample imediato. 27/27 retidas.
+Folder in the pack: `r43c_process_tree/`. **Not Table 25.** N=3, elevated session, sample 50 ms, first sample immediate. 27/27 retained.
 
-Pin hashed nas células TMW0/TMW_DO: `FBA632E4…741A` = `pin\intel64\bin\pin.exe`. **Não** é o launcher documentado `pin\pin.exe` `920A730A…0BB819` (`pin_sha256_matches_campaign=false`).
+Pin hashed on the TMW0/TMW_DO cells: `FBA632E4…741A` = `pin\intel64\bin\pin.exe`. This is **not** the documented launcher `pin\pin.exe` `920A730A…0BB819` (`pin_sha256_matches_campaign=false`).
 
 | Cell | n | Exit | 60 s alive | Named last dump |
 |---|---|---|---|---|
@@ -80,23 +80,23 @@ Pin hashed nas células TMW0/TMW_DO: `FBA632E4…741A` = `pin\intel64\bin\pin.ex
 
 Named last (`pin.exe` → sample + `conhost.exe`): TMW0 BEN_46 r1, BEN_47 r1/r2; TMW_DO BEN_28 r2/r3, BEN_47 r1. `process_events.jsonl` can show pin+PE during the window even when the last dump is `?`.
 
-BEN_47 sob elevação lançou. O Win32 740 do r43b **não** voltou. Native BEN_47 = o mesmo `STATUS_ENTRYPOINT_NOT_FOUND` que BEN_28/46.
+BEN_47 under elevation launched. The r43b Win32 740 did **not** recur. Native BEN_47 = the same `STATUS_ENTRYPOINT_NOT_FOUND` as BEN_28/46.
 
-`behavioral_progress_observed=false` nas 27. `identified=false`. 1/9 vivo ≠ progresso. Guest Pin-without-tool N=3 não foi copiado; incompatibilidade **não** confirmada.
+`behavioral_progress_observed=false` on the 27. `identified=false`. 1/9 alive ≠ progress. Guest Pin-without-tool N=3 was not copied; incompatibility is **not** confirmed.
 
 ---
 
-## Interpretação permitida
+## Permitted interpretation
 
-1. Nestes três SHA, no snap `tomware_go`, o nativo **não entra** (`STATUS_ENTRYPOINT_NOT_FOUND`). Não é “persistente a trabalhar”.
-2. Na Table 25 (r43b) a única árvore pai/filho **nomeada** no dump final é BEN_46: launcher Pin, PE alvo, `conhost.exe`.
-3. TMW_DO BEN_46 r43b preenche a janela de 60 s com essa árvore. Isso é espera/estado, não GUI recuperada.
-4. TMW_DO BEN_28 r43b teve árvore viva ~49 s e depois o mesmo exit de entrada. Não contar como `STILL_ALIVE`.
-5. BEN_47 r43b sob Pin falhou ao lançar (UAC/elevação). No r43c, com elevação, o 740 não voltou; isso **não** promove r43c a Table 25.
-6. r43c: 1/9 TMW_DO vivo (BEN_47 r1) e árvores nomeadas intermitentes. Permanência / Pin vivo ≠ progresso.
-7. Sem traces de API não se distingue “o alvo correu” de “o Pin ficou vivo”. Classificar **inconclusivo** quanto a progresso.
-8. Dois `pin.exe`: `920A730A` (campanha documentada) ≠ `FBA632E4` (r43c / host intel64). Não fundir as identidades.
+1. On these three SHA, on snap `tomware_go`, native **does not enter** (`STATUS_ENTRYPOINT_NOT_FOUND`). This is not “a persistent binary at work”.
+2. In Table 25 (r43b) the only **named** parent/child tree in the final dump is BEN_46: Pin launcher, target PE, `conhost.exe`.
+3. TMW_DO BEN_46 r43b fills the 60 s window with that tree. That is wait/state, not a recovered GUI.
+4. TMW_DO BEN_28 r43b had a live tree ~49 s and then the same entry-point exit. Do not count as `STILL_ALIVE`.
+5. BEN_47 r43b under Pin failed to launch (UAC/elevation). In r43c, with elevation, 740 did not recur; that does **not** promote r43c to Table 25.
+6. r43c: 1/9 TMW_DO alive (BEN_47 r1) and intermittent named trees. Persistence / live Pin ≠ progress.
+7. Without API traces one cannot distinguish “the target ran” from “Pin stayed alive”. Classify **inconclusive** as to progress.
+8. Two `pin.exe`: `920A730A` (documented campaign) ≠ `FBA632E4` (r43c / host intel64). Do not merge the identities.
 
-## O que isto não é
+## What this is not
 
-Não é bake-off Arancino. Não é prova de checagem evasiva. Não reescreve Table 19. Não é equivalência de API. Não é o demonstrador JCVHT `TestRecoverWork`. Não é 155/155 nem −87,2 %.
+Not an Arancino bake-off. Not proof of an evasive check. Does not rewrite Table 19. Not API equivalence. Not the JCVHT `TestRecoverWork` demonstrator. Not 155/155 and not −87.2%.

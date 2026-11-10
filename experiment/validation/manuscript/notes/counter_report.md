@@ -1,10 +1,10 @@
-# Etapa 5 � relatorio dos contadores
+# Stage 5 — counter report
 
-Fonte: `Downloads\etapa5_counters` copiada para `05_counters/from_vm/`.
+Source: `Downloads\etapa5_counters` copied to `05_counters/from_vm/`.
 DLL: live-dump `3A3AFB6FF2964EBFF82958911EE32F31B5C5E5AAD74F289D9A1B9A0BCFA51FC0`
-(nao e a DLL da campanha 9000 `4bbc6270...`). Timeout 45 s. 30 PE x 2 bracos x 10 = 600.
+(not the 9000-campaign DLL `4bbc6270...`). Timeout 45 s. 30 PE x 2 arms x 10 = 600.
 
-## Cobertura
+## Coverage
 
 | | n | json=1 | json=0 |
 |---|---|---|---|
@@ -14,40 +14,40 @@ DLL: live-dump `3A3AFB6FF2964EBFF82958911EE32F31B5C5E5AAD74F289D9A1B9A0BCFA51FC0
 | TMW0_COUNT | 300 | 268 | 32 |
 | TMW_ALL_COUNT | 300 | 269 | 31 |
 
-json=0 concentrado: MAL_13, MAL_14, MAL_15 (20/20 cada, exit `0xC000012F`) e 3 runs de MAL_12.
-Nao inventar contagens para esses 63. TMW0 sem JSON e o mesmo trio.
+json=0 concentrated: MAL_13, MAL_14, MAL_15 (20/20 each, exit `0xC000012F`) and 3 runs of MAL_12.
+Do not invent counts for those 63. TMW0 without JSON is the same trio.
 
-## Controlo TMW0 (modulos desligados)
+## TMW0 control (modules off)
 
-268 JSON. Superficies AD/PE/ENV/MC/SK = **0**. O `-mc` grava o ficheiro; nada dispara. Controlo negativo OK.
+268 JSON. Surfaces AD/PE/ENV/MC/SK = **0**. `-mc` writes the file; nothing fires. Negative control OK.
 
-## TMW_ALL (so runs com JSON)
+## TMW_ALL (only runs with JSON)
 
 269 JSON (150 BEN + 119 MAL).
 
-| Modulo | surf | trig | mod | Leitura |
+| Module | surf | trig | mod | Reading |
 |---|---|---|---|---|
-| AntiDebug | 269/269 | 269 | 269 | `-da` sanitiza PEB na carga. Nao prova que a amostra chamou IsDebuggerPresent. |
-| SanitizeEnv | 259/269 | 259 | 259 | 10 falhas: so MAL_08 (env_found=env_sanitized). |
-| InstMemcmp | 146/269 | 0 | 0 | Comparacoes existem; **0** assinaturas PIN_/pin.exe. Nao afirmar que escondeu Pin. |
+| AntiDebug | 269/269 | 269 | 269 | `-da` sanitizes the PEB at load. Does not prove the sample called IsDebuggerPresent. |
+| SanitizeEnv | 259/269 | 259 | 259 | 10 failures: MAL_08 only (env_found=env_sanitized). |
+| InstMemcmp | 146/269 | 0 | 0 | Comparisons exist; **0** PIN_/pin.exe signatures. Do not claim it hid Pin. |
 | SkewMask | 39/269 | 39 | 39 | BEN_06 (10/10); MAL_03 (10); MAL_07 (10); MAL_10 (9). |
-| ProcessEnum | 0/269 | 0 | 0 | Nenhum destes 30 PE chamou Process32*/Module32*. |
+| ProcessEnum | 0/269 | 0 | 0 | None of these 30 PE called Process32*/Module32*. |
 
-## O que nao se pode escrever
+## What must not be written
 
-- "O malware usou as 5 verificacoes."
+- "The malware used the 5 checks."
 - "SkewMask always hides Pin."
-- Superioridade sobre Arancino.
-- Contagens para MAL_13/14/15.
-- Misturar esta DLL com a campanha 9000.
+- Superiority over Arancino.
+- Counts for MAL_13/14/15.
+- Mixing this DLL with the 9000 campaign.
 
-## Exits (nao descartar)
+## Exits (do not discard)
 
-`0xC0000135` DLL_NOT_FOUND (varios BEN). `0xC0000139` ENTRYPOINT_NOT_FOUND (BEN_08).
-`0xC0000005` AV (MAL_09 e alguns). `-2` timeout do runner (MAL_03/04/08/10/12).
-`-1` sem codigo (BEN_02, MAL_05). `0xC000012F` INVALID_VIEW_SIZE (MAL_13/14/15).
+`0xC0000135` DLL_NOT_FOUND (several BEN). `0xC0000139` ENTRYPOINT_NOT_FOUND (BEN_08).
+`0xC0000005` AV (MAL_09 and some). `-2` runner timeout (MAL_03/04/08/10/12).
+`-1` no code (BEN_02, MAL_05). `0xC000012F` INVALID_VIEW_SIZE (MAL_13/14/15).
 
-## Ficheiros
+## Files
 
-- `from_vm/module_events_by_run.csv` (600 linhas)
+- `from_vm/module_events_by_run.csv` (600 lines)
 - `from_vm/raw_json/` (538 JSON)

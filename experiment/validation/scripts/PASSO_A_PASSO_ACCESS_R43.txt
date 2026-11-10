@@ -1,60 +1,60 @@
-VM — Access R4.3 (persistentes NAT / TMW0 / TMW_DO)
+VM — Access R4.3 (persistent NAT / TMW0 / TMW_DO)
 ===================================================
-DLL 4BBC6270. Snapshot tomware_go. Rede off. Nao correr no host.
-Nao instalar Pin 2.14. Nao correr Arancino. Nao misturar com JCVHT 10 s.
-Nao ligar -mc (contadores mudam o custo; este ensaio e observacao externa).
-N=1 por braco. Janela 60 s. Campanha access_r43_skewmask_diag.
+DLL 4BBC6270. Snapshot tomware_go. Network off. Do not run on the host.
+Do not install Pin 2.14. Do not run Arancino. Do not mix with JCVHT 10 s.
+Do not enable -mc (counters change the cost; this trial is external observation).
+N=1 per arm. Window 60 s. Campaign access_r43_skewmask_diag.
 
-Porque estes tres
+Why these three
 -----------------
-Regra a priori nos medianos de corpus_aligned_10k:
-persistente benigno, TMW0 n_ok=0, TMW_DO n_ok>=6, parede ~60 s.
+A priori rule on corpus_aligned_10k medians:
+persistent benign, TMW0 n_ok=0, TMW_DO n_ok>=6, wall ~60 s.
   BEN_28  0111d485351ef0deffd9403a0f8e123759a04a928fbd055b901de18164c4fa39
   BEN_46  0ab9f2923dac072716a8380ec909ea9f74b9f1755f149c2a41f61b49d93633a2
   BEN_47  0abd30c5a4a6f17c9f1f718da42435ed05927a3c0ee5430a8ff337027f875dfd
-Copiar para C:\TOMWare\samples\benign\{sha}.exe
+Copy to C:\TOMWare\samples\benign\{sha}.exe
 
-O que isto NAO e
+What this is NOT
 ----------------
-Nao e bake-off Arancino. Nao e prova de checagem evasiva.
-Nao reescreve as 9000. Alive at 60 s != progresso equivalente.
+Not an Arancino bake-off. Not proof of an evasion check.
+Does not rewrite the 9000. Alive at 60 s != equivalent progress.
 
-Copiar para a VM (zip, nao partilha com Pin a correr)
+Copy to the VM (zip, not a share with Pin running)
 ----------------------------------------------------
   Run-AccessR43.ps1
   PASSO_A_PASSO_ACCESS_R43.txt
-  os tres .exe SHA-named
+  the three SHA-named .exe files
 
-Passo 0 — Prepare
+Step 0 — Prepare
 -----------------
-  cd C:\TOMWare\m3_v12_scripts   (ou a pasta onde colou o script)
+  cd C:\TOMWare\m3_v12_scripts   (or the folder where you pasted the script)
   powershell -NoProfile -ExecutionPolicy Bypass -File .\Run-AccessR43.ps1 -Job Prepare
-Esperado: DLL 4BBC6270, 3 x OK. Se MISSING, copie os PE e Prepare outra vez.
+Expected: DLL 4BBC6270, 3 x OK. If MISSING, copy the PEs and Prepare again.
 
-Ordem (9 corridas). Entre MODOS: copiar C:\TOMWare\access_r43 ao host e restaurar tomware_go.
-Dentro do mesmo modo os tres IDs podem ir seguidos no mesmo snap.
+Order (9 runs). Between MODES: copy C:\TOMWare\access_r43 to the host and restore tomware_go.
+Within the same mode the three IDs can run back-to-back on the same snap.
 
-Passo 1 — Native (sem Pin)
+Step 1 — Native (no Pin)
   .\Run-AccessR43.ps1 -Job RUN -Mode Native -SampleId BEN_28
   .\Run-AccessR43.ps1 -Job RUN -Mode Native -SampleId BEN_46
   .\Run-AccessR43.ps1 -Job RUN -Mode Native -SampleId BEN_47
-Copiar access_r43. Restaurar tomware_go. Prepare outra vez se os exe sumiram.
+Copy access_r43. Restore tomware_go. Prepare again if the exe files disappeared.
 
-Passo 2 — TMW0 (-q)
+Step 2 — TMW0 (-q)
   .\Run-AccessR43.ps1 -Job RUN -Mode TMW0 -SampleId BEN_28
   .\Run-AccessR43.ps1 -Job RUN -Mode TMW0 -SampleId BEN_46
   .\Run-AccessR43.ps1 -Job RUN -Mode TMW0 -SampleId BEN_47
-Copiar. Restaurar. Prepare.
+Copy. Restore. Prepare.
 
-Passo 3 — TMW_DO (-do -q)
+Step 3 — TMW_DO (-do -q)
   .\Run-AccessR43.ps1 -Job RUN -Mode TMW_DO -SampleId BEN_28
   .\Run-AccessR43.ps1 -Job RUN -Mode TMW_DO -SampleId BEN_46
   .\Run-AccessR43.ps1 -Job RUN -Mode TMW_DO -SampleId BEN_47
-Copiar pasta final ao host. Nao restaurar por cima sem copiar.
+Copy the final folder to the host. Do not restore over it without copying.
 
-Leitura permitida
+Allowed reading
 -----------------
-Comparar elapsed_ms, timed_out, exit_code, process_tree, peak_ws
-entre Native / TMW0 / TMW_DO no MESMO SHA.
-Se TMW0 sai cedo e TMW_DO fica ate 60 s: espera/estado, nao ganho de memoria.
-Nao afirmar equivalencia de API. Nao misturar com Table 19 das 9000.
+Compare elapsed_ms, timed_out, exit_code, process_tree, peak_ws
+between Native / TMW0 / TMW_DO on the SAME SHA.
+If TMW0 exits early and TMW_DO stays until 60 s: wait/state, not a memory gain.
+Do not claim API equivalence. Do not mix with Table 19 of the 9000.

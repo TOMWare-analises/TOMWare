@@ -1,5 +1,5 @@
 #Requires -Version 5.1
-# IEEE Access Etapa 6: Q7 fidelity. External observer (NOT FidelityProbe + TOMWare).
+# IEEE Access Stage 6: Q7 fidelity. External observer (NOT FidelityProbe + TOMWare).
 # 10 samples x 4 arms (NAT EMPTY TMW0 TMW_ALL) x 3 reps = 120.
 # Snapshot DLL of tomware_go. Resume-safe. CSV after every row.
 param(
@@ -147,7 +147,7 @@ if (-not (Test-Path $empty)) { throw "EmptyPinTool.dll missing: $empty" }
 if (-not (Test-Path $SampleList)) { throw "sample_list.csv missing: $SampleList" }
 
 $samples = @(Import-Csv -Path $SampleList)
-Write-Host ("Etapa 6: {0} samples x 4 arms x {1} reps = {2} planned" -f $samples.Count, $Reps, ($samples.Count * 4 * $Reps))
+Write-Host ("Stage 6: {0} samples x 4 arms x {1} reps = {2} planned" -f $samples.Count, $Reps, ($samples.Count * 4 * $Reps))
 Write-Host ("Timeout {0}s. Observer=external_ps (not FidelityProbe). Resume: {1}" -f $TimeoutSec, $csvPath)
 Write-Host ("TOMWare.dll hash={0}" -f (Get-FileHash $dll -Algorithm SHA256).Hash)
 
@@ -289,7 +289,7 @@ foreach ($s in $samples) {
 }
 
 Write-Host ""
-Write-Host "Etapa 6 done (or paused). Copy back:"
+Write-Host "Stage 6 done (or paused). Copy back:"
 Write-Host "  $csvPath"
 Write-Host "  $ioDir"
 Write-Host ("Rows: {0}" -f $rows.Count)

@@ -1,5 +1,5 @@
 #Requires -Version 5.1
-# IEEE Access Etapa 7: prospective exit-code confirmation, collector v2.1.
+# IEEE Access Stage 7: prospective exit-code confirmation, collector v2.1.
 # 20 short_lived x 9 arms x 10 reps = 1800.
 # Does NOT rewrite the 9000 JSON. Snapshot DLL. Resume-safe.
 param(
@@ -128,7 +128,7 @@ if (-not (Test-Path $empty)) { throw "EmptyPinTool.dll missing: $empty" }
 if (-not (Test-Path $SampleList)) { throw "sample_list.csv missing: $SampleList" }
 
 $samples = @(Import-Csv -Path $SampleList)
-Write-Host ("Etapa 7: {0} samples x 9 arms x {1} reps = {2} planned" -f $samples.Count, $Reps, ($samples.Count * 9 * $Reps))
+Write-Host ("Stage 7: {0} samples x 9 arms x {1} reps = {2} planned" -f $samples.Count, $Reps, ($samples.Count * 9 * $Reps))
 Write-Host ("collector_version=2.1.0 Timeout {0}s Resume: {1}" -f $TimeoutSec, $csvPath)
 Write-Host ("TOMWare.dll hash={0}" -f (Get-FileHash $dll -Algorithm SHA256).Hash)
 
@@ -233,6 +233,6 @@ foreach ($s in $samples) {
 }
 
 Write-Host ""
-Write-Host "Etapa 7 done (or paused). Copy back:"
+Write-Host "Stage 7 done (or paused). Copy back:"
 Write-Host "  $csvPath"
 Write-Host ("Rows: {0}" -f $rows.Count)

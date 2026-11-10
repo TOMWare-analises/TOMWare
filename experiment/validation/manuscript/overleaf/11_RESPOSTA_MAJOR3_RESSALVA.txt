@@ -1,47 +1,47 @@
-Resposta a ressalva sobre a v4 -- comentario 3 (Major 3).
+Reply to the caveat on v4 -- comment 3 (Major 3).
 
-Concordamos. A concessao no artigo e na carta torna o texto preciso.
-Nao fecha o pedido experimental. O comentario 3 continua aberto.
+We agree. The concession in the article and in the letter makes the text precise.
+It does not close the experimental request. Comment 3 remains open.
 
-O que o revisor pede (e o que nao pede)
+What the reviewer asks (and what they do not ask)
 ---------------------------------------
-Pede demonstracao concreta, em poucos casos bem explicados:
-  1. localizar a checagem de instrumentacao no codigo;
-  2. observar o ramo que bloqueia ou desvia;
-  3. ligar a contramedida;
-  4. mostrar comportamento adicional (trace, artefacto ou operacao
-     verificavel).
+They ask for a concrete demonstration, in a few well-explained cases:
+  1. locate the instrumentation check in the code;
+  2. observe the branch that blocks or diverts;
+  3. enable the countermeasure;
+  4. show additional behavior (trace, artifact or a
+     verifiable operation).
 
-Compara o mesmo executavel e a mesma entrada em:
-  nativo / instrumentado sem a contramedida / instrumentado com ela.
+Compare the same executable and the same input under:
+  native / instrumented without the countermeasure / instrumented with it.
 
-Nao pede os cinco checks nas 14 amostras. A tabela 14 x 5 PASS e
-oraculo/compatibilidade, nao essa demonstracao. Executaveis protegidos
-servem, se a cadeia acima ficar visivel.
+They do not ask for the five checks on the 14 samples. The 14 x 5 PASS table is
+oracle/compatibility, not that demonstration. Protected executables
+count, if the chain above remains visible.
 
-Os mesmos casos tambem servem ao comentario 2 (Major 2): marcos de
-progresso, CPU, memoria e arvore no mesmo PE, na janela certa, para
-ver se o trabalho e comparavel e para ler a Table 9 sem tratar
-queda de WS/CPU como ganho.
+The same cases also serve comment 2 (Major 2): progress milestones,
+CPU, memory and tree on the same PE, in the right window, to
+see whether the work is comparable and to read Table 9 without treating
+a WS/CPU drop as a gain.
 
-O que a v4 ja diz (e mantemos)
+What v4 already says (and we keep)
 ------------------------------
-Beneficio pratico nao demonstrado.
-MAL_03, MAL_07, MAL_10 e BEN_06 nao sao case studies:
-new_files=0, stdout vazio, check no PE nao localizado.
-"Ainda vivo aos 60 s" nao e unpack, drop nem C2.
+Practical benefit not demonstrated.
+MAL_03, MAL_07, MAL_10 and BEN_06 are not case studies:
+new_files=0, empty stdout, check in the PE not located.
+"Still alive at 60 s" is not unpack, drop or C2.
 
-Isso e a resposta honesta com a evidencia actual. Nao e o caso
-positivo que o revisor pediu.
+That is the honest answer with the current evidence. It is not the
+positive case the reviewer asked for.
 
-O que falta para tirar a ressalva
+What is missing to lift the caveat
 ---------------------------------
-Pelo menos um caso (dois e melhor) com as quatro pecas acima, no
-mesmo binario e entrada. Esse caso pode entrar como tabela nova
-sem retirar a case_attempt. Sem essa cadeia, o Major 3 permanece
-concedido e o Major 2 permanece parcial.
+At least one case (two is better) with the four pieces above, on
+the same binary and input. That case can enter as a new table
+without removing case_attempt. Without that chain, Major 3 remains
+conceded and Major 2 remains partial.
 
-Isso e Plano B (VM, corte 02/11). A v4 nao inventa o caso. Se o
-SkewMask tiver de mudar para o obter, o N=30 deixa de valer e
-repete-se nesse build. Se o Plano B nao acabar, o envio do Plano A
-segue com a concessao -- precisa, mas com o comentario 3 aberto.
+That is Plan B (VM, cutoff 02/11). v4 does not invent the case. If
+SkewMask has to change to obtain it, N=30 ceases to hold and
+is repeated on that build. If Plan B does not finish, Plan A submission
+goes with the concession -- precise, but with comment 3 open.

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Testes unitários do validador de integridade experimental."""
+"""Unit tests for the experimental integrity validator."""
 from __future__ import annotations
 
 import csv
@@ -203,7 +203,7 @@ class TestCampaignValidator(unittest.TestCase):
         rec = self._create_record()
         with (self.temp_dir / "raw" / "runs" / "test_val_run_1.json").open("w", encoding="utf-8") as f:
             json.dump(rec, f)
-        # Cria arquivo orfao
+        # Create an orphan file
         with (self.temp_dir / "raw" / "runs" / "orphan_run.json").open("w", encoding="utf-8") as f:
             json.dump(rec, f)
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Construtor do Corpus Definitivo de 100 Amostras PE (50 Benignas + 50 Maliciosas)
-Atende rigorosamente à Seção 7 da especificação experimental:
-- 50 Benignos: 25 curta duração (short_lived), 25 persistentes (persistent)
-- 50 Maliciosos: 25 curta duração (short_lived), 25 persistentes (persistent)
-- Todos executáveis Windows PE x64 válidos
+Definitive 100-sample PE corpus builder (50 benign + 50 malicious)
+Strictly follows Section 7 of the experimental specification:
+- 50 benign: 25 short-lived, 25 persistent
+- 50 malicious: 25 short-lived, 25 persistent
+- All valid Windows PE x64 executables
 """
 from __future__ import annotations
 
@@ -39,19 +39,19 @@ def get_file_sha256(path: Path) -> str:
 
 
 def main():
-    print("=== Construindo Corpus Definitivo (100 Amostras) ===")
+    print("=== Building Definitive Corpus (100 Samples) ===")
 
-    # 1. Carregar corpus existente
+    # 1. Load existing corpus
     with CORPUS_CSV.open("r", encoding="utf-8-sig") as f:
         existing_rows = list(csv.DictReader(f))
 
     existing_benign = [r for r in existing_rows if r["group"] == "benign"]
     existing_malware = [r for r in existing_rows if r["group"] == "malicious"]
 
-    print(f"Existentes no corpus.csv: {len(existing_benign)} benignos, {len(existing_malware)} maliciosos")
+    print(f"Already in corpus.csv: {len(existing_benign)} benign, {len(existing_malware)} malicious")
 
-    # Amostras benignas atuais: 10 short_lived, 7 persistent
-    # Precisamos de mais 15 short_lived e 18 persistent (total +33 benignos)
+    # Current benign samples: 10 short_lived, 7 persistent
+    # Need 15 more short_lived and 18 persistent (total +33 benign)
     df_ben = pd.read_csv(INSPECTION_REPORT)
     ben_candidates = df_ben[(df_ben["container"].str.contains("benign")) & 
                             (df_ben["kind"] == "pe_exe") & 
@@ -60,7 +60,7 @@ def main():
 
     existing_ben_shas = {r["sha256"].upper() for r in existing_benign}
     
-    # Filtrar candidatos que ainda não estão no corpus
+    # Filter candidates that are not yet in the corpus
     new_ben_candidates = []
     for _, row in ben_candidates.iterrows():
         p = Path(row["container"])
@@ -76,9 +76,9 @@ def main():
     new_ben_console = [b for b in new_ben_candidates if b["subsystem"] == "console"]
     new_ben_gui = [b for b in new_ben_candidates if b["subsystem"] == "gui"]
 
-    print(f"Novos candidatos benignos disponíveis: {len(new_ben_console)} console, {len(new_ben_gui)} gui")
+    print(f"New benign candidates available: {len(new_ben_console)} console, {len(new_ben_gui)} gui")
 
-    # Selecionar 15 short_lived (console) e 18 persistent (gui + console excedente se necessário)
+    # Select 15 short_lived (console) and 18 persistent (gui + leftover console if needed)
     selected_ben_short = new_ben_console[:15]
     selected_ben_pers = (new_ben_gui + new_ben_console[15:])[:18]
 
@@ -106,7 +106,7 @@ def main():
             "command_line": "",
             "input_set_id": "none",
             "targeted_evasion": "none",
-            "notes": "Executavel de console x64 curta duracao",
+            "notes": "x64 console executable, short-lived",
             "included": "true",
             "exclusion_reason": "none",
         })
@@ -133,16 +133,16 @@ def main():
             "command_line": "",
             "input_set_id": "none",
             "targeted_evasion": "none",
-            "notes": "Executavel de GUI/servico x64 persistente",
+            "notes": "x64 GUI/service executable, persistent",
             "included": "true",
             "exclusion_reason": "none",
         })
         next_ben_idx += 1
 
-    print(f"Total final benignos: {len(final_benign)} (25 short_lived, 25 persistent)")
+    print(f"Final benign total: {len(final_benign)} (25 short_lived, 25 persistent)")
 
-    # 2. Amostras maliciosas: 14 atuais (4 short_lived, 10 persistent)
-    # Precisamos de mais 21 short_lived e 15 persistent (total +36 malwares de bazaar)
+    # 2. Malicious samples: 14 current (4 short_lived, 10 persistent)
+    # Need 21 more short_lived and 15 persistent (total +36 bazaar malwares)
     df_bz = pd.read_csv(BAZAAR_REPORT)
     mal_candidates = df_bz[(df_bz["kind"] == "pe_exe") & 
                            (df_bz["arch"] == "x64") & 
@@ -168,7 +168,7 @@ def main():
             else:
                 new_mal_gui.append(entry)
 
-    print(f"Candidatos maliciosos em bazaar: {len(new_mal_console)} console, {len(new_mal_gui)} gui")
+    print(f"Malicious candidates in bazaar: {len(new_mal_console)} console, {len(new_mal_gui)} gui")
 
     selected_mal_short = new_mal_console[:21]
     selected_mal_pers = (new_mal_gui + new_mal_console[21:])[:15]
@@ -176,7 +176,7 @@ def main():
     final_malware = list(existing_malware)
     next_mal_idx = len(final_malware) + 1
 
-    # Copiar os zips selecionados de bazaar para TOMWare/samples/infected
+    # Copy selected zips from bazaar to TOMWare/samples/infected
     for m in selected_mal_short:
         dst_zip = INFECTED_DIR / m["zip_path"].name
         if not dst_zip.exists():
@@ -201,7 +201,7 @@ def main():
             "command_line": "",
             "input_set_id": "none",
             "targeted_evasion": "unverified",
-            "notes": "Amostra PE x64 de console MalwareBazaar",
+            "notes": "MalwareBazaar x64 console PE sample",
             "included": "true",
             "exclusion_reason": "none",
         })
@@ -231,15 +231,15 @@ def main():
             "command_line": "",
             "input_set_id": "none",
             "targeted_evasion": "unverified",
-            "notes": "Amostra PE x64 de GUI/daemon MalwareBazaar",
+            "notes": "MalwareBazaar x64 GUI/daemon PE sample",
             "included": "true",
             "exclusion_reason": "none",
         })
         next_mal_idx += 1
 
-    print(f"Total final maliciosos: {len(final_malware)} (25 short_lived, 25 persistent)")
+    print(f"Final malicious total: {len(final_malware)} (25 short_lived, 25 persistent)")
 
-    # 3. Gravar corpus.csv consolidado (exatamente 100 amostras)
+    # 3. Write the consolidated corpus.csv (exactly 100 samples)
     all_final = final_benign + final_malware
     fieldnames = list(all_final[0].keys())
 
@@ -248,11 +248,11 @@ def main():
         w.writeheader()
         w.writerows(all_final)
 
-    print(f"\n[OK] Salvo {len(all_final)} amostras em {CORPUS_CSV}")
+    print(f"\n[OK] Saved {len(all_final)} samples to {CORPUS_CSV}")
 
-    # 4. Registrar em exclusions.csv os arquivos não-PE documentados
+    # 4. Record documented non-PE files in exclusions.csv
     exclusions = []
-    # Documentos e MSIs de samples/infected que não são PE
+    # Documents and MSIs under samples/infected that are not PE
     for _, row in df_ben[df_ben["container"].str.contains("infected")].iterrows():
         if row["kind"] != "pe_exe":
             p = Path(row["container"])
@@ -264,7 +264,7 @@ def main():
                 "exclusion_stage": "initial_inspection",
                 "exclusion_reason": f"not_pe_executable ({row['kind']})",
                 "timestamp_utc": "2026-10-13T12:00:00Z",
-                "notes": "Arquivo nao executavel Windows PE (documento macro, instalador msi ou arquivo comprimido)"
+                "notes": "Not a Windows PE executable (macro document, MSI installer, or compressed file)"
             })
 
     if exclusions:
@@ -272,7 +272,7 @@ def main():
             w = csv.DictWriter(f, fieldnames=list(exclusions[0].keys()))
             w.writeheader()
             w.writerows(exclusions)
-        print(f"[OK] Registradas {len(exclusions)} exclusões auditáveis em {EXCLUSIONS_CSV}")
+        print(f"[OK] Recorded {len(exclusions)} auditable exclusions in {EXCLUSIONS_CSV}")
 
 
 if __name__ == "__main__":

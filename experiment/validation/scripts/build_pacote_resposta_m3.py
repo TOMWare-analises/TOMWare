@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Resposta-pack Access: 8 itens com access_m3_cases. Nao IEEE. Sem malware."""
+"""Access response pack: 8 items with access_m3_cases. Not IEEE. No malware."""
 from __future__ import annotations
 
 import hashlib

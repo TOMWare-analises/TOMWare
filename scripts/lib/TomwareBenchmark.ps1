@@ -1,4 +1,4 @@
-# Funções compartilhadas para benchmark TOMWare (Fase 4)
+# Shared functions for TOMWare benchmark (Phase 4)
 
 function Get-TomwareRepoRoot {
     param([string]$StartPath = $PSScriptRoot)
@@ -9,7 +9,7 @@ function Get-TomwareRepoRoot {
 function Get-TomwareManifest {
     param([string]$ManifestPath)
     if (-not (Test-Path $ManifestPath)) {
-        throw "Manifesto nao encontrado: $ManifestPath"
+        throw "Manifest not found: $ManifestPath"
     }
     return Get-Content $ManifestPath -Raw -Encoding UTF8 | ConvertFrom-Json
 }
@@ -87,7 +87,7 @@ function Get-TomwareResourceSnapshot {
                 $processCount++
             }
             catch {
-                # O processo pode encerrar entre Get-Process e Refresh.
+                # The process may exit between Get-Process and Refresh.
             }
         }
     }
@@ -185,9 +185,9 @@ function Invoke-TomwarePinRun {
         [string]$ProgressLabel = ""
     )
 
-    if (-not (Test-Path $PinExe)) { throw "pin.exe nao encontrado: $PinExe" }
-    if (-not (Test-Path $ToolDll)) { throw "TOMWare.dll nao encontrada: $ToolDll" }
-    if (-not (Test-Path $SamplePath)) { throw "Amostra nao encontrada: $SamplePath" }
+    if (-not (Test-Path $PinExe)) { throw "pin.exe not found: $PinExe" }
+    if (-not (Test-Path $ToolDll)) { throw "TOMWare.dll not found: $ToolDll" }
+    if (-not (Test-Path $SamplePath)) { throw "Sample not found: $SamplePath" }
 
     $pinArgs = @()
     if ($FollowChild) { $pinArgs += "-follow_execv", "1" }
@@ -235,13 +235,13 @@ function Invoke-TomwarePinRun {
                     Stop-TomwareProcessTree -ProcessId $proc.Id -SamplePath $SamplePath
                     $timedOut = $true
                     $exitCode = -2
-                    Write-Host ("    timeout: {0}s atingidos em {1}" -f $TimeoutSeconds, $(if ($ProgressLabel) { $ProgressLabel } else { $Scenario })) -ForegroundColor Yellow
+                    Write-Host ("    timeout: {0}s reached on {1}" -f $TimeoutSeconds, $(if ($ProgressLabel) { $ProgressLabel } else { $Scenario })) -ForegroundColor Yellow
                     break
                 }
 
                 if ($TimeoutSeconds -ge 60 -and ($elapsedSeconds -eq 5 -or ($elapsedSeconds - $lastProgressAt) -ge 30)) {
                     $label = if ($ProgressLabel) { $ProgressLabel } else { $Scenario }
-                    Write-Host ("    aguardando {0}: {1}s / {2}s" -f $label, $elapsedSeconds, $TimeoutSeconds) -ForegroundColor DarkGray
+                    Write-Host ("    waiting {0}: {1}s / {2}s" -f $label, $elapsedSeconds, $TimeoutSeconds) -ForegroundColor DarkGray
                     $lastProgressAt = $elapsedSeconds
                 }
             }
@@ -389,7 +389,7 @@ function Compare-TomwareRuns {
     )
 
     $improved = $false
-    $reason = "sem melhoria"
+    $reason = "no improvement"
 
     if ($BaselineRun.Outcome -eq "early_exit" -and $StealthRun.Outcome -in @("complete", "partial", "timeout")) {
         $improved = $true
@@ -397,11 +397,11 @@ function Compare-TomwareRuns {
     }
     elseif ($StealthRun.Seconds -gt ($BaselineRun.Seconds * 1.25) -and $BaselineRun.Outcome -ne "timeout") {
         $improved = $true
-        $reason = "stealth executou mais tempo (+$([Math]::Round($StealthRun.Seconds - $BaselineRun.Seconds, 1))s)"
+        $reason = "stealth ran longer (+$([Math]::Round($StealthRun.Seconds - $BaselineRun.Seconds, 1))s)"
     }
     elseif ($BaselineRun.ExitCode -ne 0 -and $StealthRun.ExitCode -eq 0) {
         $improved = $true
-        $reason = "exit code melhorou"
+        $reason = "exit code improved"
     }
 
     return [PSCustomObject]@{
@@ -432,45 +432,44 @@ function Export-TomwareBenchmarkSummary {
     $withSample = ($Rows | Where-Object { $_.SampleFound -eq $true }).Count
 
     $md = @"
-# Benchmark TOMWare — resumo
+# TOMWare benchmark — summary
 
-Gerado em: $(Get-Date -Format "yyyy-MM-dd HH:mm:ss")
+Generated at: $(Get-Date -Format "yyyy-MM-dd HH:mm:ss")
 
-## Metadados
+## Metadata
 
-| Campo | Valor |
+| Field | Value |
 |-------|-------|
-| Amostras no manifesto | $($Metadata.TotalManifest) |
-| Amostras encontradas | $withSample |
-| Cenarios por amostra | $($Metadata.Scenarios) |
+| Samples in the manifest | $($Metadata.TotalManifest) |
+| Samples found | $withSample |
+| Scenarios per sample | $($Metadata.Scenarios) |
 | Timeout (s) | $($Metadata.TimeoutSeconds) |
 
-## Resultados agregados
+## Aggregated results
 
-| Metrica | Valor |
+| Metric | Value |
 |---------|-------|
-| Linhas de resultado | $total |
-| Melhoria stealth vs baseline | $improved |
+| Result rows | $total |
+| Stealth vs baseline improvement | $improved |
 
-## Por amostra
+## By sample
 
-| SHA-256 | Cenario | Outcome | Segundos | Exit | Melhoria |
-|---------|---------|---------|----------|------|----------|
+| SHA-256 | Scenario | Outcome | Seconds | Exit | Improved |
 "@
 
     foreach ($row in $Rows) {
         $sha = if ($row.Sha256) { $row.Sha256.Substring(0, 16) + "..." } else { $row.TestId }
-        $imp = if ($row.Improved) { "sim" } else { "-" }
+        $imp = if ($row.Improved) { "yes" } else { "-" }
         $md += "| $sha | $($row.Scenario) | $($row.Outcome) | $($row.Seconds) | $($row.ExitCode) | $imp |`n"
     }
 
     $md += @"
 
-## Proximos passos
+## Next steps
 
-1. Para amostras com melhoria, reexecutar com tracing externo (se disponivel).
-2. Comparar metricas com DBI-Log-Corpus.
-3. Consolidar resultados em `summary.csv` e `summary.md` para o relatorio final.
+1. For samples with improvement, rerun with external tracing (if available).
+2. Compare metrics with DBI-Log-Corpus.
+3. Consolidate results in `summary.csv` and `summary.md` for the final report.
 
 "@
 

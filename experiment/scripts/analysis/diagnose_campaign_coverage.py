@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Diagnóstico de cobertura real vs. registros JSON da campanha."""
+"""Diagnosis of actual coverage vs. campaign JSON records."""
 from __future__ import annotations
 
 import argparse
@@ -47,7 +47,7 @@ def main() -> None:
         try:
             records.append(load_json(p))
         except Exception as exc:
-            print(f"JSON inválido: {p.name}: {exc}")
+            print(f"Invalid JSON: {p.name}: {exc}")
 
     term = Counter()
     missing = Counter()
@@ -100,8 +100,8 @@ def main() -> None:
             "hash_overlap_count": len(overlap),
             "sample_id_hash_mismatches": len(id_mismatch),
             "note": (
-                "O runner procura o ficheiro pelo SHA256 do execution_plan/campaign.json, "
-                "não pelo corpus.csv atual. Overlap baixo explica file_not_found em massa."
+                "The runner looks up the file by the SHA256 from execution_plan/campaign.json, "
+                "not by the current corpus.csv. Low overlap explains mass file_not_found."
             ),
         },
         "successful_sample_detail": {
@@ -118,8 +118,8 @@ def main() -> None:
         },
         "scientific_validity": "invalid_for_publication",
         "reason": (
-            "A esmagadora maioria das corridas não executou o binário "
-            "(launch_failed/file_not_found). Tabelas de overhead não são interpretáveis."
+            "The overwhelming majority of runs did not execute the binary "
+            "(launch_failed/file_not_found). Overhead tables are not interpretable."
         ),
     }
 
@@ -128,7 +128,7 @@ def main() -> None:
         json.dump(report, f, indent=2, ensure_ascii=False)
 
     print(json.dumps(report, indent=2, ensure_ascii=False))
-    print(f"\nGravado: {out_path}")
+    print(f"\nWrote: {out_path}")
 
 
 if __name__ == "__main__":

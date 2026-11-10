@@ -1,33 +1,33 @@
-Pedido de validacao da v5 -- antes de qualquer Plano B.
+Request for v5 validation -- before any Plan B.
 
-Por favor confirmar ou corrigir estes pontos. Nao restaurar a VM
-nem correr jcvht_parallel ate isto estar aceite.
+Please confirm or correct these points. Do not restore the VM
+nor run jcvht_parallel until this is accepted.
 
-A) Plano A (envio)
-  [ ] N=30 no corpo; Table 6 antiga no apendice, numeros intactos
-  [ ] Substituir 49% / 4080 vs 2081 e "-da nao foi avaliado"
-  [ ] TMW0 = Pin + TOMWare, knobs off -- nao "ordinary Pin"
-  [ ] Carta: (c) = localizacao; CPU ~38%/29% separado de WS ~87%/74%
-  [ ] Tabelas novas com labels novos; graficos opcionais
-  [ ] Major 3 concedido no texto; case_attempt nao e case study
+A) Plan A (submission)
+  [ ] N=30 in the body; old Table 6 in the appendix, numbers intact
+  [ ] Replace 49% / 4080 vs 2081 and "-da was not evaluated"
+  [ ] TMW0 = Pin + TOMWare, knobs off -- not "ordinary Pin"
+  [ ] Letter: (c) = location; CPU ~38%/29% separate from WS ~87%/74%
+  [ ] New tables with new labels; optional figures
+  [ ] Major 3 conceded in the text; case_attempt is not a case study
 
-B) Leitura do revisor
-  [ ] Poucos casos bastam; nao 14 x 5
-  [ ] Cadeia: check -> ramo -> knob -> artefacto extra
-  [ ] Os mesmos casos leem o Major 2
-  [ ] Concessao deixa o pedido experimental aberto -- correcto
+B) Reading of the reviewer
+  [ ] A few cases suffice; not 14 x 5
+  [ ] Chain: check -> branch -> knob -> extra artifact
+  [ ] The same cases read Major 2
+  [ ] Concession leaves the experimental request open -- correct
 
-C) Tarefas Plano B (ainda nao executar)
-  [ ] T1 DONE/FAIL/BLOQUEADO como em TAREFAS_CRITERIOS.md
-  [ ] T2 independente de T1
-  [ ] P0 = identificar a checagem; nao repetir MAL_03/07/10/BEN_06
-      sem check.md identified=true
-  [ ] SkewMask fired != checagem localizada
-  [ ] "Ainda vivo aos 60 s" = FAIL
-  [ ] evidence_matrix.csv cobre M1-M4, m1, E.1
-  [ ] Entrega: scripts, logs, brutos, traces, hashes, build_id
-  [ ] Nao alterar SkewMask; nao repetir N=30
-  [ ] Corte 02/11; Plano A envia-se mesmo se T1 FAIL
+C) Plan B tasks (do not execute yet)
+  [ ] T1 DONE/FAIL/BLOCKED as in TAREFAS_CRITERIOS.md
+  [ ] T2 independent of T1
+  [ ] P0 = identify the check; do not repeat MAL_03/07/10/BEN_06
+      without check.md identified=true
+  [ ] SkewMask fired != located check
+  [ ] "Still alive at 60 s" = FAIL
+  [ ] evidence_matrix.csv covers M1-M4, m1, E.1
+  [ ] Delivery: scripts, logs, raw files, traces, hashes, build_id
+  [ ] Do not change SkewMask; do not repeat N=30
+  [ ] Cutoff 02/11; Plan A is submitted even if T1 FAIL
 
-Resposta pedida: aceite / aceite com correcoes / rejeitar ponto X.
-So no aceite (ou aceite com correcoes aplicadas) se inicia o Plano B.
+Requested reply: accept / accept with corrections / reject point X.
+Only on accept (or accept with corrections applied) does Plan B start.

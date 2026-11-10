@@ -1,6 +1,6 @@
 # Overleaf patches for the current Access PDF (V-B, VI-C, VII-A + memcmp + 22/30)
 
-The PDF still in Portuguese in these places. **Delete** the sentences that deny a Module32 positive control. **Paste** the English below. Do not mix JCVHT cells.
+The English CFD80 PDF still has these denials. **Delete** the sentences that deny a Module32 positive control. **Paste** the English below. Do not mix JCVHT cells.
 
 CSV sources (campaign DLL `4BBC6270`):
 - `experiment/results/oracles/module32_fixture.csv`
@@ -10,19 +10,19 @@ CSV sources (campaign DLL `4BBC6270`):
 
 ---
 
-## DELETE (Portuguese — still in V-B, VI-C, VII-A)
+## DELETE (English denials still in V-B, VI-C, VII-A)
 
 V-B (ProcessEnum, complementary TestModule32 paragraph):
 
-> Esses registros verificam o término da enumeração e a disponibilidade de uma entrada não filtrada, mas não demonstram a ocultação de um módulo monitorado. […] Os registros apresentados não incluem controles positivos específicos para a ocultação de módulos por Module32* ou GetModuleHandleA/W.
+> These records verify enumeration termination and the availability of an unfiltered entry, but do not demonstrate concealment of a monitored module. […] The presented records do not include specific positive controls for module concealment through Module32* or GetModuleHandleA/W.
 
 VI-C:
 
-> em particular, a ausência de módulos monitorados na referência não constitui controle positivo de sua ocultação.
+> in particular, the absence of monitored modules in the baseline is not a positive control of their concealment.
 
 VII-A:
 
-> ProcessEnum ocultou as entradas de processo monitoradas; a ausência dos módulos-alvo na referência impede confirmar sua filtragem por Module32.
+> ProcessEnum hid the monitored process entries; the absence of the target modules in the baseline prevents confirmation of their filtering by Module32.
 
 Also delete any remaining claim that InstMemcmpMask was validated **only** through `memcmp` in `TestMemoryScan.exe` without naming `_memicmp` and `RtlCompareMemory`.
 
@@ -65,7 +65,7 @@ This is a basic functional smoke test. It does not prove the absence of module i
 
 ---
 
-## 3. REPLACE V InstMemcmpMask “1) Validação funcional controlada”
+## 3. REPLACE V InstMemcmpMask “1) Controlled functional validation”
 
 Keep the `TestMemoryScan.exe` / Table 12 `memcmp` signature counts. Then add the family controls from `memcmp_n10.csv` (campaign DLL `4BBC6270`, campaign id `t2_n10_v7b`, one run per configuration):
 
@@ -107,7 +107,7 @@ This diagnostic does **not** demonstrate equivalence of APIs, control flow, or e
 
 ## REPLACE VI-C sentence and VII-A sentence
 
-**VI-C** (replace the “ausência de módulos” clause):
+**VI-C** (replace the “absence of modules” clause):
 
 The five oracles tested debugging, enumeration, environment variables, memory comparison, and timing. Those results are not evidence that corpus binaries performed the same checks. ProcessEnum now includes a Module32 positive control on a dummy `%TEMP%\pinvm.dll` copy of `version.dll` (hidden under `-dp` and `-da`; `kernel32.dll` remained visible). Combined activation was smoke-tested once per oracle (`da_n10.csv`; the filename does not mean ten repetitions). InstMemcmpMask family controls cover `memcmp`, `_memicmp`, and `RtlCompareMemory`; `_memicmp_l` faulted on the campaign DLL; several comparison exports were not exercised.
 

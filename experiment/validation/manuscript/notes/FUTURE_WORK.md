@@ -1,6 +1,6 @@
-# �VIII � future work (colar no Overleaf)
+# §VIII — future work (paste into Overleaf)
 
-Strike from the current list: item 4 (combined `-da`), item 5 (NAT / empty pintool / TMW0), and the �expand the corpus + confidence intervals� half of item 7. Those are in this revision, together with the fixed-N=30 timing oracle and the matched AntiDebug 3+3 evaluation.
+Strike from the current list: item 4 (combined `-da`), item 5 (NAT / empty pintool / TMW0), and the “expand the corpus + confidence intervals” half of item 7. Those are in this revision, together with the fixed-N=30 timing oracle and the matched AntiDebug 3+3 evaluation.
 
 ## English (paste)
 
@@ -16,14 +16,14 @@ Following the present 100-binary / nine-condition campaign, future work will:
 
 The 9,000-run x64 / Pin 3.28 campaign does not constitute item 6.
 
-## Portugues (referencia interna)
+## Internal reference
 
-1) AntiDebug alem de BeingDebugged/NtGlobalFlag.
-2) ProcessEnum em NtQuerySystemInformation.
+1) AntiDebug beyond BeingDebugged/NtGlobalFlag.
+2) ProcessEnum on NtQuerySystemInformation.
 3) RDTSC/RDTSCP.
-4) Fidelidade por traces (a Etapa 6 so observou exit/stdout/filhos/ficheiros).
-5) 32-bit: DLL Win32 + Pin 3.28 ia32; oraculos; corpus 32-bit opcional.
-6) Bake-off Arancino em protocolo 32-bit partilhado (Pin 2.14+VS2010 ou porto documentado).
-7) Outros ambientes de instrumentacao.
+4) Fidelity via traces (Stage 6 only observed exit/stdout/children/files).
+5) 32-bit: Win32 DLL + Pin 3.28 ia32; oracles; optional 32-bit corpus.
+6) Arancino bake-off on a shared 32-bit protocol (Pin 2.14+VS2010 or a documented port).
+7) Other instrumentation environments.
 
-Nao afirmar superioridade ate o item 6 existir.
+Do not claim superiority until item 6 exists.

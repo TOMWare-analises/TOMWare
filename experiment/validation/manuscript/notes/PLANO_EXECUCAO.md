@@ -1,45 +1,45 @@
-# Plano de execucao � IEEE Access-2026-38745
+# Execution plan — IEEE Access-2026-38745
 
-Escopo: so IEEE Access. Nada vai aos revisores antes da Etapa 11.
-Nenhum commit sem autorizacao.
+Scope: IEEE Access only. Nothing goes to the reviewers before Stage 11.
+No commit without authorization.
 
-## Estado das etapas
+## Stage status
 
-| Etapa | Onde | Estado | Data |
+| Stage | Where | Status | Date |
 |---|---|---|---|
 | 0-6 | host/VM | **OK** | 22/10 |
-| 7 Confirmacao 1800 | VM | **OK** | 23/10 |
-| 8 Arancino | host | **OK** (bloqueio) | 23/10 |
-| 9 Valores | host | **OK** | 23/10 |
-| 10 Pacote Overleaf + cartas | host | **OK** | 23/10 |
-| 11 Conferencia PDF artigo + envio | host | espera Overleaf | � |
+| 7 Confirmation 1800 | VM | **OK** | 23/10 |
+| 8 Arancino | host | **OK** (blocked) | 23/10 |
+| 9 Values | host | **OK** | 23/10 |
+| 10 Overleaf package + letters | host | **OK** | 23/10 |
+| 11 Article PDF cross-check + submission | host | waiting on Overleaf | — |
 
-## Etapa 7 � OK
+## Stage 7 — OK
 
-1800/1800. Coletor 2.1.0. Exit inteiro em 1600 (88.9%). Nulo 200 (nao crash).
-`exception_crash` 891 pela regra <0: 442 sao `0xC0000135` (tambem no NAT);
-AV `0xC0000005` = 105 (5.8%). Nao reescreve os 9000.
-Relatorio: `07_confirm/exitcode_report.md`.
+1800/1800. Collector 2.1.0. Integer exit in 1600 (88.9%). Null 200 (not crash).
+`exception_crash` 891 by the <0 rule: 442 are `0xC0000135` (also on NAT);
+AV `0xC0000005` = 105 (5.8%). Does not rewrite the 9000.
+Report: `07_confirm/exitcode_report.md`.
 
-## Etapa 8 � OK (bloqueio)
+## Stage 8 — OK (blocked)
 
-Sem bake-off. Arancino publico e Pin 2.14 + VS2010 + 32-bit; campanha e Pin 3.28 e 100 PE x64.
-Kit 3.28 tem `ia32\bin`; isso nao desbloqueia o corpus x64 nem compara geracoes.
-Relatorio: `08_arancino/BLOQUEIO.md`. Sem VM.
+No bake-off. Public Arancino is Pin 2.14 + VS2010 + 32-bit; the campaign is Pin 3.28 and 100 PE x64.
+The 3.28 kit has `ia32\bin`; that does not unlock the x64 corpus nor compare generations.
+Report: `08_arancino/BLOQUEIO.md`. No VM.
 
-## Etapa 9 � OK
+## Stage 9 — OK
 
-`09_values/MANUSCRIPT_VALUES.json` + `VALUES.md`. Corpus: so SHA-256 / fonte / x64 / perfil; familia e rotulo grosso.
-Future work 32-bit + Arancino: `09_values/FUTURE_WORK.md` (nao corre agora).
-Nao envia nada. PDF Overleaf continua o de 13/10.
+`09_values/MANUSCRIPT_VALUES.json` + `VALUES.md`. Corpus: SHA-256 / source / x64 / profile only; family is a coarse label.
+Future work 32-bit + Arancino: `09_values/FUTURE_WORK.md` (not run now).
+Sends nothing. Overleaf PDF remains the 13/10 one.
 
-## Etapa 10 � OK
+## Stage 10 — OK
 
 PDFs: `ieee_access_revision/Access-2026-38745_Overleaf_Instructions.pdf`,
 `..._Response_to_Reviewers.pdf` (EN), `..._Resposta_aos_Revisores.pdf` (PT).
-Lista: `10_overleaf/PACOTE.md`. Nada a IEEE. Sem commit.
+List: `10_overleaf/PACOTE.md`. Nothing to IEEE. No commit.
 
-## Etapa 11 � espera o PDF novo do artigo
+## Stage 11 — waiting on the new article PDF
 
-Quando o Overleaf exportar: conferir contra `09_values/MANUSCRIPT_VALUES.json`.
-So depois autorizacao para commit e envio. 32-bit/Arancino depois do envio.
+When Overleaf exports: check against `09_values/MANUSCRIPT_VALUES.json`.
+Only then authorization for commit and submission. 32-bit/Arancino after submission.

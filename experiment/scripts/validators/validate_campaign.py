@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Validador Automatizado de Integridade e Regras a Priori — TOMWare.M
+Automated Integrity and A-Priori Rule Validator — TOMWare.M
 
-Aplica as regras normativas da Seção 15 e 16 da especificação experimental:
-- Detecta execuções ausentes, duplicadas ou fora de ordem;
-- Verifica sanidade temporal e ausência de CPU/memória negativas;
-- Impede inconsistências entre timeout e término natural;
-- Verifica correspondência estrita de knobs por condição experimental;
-- Falha explicitamente diante de qualquer violação crítica.
+Applies the normative rules from Sections 15 and 16 of the experimental specification:
+- Detect missing, duplicate, or out-of-order executions;
+- Check temporal sanity and the absence of negative CPU/memory;
+- Block inconsistencies between timeout and natural completion;
+- Check strict knob correspondence per experimental condition;
+- Fail explicitly on any critical violation.
 """
 from __future__ import annotations
 
@@ -47,9 +47,9 @@ class CampaignValidator:
 
     def validate(self) -> Dict[str, Any]:
         if not self.manifest_path.exists():
-            raise FileNotFoundError(f"campaign.json ausente em: {self.campaign_dir}")
+            raise FileNotFoundError(f"campaign.json missing in: {self.campaign_dir}")
         if not self.plan_path.exists():
-            raise FileNotFoundError(f"execution_plan.csv ausente em: {self.campaign_dir}")
+            raise FileNotFoundError(f"execution_plan.csv missing in: {self.campaign_dir}")
 
         with self.manifest_path.open("r", encoding="utf-8") as f:
             manifest = json.load(f)
@@ -59,13 +59,13 @@ class CampaignValidator:
         planned_run_ids = [r["run_id"] for r in planned_rows]
         seen_run_ids: Set[str] = set()
 
-        # 1. Checar unicidade no plano
+        # 1. Check uniqueness in the plan
         for run_id in planned_run_ids:
             if run_id in seen_run_ids:
-                self.add_violation("UNIQUE_RUN_ID", run_id, "run_id duplicado no plano de execucao")
+                self.add_violation("UNIQUE_RUN_ID", run_id, "duplicate run_id in the execution plan")
             seen_run_ids.add(run_id)
 
-        # 2. Carregar e validar cada corrida
+        # 2. Load and validate each run
         actual_runs_on_disk: Set[str] = set()
         if self.runs_dir.exists():
             for json_file in self.runs_dir.glob("*.json"):
@@ -84,23 +84,23 @@ class CampaignValidator:
                     "block_id": plan_row["block_id"],
                     "reason": "json_record_not_found_on_disk"
                 })
-                self.add_violation("MISSING_EXECUTION", run_id, "Execucao planejada nao encontrada em raw/runs/", critical=False)
+                self.add_violation("MISSING_EXECUTION", run_id, "Planned execution not found in raw/runs/", critical=False)
                 continue
 
             try:
                 with json_file.open("r", encoding="utf-8-sig") as jf:
                     record = json.load(jf)
             except Exception as e:
-                self.add_violation("CORRUPT_JSON", run_id, f"Falha ao decodificar JSON: {e}", critical=True)
+                self.add_violation("CORRUPT_JSON", run_id, f"Failed to decode JSON: {e}", critical=True)
                 continue
 
             self._validate_single_record(plan_row, record)
             self.validated_records.append(record)
 
-        # 3. Detectar execuções órfãs (em disco mas não planejadas)
+        # 3. Detect orphan executions (on disk but not planned)
         for on_disk in actual_runs_on_disk:
             if on_disk not in seen_run_ids:
-                self.add_violation("UNPLANNED_RUN", on_disk, "Execucao em disco nao consta no plano planejado", critical=True)
+                self.add_violation("UNPLANNED_RUN", on_disk, "On-disk execution is not in the planned plan", critical=True)
 
         report = {
             "campaign_id": manifest.get("campaign_id"),
@@ -115,14 +115,14 @@ class CampaignValidator:
             "warnings": self.warnings,
         }
 
-        # Gravar relatórios
+        # Write reports
         processed_dir = self.campaign_dir / "processed"
         processed_dir.mkdir(parents=True, exist_ok=True)
 
         with (processed_dir / "audit_validation_report.json").open("w", encoding="utf-8") as f:
             json.dump(report, f, indent=2)
 
-        # Gravar missing_data.csv
+        # Write missing_data.csv
         missing_csv_path = processed_dir / "missing_data.csv"
         with missing_csv_path.open("w", newline="", encoding="utf-8") as f:
             fieldnames = ["run_id", "sample_id", "condition", "repetition", "block_id", "reason"]
@@ -139,11 +139,11 @@ class CampaignValidator:
         timing = rec.get("timing_and_cpu", {})
         mem = rec.get("memory", {})
 
-        # Condição coincide
+        # Condition matches
         if ident.get("condition") != plan["condition"]:
-            self.add_violation("CONDITION_MISMATCH", run_id, f"Esperado {plan['condition']}, registrado {ident.get('condition')}")
+            self.add_violation("CONDITION_MISMATCH", run_id, f"Expected {plan['condition']}, recorded {ident.get('condition')}")
 
-        # Regras de isolamento de condição e knobs
+        # Condition isolation and knob rules
         cond = plan["condition"]
         mods_raw = ident.get("modules_enabled", [])
         if isinstance(mods_raw, str):
@@ -159,26 +159,26 @@ class CampaignValidator:
         if outcome.get("launch_success", False):
             if cond == "NAT":
                 if ident.get("pin_version") and "pin" in str(ident.get("pin_version")).lower() and mods:
-                    self.add_violation("NAT_WITH_PIN", run_id, "Condicao NAT contem modulos Pin habilitados")
+                    self.add_violation("NAT_WITH_PIN", run_id, "NAT condition contains enabled Pin modules")
             elif cond == "EMPTY":
                 if mods:
-                    self.add_violation("EMPTY_WITH_MODULES", run_id, f"Condicao EMPTY nao pode conter modulos TOMWare: {mods}")
+                    self.add_violation("EMPTY_WITH_MODULES", run_id, f"EMPTY condition cannot contain TOMWare modules: {mods}")
             elif cond == "TMW0":
                 if mods:
-                    self.add_violation("TMW0_WITH_MODULES", run_id, f"Condicao TMW0 nao pode conter modulos ativos: {mods}")
+                    self.add_violation("TMW0_WITH_MODULES", run_id, f"TMW0 condition cannot contain active modules: {mods}")
             elif cond == "TMW_ALL":
                 expected_mods = {"AntiDebug", "ProcessEnum", "SanitizePinEnvVars", "InstMemcmpMask", "SkewMask"}
                 if set(mods) != expected_mods:
-                    self.add_violation("TMW_ALL_INCOMPLETE", run_id, f"TMW_ALL deve ter exatamente os 5 modulos ativos, encontrados: {mods}")
+                    self.add_violation("TMW_ALL_INCOMPLETE", run_id, f"TMW_ALL must have exactly the 5 active modules, found: {mods}")
             elif cond.startswith("TMW_"):
-                # Exatamente 1 módulo
+                # Exactly 1 module
                 if len(mods) != 1:
-                    self.add_violation("MULTIPLE_MODULES_IN_SINGLE_COND", run_id, f"Condicao {cond} deve ter exatamente 1 modulo, encontrados: {mods}")
+                    self.add_violation("MULTIPLE_MODULES_IN_SINGLE_COND", run_id, f"Condition {cond} must have exactly 1 module, found: {mods}")
 
-        # Temporal e monotonia
+        # Temporal and monotonicity
         dur = ident.get("monotonic_duration_ms", -1)
         if dur < 0:
-            self.add_violation("NEGATIVE_DURATION", run_id, f"Duracao monotonica negativa: {dur}")
+            self.add_violation("NEGATIVE_DURATION", run_id, f"Negative monotonic duration: {dur}")
 
         start_str = ident.get("start_timestamp_utc")
         end_str = ident.get("end_timestamp_utc")
@@ -187,42 +187,42 @@ class CampaignValidator:
                 t0 = datetime.fromisoformat(start_str.replace("Z", "+00:00"))
                 t1 = datetime.fromisoformat(end_str.replace("Z", "+00:00"))
                 if t1 < t0:
-                    self.add_violation("END_BEFORE_START", run_id, f"Timestamp final ({t1}) anterior ao inicial ({t0})")
+                    self.add_violation("END_BEFORE_START", run_id, f"End timestamp ({t1}) is before start ({t0})")
             except Exception as e:
-                self.add_violation("INVALID_TIMESTAMP_FORMAT", run_id, f"Formato de timestamp invalido: {e}")
+                self.add_violation("INVALID_TIMESTAMP_FORMAT", run_id, f"Invalid timestamp format: {e}")
 
-        # Sanidade de recursos
+        # Resource sanity
         cpu_tot = timing.get("cpu_total_ms", 0)
         if cpu_tot is not None and cpu_tot < 0:
-            self.add_violation("NEGATIVE_CPU", run_id, f"CPU total negativa: {cpu_tot}")
+            self.add_violation("NEGATIVE_CPU", run_id, f"Negative total CPU: {cpu_tot}")
 
         ws_peak = mem.get("peak_working_set_bytes", 0)
         ws_avg = mem.get("average_working_set_bytes", 0)
         if ws_peak is not None and ws_peak < 0:
-            self.add_violation("NEGATIVE_MEMORY", run_id, f"Working set pico negativo: {ws_peak}")
+            self.add_violation("NEGATIVE_MEMORY", run_id, f"Negative peak working set: {ws_peak}")
         if ws_peak is not None and ws_avg is not None and ws_peak < ws_avg:
-            self.add_violation("PEAK_LESS_THAN_AVG_WS", run_id, f"Pico WS ({ws_peak}) inferior a media ({ws_avg})")
+            self.add_violation("PEAK_LESS_THAN_AVG_WS", run_id, f"Peak WS ({ws_peak}) is below average ({ws_avg})")
 
-        # Inconsistência de término
+        # Termination inconsistency
         timed_out = outcome.get("timeout", False)
         natural_exit = outcome.get("natural_completion", False)
         term_reason = outcome.get("termination_reason")
 
         if timed_out and natural_exit:
-            self.add_violation("TIMEOUT_MARKED_NATURAL", run_id, "Execucao marcada simultaneamente como timeout e natural_completion")
+            self.add_violation("TIMEOUT_MARKED_NATURAL", run_id, "Execution marked as both timeout and natural_completion")
         if timed_out and term_reason == "natural_exit":
-            self.add_violation("TIMEOUT_CONFLICT_REASON", run_id, "termination_reason marcado como natural_exit em timeout")
+            self.add_violation("TIMEOUT_CONFLICT_REASON", run_id, "termination_reason marked as natural_exit on timeout")
 
-        # Processo persistente deve registrar janela
+        # Persistent process must record a window
         if plan.get("execution_profile") == "persistent" and outcome.get("launch_success", False):
             if not outcome.get("controlled_termination") and not timed_out and not outcome.get("crash") and not outcome.get("natural_completion"):
-                self.add_violation("PERSISTENT_NO_WINDOW", run_id, "Processo persistente sem terminacao controlada nem status valido de janela")
+                self.add_violation("PERSISTENT_NO_WINDOW", run_id, "Persistent process without controlled termination or a valid window status")
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Validador de integridade e regras de auditoria experimental (TOMWare.M)")
-    parser.add_argument("--campaign-dir", required=True, help="Diretorio da campanha a validar")
-    parser.add_argument("--fail-on-critical", action="store_true", default=True, help="Retorna exit code 1 se houver violacoes criticas")
+    parser = argparse.ArgumentParser(description="Integrity validator and experimental audit rules (TOMWare.M)")
+    parser.add_argument("--campaign-dir", required=True, help="Campaign directory to validate")
+    parser.add_argument("--fail-on-critical", action="store_true", default=True, help="Return exit code 1 if there are critical violations")
     args = parser.parse_args()
 
     v = CampaignValidator(Path(args.campaign_dir))
@@ -230,7 +230,7 @@ def main() -> None:
 
     print(json.dumps(report, indent=2))
     if args.fail_on_critical and not report["passed"]:
-        print("\n[ERRO CRITICO] O pipeline detectou violacoes das regras experimentais a priori!", file=sys.stderr)
+        print("\n[CRITICAL ERROR] The pipeline detected violations of the a-priori experimental rules!", file=sys.stderr)
         sys.exit(1)
 
 

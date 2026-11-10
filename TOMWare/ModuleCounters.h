@@ -5,8 +5,8 @@
 #include "pin.H"
 #include <string>
 
-// Contadores internos opcionais para verificar acionamento efetivo dos módulos (TOMWare.M)
-// Desativados por padrão (-mc 0): overhead rigorosamente nulo.
+// Optional internal counters to check that modules actually fire (TOMWare.M)
+// Off by default (-mc 0): rigorously zero overhead.
 
 void ModuleCounters_Init();
 bool ModuleCounters_IsEnabled();

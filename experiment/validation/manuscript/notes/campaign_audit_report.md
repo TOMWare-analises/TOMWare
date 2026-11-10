@@ -1,48 +1,48 @@
-# Auditoria da campanha corpus_aligned_10k (Etapa 2)
+# Audit of campaign corpus_aligned_10k (Stage 2)
 
-Os 9.000 JSON brutos **nao foram alterados**. Esta pasta so contem reclassificacao e agregados.
+The 9,000 raw JSON **were not altered**. This folder only contains reclassification and aggregates.
 
-## Desfechos
+## Outcomes
 
-- JSON: 9000 / esperados 9000; triples unicos: 9000.
-- `raw crash=true`: 6517; desses, `exit_code` nulo: 6517.
-- Reclassificados para `exited_before_limit_exit_code_unknown`: 6517.
-- `exception_crash` verdadeiro (codigo de saida conhecido): 0.
-- Motivo: `Invoke-SingleRun.ps1` le `$proc.ExitCode` depois do redirecionamento; nulo comparado com `< 0` vira crash e `exception_code` `0x`.
-- **Nao escrever** no artigo que a maioria das amostras curtas crashou.
+- JSON: 9000 / expected 9000; unique triples: 9000.
+- `raw crash=true`: 6517; of those, null `exit_code`: 6517.
+- Reclassified to `exited_before_limit_exit_code_unknown`: 6517.
+- True `exception_crash` (known exit code): 0.
+- Cause: `Invoke-SingleRun.ps1` reads `$proc.ExitCode` after redirection; null compared with `< 0` becomes crash and `exception_code` `0x`.
+- **Do not write** in the article that most short-lived samples crashed.
 
-Sobrevivencia persistente (window_controlled_termination / 250, Wilson 95%):
+Persistent survival (window_controlled_termination / 250, Wilson 95%):
 
-- Benigno: NAT 8.0% [5.2, 12.0]; EMPTY 11.2%; TMW0 9.6%; TMW_DO 52.8% [46.6, 58.9]; TMW_ALL 56.4% [50.2, 62.4].
-- Maligno: NAT 54.4% [48.2, 60.5]; EMPTY 32.4%; TMW0 32.8%; TMW_DO 57.6%; TMW_ALL 64.0% [57.9, 69.7].
+- Benign: NAT 8.0% [5.2, 12.0]; EMPTY 11.2%; TMW0 9.6%; TMW_DO 52.8% [46.6, 58.9]; TMW_ALL 56.4% [50.2, 62.4].
+- Malicious: NAT 54.4% [48.2, 60.5]; EMPTY 32.4%; TMW0 32.8%; TMW_DO 57.6%; TMW_ALL 64.0% [57.9, 69.7].
 
-NAT benigno curto: 20 runs com recursos em so 2 de 25 binarios. Contraste EMPTY-NAT de WS/CPU nesse estrato tem n_pairs=2.
+NAT benign short: 20 runs with resources in only 2 of 25 binaries. EMPTY-NAT WS/CPU contrast in that stratum has n_pairs=2.
 
-## Reclassificacao usada
+## Reclassification used
 
-| audited_outcome | criterio |
+| audited_outcome | criterion |
 |---|---|
 | launch_failed | launch_success = false |
 | timeout_expired | timeout = true |
-| window_controlled_termination | persistent chegou ao fim da janela |
-| exited_before_limit_exit_code_unknown | crash=true e exit_code nulo e exception_code `0x` |
-| exception_crash | crash=true com codigo de saida conhecido |
-| natural_exit | natural_completion sem o artefato acima |
+| window_controlled_termination | persistent reached the end of the window |
+| exited_before_limit_exit_code_unknown | crash=true and null exit_code and exception_code `0x` |
+| exception_crash | crash=true with a known exit code |
+| natural_exit | natural_completion without the artifact above |
 
-## Recursos
+## Resources
 
-- Filtro `sample_count > 0` e **post hoc**. Nao consta em `experiment.config.json`.
-- Tempo de parede persistente descreve duracao observada, nao desempenho.
-- `n_pairs_*` nas tabelas de contraste e o n efetivo. Nao usar `n_binaries = 25` quando so 2 pares tem recursos.
+- Filter `sample_count > 0` is **post hoc**. It is not in `experiment.config.json`.
+- Persistent wall-clock describes observed duration, not performance.
+- `n_pairs_*` in the contrast tables is the effective n. Do not use `n_binaries = 25` when only 2 pairs have resources.
 
-## Contraste que NAO inclui zero (nao generalizar como nulo)
+## Contrast that does NOT include zero (do not generalize as null)
 
-- TMW_DM - TMW0, malignos curtos, WS: 0.451 MB IC95% [0.049, 0.805] (n_pairs_ws=25; exclui zero=true).
+- TMW_DM - TMW0, short malicious, WS: 0.451 MB 95%CI [0.049, 0.805] (n_pairs_ws=25; excludes zero=true).
 
-## Frases proibidas nesta revisao
+## Forbidden phrases in this revision
 
-- 31 binarios / 3100 lancamentos / 10 s / 155/155 / -87% / -38% / 9/31.
-- frase: short-lived runs are mostly crash-exit.
-- frase: sample_count > 0 estava fixado a priori no experiment.config.json.
+- 31 binaries / 3100 launches / 10 s / 155/155 / -87% / -38% / 9/31.
+- phrase: short-lived runs are mostly crash-exit.
+- phrase: sample_count > 0 was fixed a priori in experiment.config.json.
 
-Medianas: convencionais (media dos dois centrais se n par). Bootstrap 2000, seed 705851366. Wilson 95% nas proporcoes.
+Medians: conventional (mean of the two central values if n even). Bootstrap 2000, seed 705851366. Wilson 95% on proportions.

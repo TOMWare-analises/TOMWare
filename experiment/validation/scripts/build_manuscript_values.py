@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Etapa 9: freeze official manuscript numbers from audited CSVs.
+"""Stage 9: freeze official manuscript numbers from audited CSVs.
 
 Does not modify the 9000 raw JSON. Does not invent corpus families.
 """
@@ -359,7 +359,7 @@ def main():
                 "AntiDebug beyond BeingDebugged/NtGlobalFlag (NtQueryInformationProcess)",
                 "ProcessEnum on NtQuerySystemInformation",
                 "RDTSC / RDTSCP and non-intercepted timing sources",
-                "API-trace / coverage fidelity (Etapa 6 was external observer only)",
+                "API-trace / coverage fidelity (Stage 6 was external observer only)",
             ],
             "add_requested_2026_10_23": [
                 "32-bit: TOMWare Win32 + Pin 3.28 ia32 on 32-bit oracles, then optional 32-bit corpus",

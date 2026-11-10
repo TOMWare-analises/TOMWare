@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Gerador de Plano Experimental Randomizado em Blocos (Planner) — TOMWare.M
+Randomized Block Experimental Plan Generator (Planner) — TOMWare.M
 
-Atende aos requisitos de rigor científico:
-1. Blocos estritos por amostra (sample_id, repetition);
-2. Randomização independente das condições dentro de cada bloco;
-3. Semente pseudoaleatória auditável registrada em arquivo permanente;
-4. Nenhuma seleção ou reordenação baseada em resultados;
-5. Suporte desacoplado para piloto (5+5) e campanha definitiva (50+50).
+Meets the scientific rigor requirements:
+1. Strict blocks per sample (sample_id, repetition);
+2. Independent randomization of conditions within each block;
+3. Auditable pseudorandom seed recorded in a permanent file;
+4. No selection or reordering based on results;
+5. Decoupled support for the pilot (5+5) and the definitive campaign (50+50).
 """
 from __future__ import annotations
 
@@ -44,8 +44,8 @@ def get_repo_root() -> Path:
 
 def select_pilot_samples(corpus: List[Dict[str, str]], n_benign: int = 5, n_malicious: int = 5) -> List[Dict[str, str]]:
     """
-    Seleciona deterministicamente amostras para o piloto garantindo
-    representatividade de curta duração e persistentes em ambos os grupos.
+    Select pilot samples deterministically, keeping short-lived and
+    persistent coverage in both groups.
     """
     benign_short = [s for s in corpus if s.get("group") == "benign" and s.get("execution_profile") == "short_lived" and s.get("included") == "true"]
     benign_pers = [s for s in corpus if s.get("group") == "benign" and s.get("execution_profile") == "persistent" and s.get("included") == "true"]
@@ -53,13 +53,13 @@ def select_pilot_samples(corpus: List[Dict[str, str]], n_benign: int = 5, n_mali
     mal_pers = [s for s in corpus if s.get("group") == "malicious" and s.get("execution_profile") == "persistent" and s.get("included") == "true"]
 
     selected: List[Dict[str, str]] = []
-    # Benignos: preferencialmente equilibrados entre short e persistent
+    # Benign: prefer a balanced split of short-lived and persistent
     n_b_short = n_benign // 2
     n_b_pers = n_benign - n_b_short
     selected.extend(benign_short[:n_b_short])
     selected.extend(benign_pers[:n_b_pers])
 
-    # Maliciosos: preferencialmente equilibrados entre short e persistent
+    # Malicious: prefer a balanced split of short-lived and persistent
     n_m_short = n_malicious // 2
     n_m_pers = n_malicious - n_m_short
     selected.extend(mal_short[:n_m_short])
@@ -86,20 +86,20 @@ def generate_plan(
     all_conditions = load_csv(conditions_file)
     all_corpus = load_csv(corpus_file)
 
-    # Filtrar condições válidas
+    # Filter valid conditions
     conditions = [
         c for c in all_conditions
         if c["condition"] != "PIN" or pin_condition_valid
     ]
 
-    # Determinar repetições
+    # Determine repetitions
     if repetitions is None:
         if pilot_mode:
             repetitions = int(config["campaigns"]["pilot"]["repetitions"])
         else:
             repetitions = int(config["campaigns"]["definitive"]["repetitions"])
 
-    # Seleção de amostras
+    # Sample selection
     if override_samples:
         samples = [s for s in all_corpus if s["sample_id"] in override_samples or s["sha256"] in override_samples]
     elif pilot_mode:
@@ -113,11 +113,11 @@ def generate_plan(
         samples = [s for s in all_corpus if s.get("included", "").lower() == "true"]
 
     if not samples:
-        raise ValueError("Nenhuma amostra qualificada encontrada no corpus.csv.")
+        raise ValueError("No qualified sample found in corpus.csv.")
 
-    # Semente pseudoaleatória
+    # Pseudorandom seed
     if seed is None:
-        # Se configurado explicitamente no JSON
+        # If configured explicitly in the JSON
         cfg_seed = config["randomization"].get("seed")
         if cfg_seed is not None:
             seed = int(cfg_seed)
@@ -126,7 +126,7 @@ def generate_plan(
 
     rng = random.Random(seed)
 
-    # Registro da semente permanente em randomization_seeds.csv
+    # Permanent seed record in randomization_seeds.csv
     seeds_file = repo_root / "experiment" / "protocol" / "randomization_seeds.csv"
     seeds_file.parent.mkdir(parents=True, exist_ok=True)
     seeds_exist = seeds_file.exists()
@@ -147,20 +147,20 @@ def generate_plan(
     (campaign_dir / "reports" / "tables").mkdir(parents=True, exist_ok=True)
     (campaign_dir / "reports" / "figures").mkdir(parents=True, exist_ok=True)
 
-    # Construir blocos e randomizar
+    # Build blocks and randomize
     plan_rows: List[Dict[str, Any]] = []
     global_order = 1
 
     cond_names = [c["condition"] for c in conditions]
     cond_map = {c["condition"]: c for c in conditions}
 
-    # Para cada repetição e cada amostra: gera um bloco
+    # For each repetition and each sample: generate a block
     for rep in range(1, repetitions + 1):
         for sample in samples:
             s_id = sample["sample_id"]
             block_id = f"{s_id}_rep{rep:02d}"
 
-            # Randomização estrita das condições dentro do bloco
+            # Strict randomization of conditions within the block
             shuffled_conds = list(cond_names)
             rng.shuffle(shuffled_conds)
 
@@ -194,7 +194,7 @@ def generate_plan(
                 })
                 global_order += 1
 
-    # Gravar execution_plan.csv
+    # Write execution_plan.csv
     plan_csv_path = campaign_dir / "execution_plan.csv"
     with plan_csv_path.open("w", newline="", encoding="utf-8") as f:
         fieldnames = list(plan_rows[0].keys())
@@ -205,7 +205,7 @@ def generate_plan(
     total_runs = len(plan_rows)
     now_utc = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
-    # Atualizar randomization_seeds.csv com totais reais
+    # Update randomization_seeds.csv with actual totals
     with seeds_file.open("a", newline="", encoding="utf-8") as sf:
         writer = csv.writer(sf)
         writer.writerow([
@@ -219,11 +219,11 @@ def generate_plan(
             total_runs,
         ])
 
-    # Hash da configuração e do plano
+    # Hash of the configuration and the plan
     plan_bytes = plan_csv_path.read_bytes()
     plan_hash = hashlib.sha256(plan_bytes).hexdigest()
 
-    # Gravar campaign.json
+    # Write campaign.json
     manifest = {
         "schema_version": 1,
         "campaign_id": campaign_id,
@@ -268,13 +268,13 @@ def generate_plan(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Gera plano de execução randomizado em blocos (TOMWare.M)")
-    parser.add_argument("--campaign-id", required=True, help="Identificador único da campanha")
-    parser.add_argument("--pilot", action="store_true", help="Gera plano para campanha piloto (5 benignos + 5 maliciosos)")
-    parser.add_argument("--repetitions", type=int, default=None, help="Número de repetições (sobrescreve config)")
-    parser.add_argument("--seed", type=int, default=None, help="Semente pseudoaleatória (para reproduzir plano)")
-    parser.add_argument("--pin-valid", action="store_true", help="Inclui condição PIN sem tool se validada por probe")
-    parser.add_argument("--samples", nargs="+", default=None, help="Lista de sample_id para um plano reduzido (ex.: BEN_01)")
+    parser = argparse.ArgumentParser(description="Generate a randomized block execution plan (TOMWare.M)")
+    parser.add_argument("--campaign-id", required=True, help="Unique campaign identifier")
+    parser.add_argument("--pilot", action="store_true", help="Generate a pilot campaign plan (5 benign + 5 malicious)")
+    parser.add_argument("--repetitions", type=int, default=None, help="Number of repetitions (overrides config)")
+    parser.add_argument("--seed", type=int, default=None, help="Pseudorandom seed (to reproduce a plan)")
+    parser.add_argument("--pin-valid", action="store_true", help="Include the PIN-without-tool condition if validated by probe")
+    parser.add_argument("--samples", nargs="+", default=None, help="sample_id list for a reduced plan (e.g. BEN_01)")
 
     args = parser.parse_args()
     root = get_repo_root()

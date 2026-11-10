@@ -1,20 +1,20 @@
-# Etapa 10 � pacote para o colaborador Overleaf
+# Stage 10 — package for the Overleaf collaborator
 
-Nao enviar a IEEE. Nao commitar. 32-bit / Arancino so depois do envio.
+Do not send to IEEE. Do not commit. 32-bit / Arancino only after submission.
 
-## Ficheiros (gerar com `ieee_access_revision/build_revision_pack.py`)
+## Files (generate with `ieee_access_revision/build_revision_pack.py`)
 
-| Ficheiro | Para quem |
+| File | For whom |
 |---|---|
-| `Access-2026-38745_Overleaf_Instructions.pdf` | Colaborador (unico PDF de instrucoes) |
-| `Access-2026-38745_Response_to_Reviewers.pdf` | Carta oficial EN |
-| `Access-2026-38745_Resposta_aos_Revisores.pdf` | Carta PT (ajuda) |
-| `09_values/FUTURE_WORK.md` | �VIII |
-| `ieee_access_revision/MANUSCRIPT_REPLACEMENTS.md` | Abstract e paragrafos |
+| `Access-2026-38745_Overleaf_Instructions.pdf` | Collaborator (single instructions PDF) |
+| `Access-2026-38745_Response_to_Reviewers.pdf` | Official EN letter |
+| `Access-2026-38745_Resposta_aos_Revisores.pdf` | PT letter (aid) |
+| `09_values/FUTURE_WORK.md` | §VIII |
+| `ieee_access_revision/MANUSCRIPT_REPLACEMENTS.md` | Abstract and paragraphs |
 
-Copias na raiz do repo: os tres PDF.
+Copies at the repo root: the three PDFs.
 
-## Etapa 11 (falta o PDF novo do artigo)
+## Stage 11 (the new article PDF is still missing)
 
-Quando o Overleaf exportar o manuscrito atualizado: conferir contra `09_values/MANUSCRIPT_VALUES.json`.
-So depois: autorizacao explicita para commit e para o envio IEEE.
+When Overleaf exports the updated manuscript: check against `09_values/MANUSCRIPT_VALUES.json`.
+Only then: explicit authorization for commit and for the IEEE submission.

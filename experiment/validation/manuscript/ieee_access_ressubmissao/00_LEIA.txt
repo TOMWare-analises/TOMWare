@@ -14,7 +14,7 @@ Start here:
   CARTA_FINAL_EN.md               — point-by-point letter (full answer per reviewer; no “Same as”)
   OVERLEAF_PARA_O_AMIGO.md
   REPRODUCIBILITY.txt             — git a2ee6c9e509ce2d47ff68ba3ae9197a6529d66b3 / DLL / Pin
-  STATUS_ITENS_TECNICOS.md        — itens 1–9
+  STATUS_ITENS_TECNICOS.md        — items 1–9
   FRASES_PROIBIDAS.txt
   03_R43_LEITURA.md               — r43 preserved + r43b = Table 25; r43c is extra only
   RELATORIO_TECNICO_ITENS_1_3.md  — pin-bare / r43c / public commit (not the letter)

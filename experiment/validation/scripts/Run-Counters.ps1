@@ -1,5 +1,5 @@
 #Requires -Version 5.1
-# IEEE Access Etapa 5: 30 short-lived x 2 arms x 10 reps = 600 counter runs.
+# IEEE Access Stage 5: 30 short-lived x 2 arms x 10 reps = 600 counter runs.
 # TMW0_COUNT = modules off + -mc. TMW_ALL_COUNT = -da + -mc.
 # Resume-safe. Saves CSV after every row. No snapshot revert.
 param(
@@ -160,7 +160,7 @@ Write-Host ("PIN_ROOT={0}" -f $env:PIN_ROOT)
 Write-Host ("pin.exe={0}" -f $pin)
 
 $samples = @(Import-Csv -Path $SampleList)
-Write-Host ("Etapa 5: {0} samples x 2 arms x {1} reps = {2} planned" -f $samples.Count, $Reps, ($samples.Count * 2 * $Reps))
+Write-Host ("Stage 5: {0} samples x 2 arms x {1} reps = {2} planned" -f $samples.Count, $Reps, ($samples.Count * 2 * $Reps))
 Write-Host ("Timeout {0}s. Resume file: {1}" -f $TimeoutSec, $csvPath)
 
 $done = @{}
@@ -301,7 +301,7 @@ foreach ($s in $samples) {
 }
 
 Write-Host ""
-Write-Host "Etapa 5 done (or paused). Copy back:"
+Write-Host "Stage 5 done (or paused). Copy back:"
 Write-Host "  $csvPath"
 Write-Host "  $jsonDir"
 Write-Host ("Rows: {0}" -f $rows.Count)

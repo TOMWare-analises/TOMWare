@@ -1,13 +1,13 @@
-# Se o Plano B nao acabar ate 02/11
+# If Plan B is not finished by 02/11
 
-Enviar o Plano A v3. Nao esperar pela VM.
+Submit Plan A v3. Do not wait for the VM.
 
-1. PDF do artigo Overleaf **depois** do amigo aplicar `08_INSERCOES_REVISOR.tex`.
-2. Carta oficial EN: `01_JCVHT_c05a1271_Response_to_Reviewers.pdf`
-   (so com o artigo ja editado; a carta descreve locais aplicados).
+1. Overleaf article PDF **after** the friend applies `08_INSERCOES_REVISOR.tex`.
+2. Official EN letter: `01_JCVHT_c05a1271_Response_to_Reviewers.pdf`
+   (only with the already edited article; the letter describes applied locations).
 
-Nao enviar a carta PT. Nao enviar malware.
+Do not send the PT letter. Do not send malware.
 
-O Plano B (kit paralelo na VM) e extra. Se terminar antes de 02/11,
-voltamos a ajustar o Overleaf. Se nao, esta pasta ja responde ao parecer
-com as concessoes de M2 (parcial) e M3 (nao demonstrado).
+Plan B (parallel kit on the VM) is extra. If it finishes before 02/11,
+we adjust Overleaf again. If not, this folder already answers the review
+with the M2 (partial) and M3 (not demonstrated) concessions.

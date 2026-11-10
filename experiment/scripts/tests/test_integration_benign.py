@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Teste de integração ponta a ponta com executável benigno (sem malware)."""
+"""End-to-end integration test with a benign executable (no malware)."""
 from __future__ import annotations
 
 import csv
@@ -33,7 +33,7 @@ class TestBenignIntegration(unittest.TestCase):
             shutil.rmtree(self.campaign_dir, ignore_errors=True)
 
     def test_benign_nat_execution_and_schema_validation(self):
-        # 1. Gerar plano para 1 amostra benigna (BEN_03), 1 repetição
+        # 1. Generate a plan for 1 benign sample (BEN_03), 1 repetition
         plan_res = generate_plan(
             repo_root=self.repo_root,
             campaign_id=self.campaign_id,
@@ -44,7 +44,7 @@ class TestBenignIntegration(unittest.TestCase):
         )
         self.assertTrue(Path(plan_res["plan_csv"]).exists())
 
-        # Ajustar timeout curto para o teste de integracao nao aguardar 120s
+        # Short timeout so the integration test does not wait 120s
         plan_csv = Path(plan_res["plan_csv"])
         with plan_csv.open("r", encoding="utf-8") as f:
             rows = list(csv.DictReader(f))
@@ -55,7 +55,7 @@ class TestBenignIntegration(unittest.TestCase):
             w.writeheader()
             w.writerows(rows)
 
-        # 2. Executar via PowerShell runner filtrando apenas a condição NAT
+        # 2. Run via the PowerShell runner, filtering to the NAT condition only
         cmd = [
             "powershell.exe",
             "-NoProfile",
@@ -69,29 +69,29 @@ class TestBenignIntegration(unittest.TestCase):
             "NAT",
         ]
         proc = subprocess.run(cmd, cwd=str(self.repo_root), capture_output=True, text=True)
-        self.assertEqual(proc.returncode, 0, f"Runner falhou: {proc.stderr}\n{proc.stdout}")
+        self.assertEqual(proc.returncode, 0, f"Runner failed: {proc.stderr}\n{proc.stdout}")
 
-        # 3. Verificar que o arquivo JSON foi gerado atomicamente e existe
+        # 3. Verify the JSON file was written atomically and exists
         runs_dir = self.campaign_dir / "raw" / "runs"
         json_files = list(runs_dir.glob("*.json"))
-        self.assertEqual(len(json_files), 1, "Deveria haver exatamente 1 arquivo JSON gerado")
+        self.assertEqual(len(json_files), 1, "There should be exactly 1 generated JSON file")
 
         with json_files[0].open("r", encoding="utf-8-sig") as jf:
             record = json.load(jf)
 
-        # 4. Verificar métricas e conformidade
+        # 4. Check metrics and schema compliance
         self.assertEqual(record["identification"]["condition"], "NAT")
         self.assertEqual(record["identification"]["sample_id"], "BEN_03")
         self.assertTrue(record["operational_outcome"]["launch_success"])
         self.assertGreater(record["timing_and_cpu"]["wall_clock_ms"], 0)
         self.assertGreater(record["memory"]["peak_working_set_bytes"], 0)
 
-        # 5. Executar o validador de integridade experimental
+        # 5. Run the experimental integrity validator
         validator = CampaignValidator(self.campaign_dir)
         report = validator.validate()
-        # Como filtramos apenas a condição NAT (as outras estão em missing_runs),
-        # não deve haver violações críticas na execução gerada
-        self.assertEqual(len(report["violations"]), 0, f"Houve violações críticas: {report['violations']}")
+        # NAT-only filter leaves other conditions in missing_runs;
+        # the generated execution must not have critical violations
+        self.assertEqual(len(report["violations"]), 0, f"Critical violations found: {report['violations']}")
 
 
 if __name__ == "__main__":

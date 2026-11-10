@@ -1,65 +1,65 @@
-# Regras de validade das métricas (fixadas a priori)
+# Metric validity rules (fixed a priori)
 
-Definidas **antes** de qualquer execução e aplicadas mecanicamente pelos validadores.
-Nenhuma regra depende do sinal ou da magnitude de um resultado. Falhas, timeouts e dados
-ausentes **permanecem** no conjunto de auditoria e são reportados à parte. Nunca são
-apagados nem substituídos por zero.
+Defined **before** any run and applied mechanically by the validators.
+No rule depends on the sign or magnitude of a result. Failures, timeouts, and
+missing data **remain** in the audit set and are reported separately. They are
+never deleted or replaced with zero.
 
-## 1. Perfil da amostra
+## 1. Sample profile
 
-O perfil é atributo da amostra no `corpus.csv`, definido antes da campanha e nunca
-reclassificado depois de ver resultados.
+The profile is a sample attribute in `corpus.csv`, set before the campaign and
+never reclassified after seeing results.
 
-- `short_lived`: aguarda conclusão natural até `observation.short_lived.timeout_seconds`.
-- `persistent`: janela fixa `observation.persistent.window_seconds`, com encerramento controlado no fim.
+- `short_lived`: wait for natural completion until `observation.short_lived.timeout_seconds`.
+- `persistent`: fixed window `observation.persistent.window_seconds`, with controlled termination at the end.
 
-## 2. Curta duração (`short_lived`)
+## 2. Short-lived (`short_lived`)
 
-**Tempo de parede** é válido para um contraste A−B somente se, nos dois lados:
+**Wall-clock time** is valid for an A−B contrast only if, on both sides:
 1. `launch_success = true`;
-2. timestamps válidos (`end >= start`, duração monotônica > 0);
+2. valid timestamps (`end >= start`, monotonic duration > 0);
 3. `natural_completion = true`;
 4. `timeout = false`;
 5. `collector_failure = false`.
 
-**CPU e memória** são válidas somente se, nos dois lados:
-1. houver pelo menos `min_resource_samples` amostras (padrão: 3);
-2. o intervalo efetivo de amostragem estiver dentro de `sampling.allowed_range_ms`;
-3. a coleta estiver completa (sem lacuna maior que 3× o intervalo).
+**CPU and memory** are valid only if, on both sides:
+1. there are at least `min_resource_samples` samples (default: 3);
+2. the effective sampling interval is inside `sampling.allowed_range_ms`;
+3. collection is complete (no gap larger than 3× the interval).
 
-Se o processo terminar rápido demais para amostrar, CPU/memória ficam **N/A** com motivo
-`too_short_to_sample`. O tempo de parede não é reclassificado por causa disso.
+If the process finishes too quickly to sample, CPU/memory are **N/A** with reason
+`too_short_to_sample`. Wall-clock time is not reclassified because of that.
 
-## 3. Persistente (`persistent`)
+## 3. Persistent (`persistent`)
 
-- O tempo total de parede **não** é métrica de desempenho, porque é fixado pela janela.
-- **CPU e memória** são válidas somente se a coleta cobrir a janela inteira, os dois lados
-  tiverem séries completas e a árvore de processos estiver identificada (PID raiz + filhos).
-- Permanecer ativo até o fim da janela **não** significa equivalência funcional. Isso é
-  avaliado só pela camada de fidelidade comportamental.
+- Total wall-clock time is **not** a performance metric, because it is fixed by the window.
+- **CPU and memory** are valid only if collection covers the entire window, both sides
+  have complete series, and the process tree is identified (root PID + children).
+- Remaining alive until the end of the window does **not** mean functional equivalence.
+  That is evaluated only by the behavioral-fidelity layer.
 
-## 4. Classificação do término (mutuamente exclusiva)
+## 4. Termination classification (mutually exclusive)
 
-| Código | Significado |
+| Code | Meaning |
 |--------|-------------|
-| `natural_completion` | o processo terminou sozinho dentro do limite |
-| `timeout` | `short_lived` excedeu o timeout e foi encerrado |
-| `controlled_termination` | `persistent` chegou ao fim da janela e foi encerrado pelo runner |
-| `crash` | término anormal (código de exceção NTSTATUS, ex.: `0xC0000005`) |
-| `launch_failure` | o processo não iniciou |
-| `collector_failure` | o processo rodou, mas a coleta falhou |
-| `no_data` | ausência de dados, com `missing_reason` obrigatório |
+| `natural_completion` | the process finished on its own within the limit |
+| `timeout` | `short_lived` exceeded the timeout and was killed |
+| `controlled_termination` | `persistent` reached the end of the window and was stopped by the runner |
+| `crash` | abnormal termination (NTSTATUS exception code, e.g. `0xC0000005`) |
+| `launch_failure` | the process did not start |
+| `collector_failure` | the process ran, but collection failed |
+| `no_data` | missing data, with mandatory `missing_reason` |
 
-Um timeout nunca é marcado como conclusão natural (regra crítica no validador).
+A timeout is never marked as natural completion (critical validator rule).
 
-## 5. Regras por condição
+## 5. Rules per condition
 
-- `NAT` não pode conter indícios de Pin (regra crítica do validador).
-- Cada condição `TMW_*` individual deve ter exatamente um módulo ativo; `TMW_ALL` deve ter os cinco; `TMW0` nenhum.
-- Para a condição `PIN`: só entra nos contrastes se o probe a validou; caso contrário, os contrastes dependentes dela são omitidos com justificativa registrada.
+- `NAT` must not contain Pin indicators (critical validator rule).
+- Each individual `TMW_*` condition must have exactly one module on; `TMW_ALL` must have all five; `TMW0` none.
+- For condition `PIN`: it enters contrasts only if the probe validated it; otherwise dependent contrasts are omitted with a recorded justification.
 
-## 6. Contrastes e proporções
+## 6. Contrasts and proportions
 
-- Contrastes são **pareados dentro do mesmo binário** (ver `protocol.md`).
-- Proporções (conclusão, falha, supressão) são reportadas como numerador/denominador, porcentagem e IC de 95% (Wilson). Nunca apenas "100%".
-- Quando a baseline do contraste é próxima de zero, reporta-se a diferença absoluta e sinaliza-se denominador instável; não se depende só da variação percentual.
+- Contrasts are **paired inside the same binary** (see `protocol.md`).
+- Proportions (completion, failure, suppression) are reported as numerator/denominator, percentage, and 95% CI (Wilson). Never “100%” alone.
+- When the contrast baseline is near zero, report the absolute difference and flag an unstable denominator; do not rely on percentage change alone.

@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Motor de Consolidação Estatística, Geração de Tabelas e Figuras — TOMWare.M
+Statistical Consolidation, Table, and Figure Engine — TOMWare.M
 
-Atende rigorosamente às Seções 17 e 18 da especificação:
-1. Agrupamento e mediana no nível do binário (as repetições são aninhadas);
-2. Contrastes pareados dentro do mesmo binário;
-3. Intervalo de confiança bootstrap de 95% para medianas;
-4. Intervalo de Wilson para proporções (conclusão, timeout, falha);
-5. Tratamento de denominadores próximos de zero;
-6. Geração automática das 14 tabelas em CSV/Markdown e figuras de alta resolução.
+Strictly follows Sections 17 and 18 of the specification:
+1. Grouping and median at the binary level (repetitions are nested);
+2. Paired contrasts within the same binary;
+3. 95% bootstrap confidence interval for medians;
+4. Wilson interval for proportions (completion, timeout, failure);
+5. Handling of near-zero denominators;
+6. Automatic generation of the 14 tables in CSV/Markdown and high-resolution figures.
 """
 from __future__ import annotations
 
@@ -28,7 +28,7 @@ import matplotlib.pyplot as plt
 
 
 def wilson_score_interval(k: int, n: int, confidence: float = 0.95) -> Tuple[float, float, float]:
-    """Calcula proporção e intervalo de confiança Wilson de 95%."""
+    """Compute the proportion and 95% Wilson confidence interval."""
     if n <= 0:
         return 0.0, 0.0, 0.0
     p = k / n
@@ -43,7 +43,7 @@ def wilson_score_interval(k: int, n: int, confidence: float = 0.95) -> Tuple[flo
 
 
 def bootstrap_ci_median(data: List[float], n_boot: int = 2000, ci: float = 0.95, rng_seed: int = 42) -> Tuple[float, float, float, float]:
-    """Calcula mediana, IQR e IC de 95% bootstrap no nível dos binários."""
+    """Compute median, IQR, and 95% bootstrap CI at the binary level."""
     arr = np.array([x for x in data if not math.isnan(x) and not math.isinf(x)], dtype=float)
     if len(arr) == 0:
         return 0.0, 0.0, 0.0, 0.0
@@ -98,15 +98,15 @@ class CampaignAnalyzer:
         df_samples = self._build_sample_medians(df_runs)
         df_contrasts = self._build_paired_contrasts(df_samples)
 
-        # Salvar consolidações processadas
+        # Save processed consolidations
         df_runs.to_csv(self.processed_dir / "run_metrics.csv", index=False, encoding="utf-8")
         df_samples.to_csv(self.processed_dir / "sample_metrics.csv", index=False, encoding="utf-8")
         df_contrasts.to_csv(self.processed_dir / "paired_contrasts.csv", index=False, encoding="utf-8")
 
-        # Gerar tabelas normativas para o artigo
+        # Generate normative tables for the article
         self._generate_tables(df_runs, df_samples, df_contrasts)
 
-        # Gerar figuras
+        # Generate figures
         self._generate_figures(df_samples, df_contrasts)
 
         return {
@@ -172,7 +172,7 @@ class CampaignAnalyzer:
             n_timeout = int(g["timeout"].sum())
             n_crash = int(g["crash"].sum())
 
-            # Regra a priori: tempo de parede só é válido para short_lived que completou naturalmente
+            # A priori rule: wall-clock is valid only for short_lived runs that completed naturally
             valid_wall_runs = g[g["natural_completion"]]["wall_clock_ms"].tolist() if prof == "short_lived" else []
             med_wall = float(np.median(valid_wall_runs)) if valid_wall_runs else float("nan")
 
@@ -221,7 +221,7 @@ class CampaignAnalyzer:
             ("TMW_ALL", "NAT", "total_combined_vs_nat"),
         ]
 
-        # Pivô por métrica para permitir subtração pareada no mesmo sample_id
+        # Pivot by metric to allow paired subtraction on the same sample_id
         contrast_rows = []
         samples = df_samples["sample_id"].unique()
 
@@ -247,7 +247,7 @@ class CampaignAnalyzer:
                     ws_diff = ws_a - ws_b
                     ws_pct = (ws_diff / ws_b * 100.0) if ws_b > 0.5 else None
 
-                    # Wall-clock delta (só short_lived se ambos válidos)
+                    # Wall-clock delta (short_lived only if both are valid)
                     wall_a = row_a["wall_clock_ms_median"]
                     wall_b = row_b["wall_clock_ms_median"]
                     wall_diff = None
@@ -275,13 +275,13 @@ class CampaignAnalyzer:
         return pd.DataFrame(contrast_rows)
 
     def _generate_tables(self, df_runs: pd.DataFrame, df_samples: pd.DataFrame, df_contrasts: pd.DataFrame) -> None:
-        # Tabela 1: Composição do Corpus
+        # Table 1: Corpus composition
         manifest_samples = pd.DataFrame(self.manifest.get("samples", []))
         if not manifest_samples.empty:
             t1 = manifest_samples.groupby(["group", "execution_profile"]).size().reset_index(name="count")
             t1.to_csv(self.tables_dir / "table_01_corpus_composition.csv", index=False)
 
-        # Tabela 8: Compatibilidade operacional por grupo e perfil
+        # Table 8: Operational compatibility by group and profile
         if not df_samples.empty:
             t8 = df_samples.groupby(["condition", "group", "execution_profile"]).agg({
                 "repetitions_count": "sum",
@@ -292,7 +292,7 @@ class CampaignAnalyzer:
             t8["completion_pct"] = (t8["completion_count"] / t8["repetitions_count"] * 100.0).round(2)
             t8.to_csv(self.tables_dir / "table_08_operational_compatibility.csv", index=False)
 
-        # Tabela 11: Custo incremental dos módulos (Agregação com Bootstrap)
+        # Table 11: Incremental module cost (bootstrap aggregation)
         if not df_contrasts.empty:
             summary_rows = []
             for (contrast, grp, prof), g in df_contrasts.groupby(["contrast_label", "group", "execution_profile"]):
@@ -317,7 +317,7 @@ class CampaignAnalyzer:
         if df_contrasts.empty:
             return
 
-        # Figura 1: Forest plot de contrastes de Working Set (MB) com IC 95%
+        # Figure 1: Forest plot of Working Set (MB) contrasts with 95% CI
         fig, ax = plt.subplots(figsize=(8, 5))
         summary = []
         labels = []
@@ -335,15 +335,15 @@ class CampaignAnalyzer:
         ax.axvline(0, color="gray", linestyle="--", alpha=0.7)
         ax.set_yticks(y_pos)
         ax.set_yticklabels(labels)
-        ax.set_xlabel("Diferença Pareada de Working Set (MB) [Mediana e IC 95% Bootstrap]")
-        ax.set_title("Efeito Incremental das Condições Experimentais (TOMWare.M)")
+        ax.set_xlabel("Paired Working Set Difference (MB) [Median and 95% Bootstrap CI]")
+        ax.set_title("Incremental Effect of Experimental Conditions (TOMWare.M)")
         fig.tight_layout()
 
         fig.savefig(self.figures_dir / "fig_paired_effects_forest.png", dpi=300)
         fig.savefig(self.figures_dir / "fig_paired_effects_forest.pdf")
         plt.close(fig)
 
-        # Figura 2: Boxplot com pontos individuais por condição (Working Set)
+        # Figure 2: Boxplot with individual points per condition (Working Set)
         if not df_samples.empty:
             fig, ax = plt.subplots(figsize=(9, 5))
             conds = df_samples["condition"].unique()
@@ -355,9 +355,9 @@ class CampaignAnalyzer:
                 x = np.random.normal(i, 0.04, size=len(y))
                 ax.plot(x, y, "r.", alpha=0.6)
 
-            ax.set_ylabel("Pico de Working Set (MB) [Mediana por Binário]")
-            ax.set_xlabel("Condição Experimental")
-            ax.set_title("Distribuição de Recursos de Memória por Condição (com Amostras Individuais)")
+            ax.set_ylabel("Peak Working Set (MB) [Median per Binary]")
+            ax.set_xlabel("Experimental Condition")
+            ax.set_title("Memory Resource Distribution by Condition (with Individual Samples)")
             fig.tight_layout()
 
             fig.savefig(self.figures_dir / "fig_resource_boxplots.png", dpi=300)
@@ -366,8 +366,8 @@ class CampaignAnalyzer:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Motor de consolidação estatística e geração de tabelas/figuras (TOMWare.M)")
-    parser.add_argument("--campaign-dir", required=True, help="Diretorio da campanha")
+    parser = argparse.ArgumentParser(description="Statistical consolidation engine and table/figure generator (TOMWare.M)")
+    parser.add_argument("--campaign-dir", required=True, help="Campaign directory")
     args = parser.parse_args()
 
     analyzer = CampaignAnalyzer(Path(args.campaign_dir))

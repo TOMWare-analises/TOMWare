@@ -1,36 +1,36 @@
-﻿# Benchmark TOMWare â€” resumo
+﻿# TOMWare benchmark — summary
 
-Gerado em: 2026-05-29 13:38:56
+Generated at: 2026-05-29 13:38:56
 
-## Metadados
+## Metadata
 
-| Campo | Valor |
+| Field | Value |
 |-------|-------|
-| Amostras no manifesto | 3 |
-| Amostras encontradas | 6 |
-| Cenarios por amostra | 2 |
+| Samples in the manifesto | 3 |
+| Samples found | 6 |
+| Scenarios per sample | 2 |
 | Timeout (s) | 120 |
 
-## Resultados agregados
+## Aggregated results
 
-| Metrica | Valor |
-|---------|-------|
-| Linhas de resultado | 6 |
-| Melhoria stealth vs baseline | 2 |
+| Metric | Value |
+|--------|-------|
+| Result rows | 6 |
+| Stealth improvement vs baseline | 2 |
 
-## Por amostra
+## Per sample
 
-| SHA-256 | Cenario | Outcome | Segundos | Exit | Melhoria |
-|---------|---------|---------|----------|------|----------|| 0f20b0c906f3ad95... | pin_baseline | timeout | 120.059 | -2 | - |
+| SHA-256 | Scenario | Outcome | Seconds | Exit | Improvement |
+|---------|---------|---------|----------|------|----------|
+| 0f20b0c906f3ad95... | pin_baseline | timeout | 120.059 | -2 | - |
 | 0f20b0c906f3ad95... | pin_tomware_da | timeout | 120.013 | -2 | - |
 | 36685efcf34c7a7a... | pin_baseline | complete | 4.02 |  | - |
-| 36685efcf34c7a7a... | pin_tomware_da | complete | 57.268 |  | sim |
+| 36685efcf34c7a7a... | pin_tomware_da | complete | 57.268 |  | yes |
 | 430b487c0bc9b533... | pin_baseline | complete | 17.489 |  | - |
-| 430b487c0bc9b533... | pin_tomware_da | complete | 93.553 |  | sim |
+| 430b487c0bc9b533... | pin_tomware_da | complete | 93.553 |  | yes |
 
-## Proximos passos
+## Next steps
 
-1. Para amostras com melhoria, reexecutar com Contradef (scripts/run-contradef-tomware.ps1 -Mode trace).
-2. Processar logs no FluxTrace e comparar com DBI-Log-Corpus.
-3. Usar docs/TOMWARE-GUIA-COMPLETO.md para montagem do artigo e video.
-
+1. For samples with improvement, rerun with Contradef (scripts/run-contradef-tomware.ps1 -Mode trace).
+2. Process logs in FluxTrace and compare with DBI-Log-Corpus.
+3. Use docs/TOMWARE-GUIA-COMPLETO.md for article and video assembly.

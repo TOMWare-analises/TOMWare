@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Converte scripts PowerShell em ASCII puro para compatibilidade estrita com PS 5.1 no Windows."""
+"""Convert PowerShell scripts to pure ASCII for strict PS 5.1 compatibility on Windows."""
 from pathlib import Path
 
 root = Path(__file__).resolve().parent

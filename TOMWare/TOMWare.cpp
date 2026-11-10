@@ -6,7 +6,7 @@
 
 INT32 Usage()
 {
-    std::cerr << "Esta ferramenta PIN fornece contramedidas para comportamentos evasivos (antianálise) presentes em executáveis\n"
+    std::cerr << "This Pin tool provides countermeasures for evasive (anti-analysis) behaviors in executables\n"
         "\n";
     std::cerr << KNOB_BASE::StringKnobSummary();
     std::cerr << std::endl;

@@ -8,10 +8,10 @@
 void TomwareSetQuietMode(BOOL quiet);
 BOOL TomwareIsQuiet();
 
-// Sempre emitido (erros, exceções, avisos críticos).
+// Always emitted (errors, exceptions, critical warnings).
 void TomwareLogErr(const std::string& msg);
 
-// Suprimido quando o modo silencioso (-q) está ativo.
+// Suppressed when quiet mode (-q) is on.
 void TomwareLogInfo(const std::string& msg);
 void TomwareLogInfoW(const std::wstring& msg);
 

@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Audita o acervo do bazaar e monta o corpus.csv rigorosamente sincronizado:
-- 50 Benignos PE x64 nao-dotnet existentes em bazaar/samples/benign (25 console, 25 gui)
-- 50 Malwares PE x64 nao-dotnet existentes em bazaar/samples/infected (25 console, 25 gui)
-- Copia os 50 arquivos benignos para TOMWare/samples/benign/
-- Copia os 50 zips maliciosos para TOMWare/samples/infected/
-- Gera corpus_definitive_10k perfeitamente alinhado com o disco
+Audit the bazaar collection and build a strictly synchronized corpus.csv:
+- 50 non-dotnet PE x64 benign files in bazaar/samples/benign (25 console, 25 gui)
+- 50 non-dotnet PE x64 malwares in bazaar/samples/infected (25 console, 25 gui)
+- Copy the 50 benign files to TOMWare/samples/benign/
+- Copy the 50 malicious zips to TOMWare/samples/infected/
+- Generate corpus_definitive_10k perfectly aligned with disk
 """
 from __future__ import annotations
 
@@ -32,37 +32,37 @@ BAZAAR_MALWARE_REPORT = REPO_ROOT / "experiment" / "corpus" / "bazaar_report.csv
 
 
 def main():
-    print("=== Selecionando 50 Benignos e 50 Malwares Verificados no Bazaar ===")
+    print("=== Selecting 50 Verified Benign and 50 Verified Malware Samples from Bazaar ===")
 
     BENIGN_DST.mkdir(parents=True, exist_ok=True)
     INFECTED_DST.mkdir(parents=True, exist_ok=True)
 
-    # 1. Carregar relatórios de verificação PE x64
+    # 1. Load PE x64 verification reports
     df_ben = pd.read_csv(BAZAAR_BENIGN_REPORT)
     df_mal = pd.read_csv(BAZAAR_MALWARE_REPORT)
 
-    # Filtrar estritamente PE x64 não-dotnet que existem em disco
+    # Strictly filter non-dotnet PE x64 files that exist on disk
     pure_ben = df_ben[(df_ben["kind"] == "pe_exe") & (df_ben["arch"] == "x64") & (~df_ben["dotnet"])].copy()
     pure_mal = df_mal[(df_mal["kind"] == "pe_exe") & (df_mal["arch"] == "x64") & (~df_mal["dotnet"])].copy()
 
-    # Garantir que o arquivo fonte existe
+    # Ensure the source file exists
     pure_ben = pure_ben[pure_ben["container"].apply(os.path.exists)]
     pure_mal = pure_mal[pure_mal["container"].apply(os.path.exists)]
 
-    print(f"Benignos puros x64 disponiveis em disco: {len(pure_ben)}")
-    print(f"Malwares puros x64 disponiveis em disco: {len(pure_mal)}")
+    print(f"Pure x64 benign available on disk: {len(pure_ben)}")
+    print(f"Pure x64 malware available on disk: {len(pure_mal)}")
 
-    # Separar console e gui
+    # Split console and gui
     ben_console = pure_ben[pure_ben["subsystem"] == "console"]
     ben_gui = pure_ben[pure_ben["subsystem"] == "gui"]
 
     mal_console = pure_mal[pure_mal["subsystem"] == "console"]
     mal_gui = pure_mal[pure_mal["subsystem"] == "gui"]
 
-    print(f"Benignos: {len(ben_console)} console, {len(ben_gui)} gui")
-    print(f"Malwares: {len(mal_console)} console, {len(mal_gui)} gui")
+    print(f"Benign: {len(ben_console)} console, {len(ben_gui)} gui")
+    print(f"Malware: {len(mal_console)} console, {len(mal_gui)} gui")
 
-    # Selecionar 25 console (short_lived) e 25 gui (persistent) para cada grupo
+    # Select 25 console (short_lived) and 25 gui (persistent) for each group
     sel_ben_short = ben_console.iloc[:25]
     sel_ben_pers = ben_gui.iloc[:25]
 
@@ -71,8 +71,8 @@ def main():
 
     corpus_rows = []
 
-    # 2. Montar Benignos
-    print("\nCopiando 50 benignos para TOMWare/samples/benign/ ...")
+    # 2. Assemble benign samples
+    print("\nCopying 50 benign samples to TOMWare/samples/benign/ ...")
     b_idx = 1
     for _, r in sel_ben_short.iterrows():
         src_file = Path(r["container"])
@@ -100,7 +100,7 @@ def main():
             "command_line": "",
             "input_set_id": "none",
             "targeted_evasion": "none",
-            "notes": "PE x64 console curta duracao verificado",
+            "notes": "Verified short-lived x64 console PE",
             "included": "true",
             "exclusion_reason": "none",
         })
@@ -132,14 +132,14 @@ def main():
             "command_line": "",
             "input_set_id": "none",
             "targeted_evasion": "none",
-            "notes": "PE x64 GUI persistente verificado",
+            "notes": "Verified persistent x64 GUI PE",
             "included": "true",
             "exclusion_reason": "none",
         })
         b_idx += 1
 
-    # 3. Montar Malwares
-    print("Copiando 50 zips maliciosos para TOMWare/samples/infected/ ...")
+    # 3. Assemble malware samples
+    print("Copying 50 malicious zips to TOMWare/samples/infected/ ...")
     m_idx = 1
     for _, r in sel_mal_short.iterrows():
         src_zip = Path(r["container"])
@@ -167,7 +167,7 @@ def main():
             "command_line": "",
             "input_set_id": "none",
             "targeted_evasion": "unverified",
-            "notes": "PE x64 console MalwareBazaar curta duracao",
+            "notes": "MalwareBazaar short-lived x64 console PE",
             "included": "true",
             "exclusion_reason": "none",
         })
@@ -199,21 +199,21 @@ def main():
             "command_line": "",
             "input_set_id": "none",
             "targeted_evasion": "unverified",
-            "notes": "PE x64 GUI MalwareBazaar persistente",
+            "notes": "MalwareBazaar persistent x64 GUI PE",
             "included": "true",
             "exclusion_reason": "none",
         })
         m_idx += 1
 
-    # 4. Gravar corpus.csv
+    # 4. Write corpus.csv
     with CORPUS_CSV.open("w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(corpus_rows[0].keys()))
         w.writeheader()
         w.writerows(corpus_rows)
 
-    print(f"\n[SUCESSO] corpus.csv gerado com {len(corpus_rows)} amostras perfeitas!")
-    print(f"  Benignos em disco: {len(list(BENIGN_DST.glob('*.exe')))}")
-    print(f"  Malwares ZIP em disco: {len(list(INFECTED_DST.glob('*.zip')))}")
+    print(f"\n[SUCCESS] corpus.csv generated with {len(corpus_rows)} aligned samples!")
+    print(f"  Benign on disk: {len(list(BENIGN_DST.glob('*.exe')))}")
+    print(f"  Malware ZIP on disk: {len(list(INFECTED_DST.glob('*.zip')))}")
 
 
 if __name__ == "__main__":

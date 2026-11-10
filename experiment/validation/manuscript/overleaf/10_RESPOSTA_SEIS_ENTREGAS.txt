@@ -1,105 +1,105 @@
-Resposta as seis entregas pedidas sobre a v3 (incluida na v4).
+Reply to the six deliverables requested about v3 (included in v4).
 
-A v3/v4 nao afirma atendimento integral ao Revisor 1. Ela organiza o que
-os CSV ja sustentam e concede o que nao sustentam. As seis entregas
-misturam tres coisas: (A) ja medido e na v4; (B) concedido de proposito;
-(C) so possivel com codigo/build/VM novos (Plano B, corte 02/11).
-
-------------------------------------------------
-1. Casos de beneficio pratico -- Major 3
-Estado: nao atendido (concessao). Nao e lacuna escondida da v4.
-
-O que existe: quatro tentativas (MAL_03, MAL_07, MAL_10, BEN_06) em
-NAT / TMW0 / -do, 60 s. new_files=0, stdout vazio, check no PE nao
-localizado. Tabela case_attempt documenta isso. Nao sao case studies.
-
-O que falta para atendimento integral e exactamente a cadeia pedida:
-checagem identificada no codigo -> ramo que desvia -> contramedida
-a atuar -> artefacto extra verificavel, no mesmo executavel e entrada.
-Isso exige guest, traces e (muito provavelmente) outro build. Plano B.
-A v4 nao inventa esse resultado.
+v3/v4 does not claim full addressing of Reviewer 1. It organizes what
+the CSVs already support and concedes what they do not support. The six
+deliverables mix three things: (A) already measured and in v4; (B) conceded
+on purpose; (C) only possible with new code/build/VM (Plan B, cutoff 02/11).
 
 ------------------------------------------------
-2. Diferencas de recursos -- Major 2
-Estado: parcial.
+1. Practical-benefit cases -- Major 3
+Status: not addressed (concession). Not a hidden gap of v4.
 
-O que existe: Table 9 rotulada 10 s / 31 PE; percentagens nao sao ganho;
-campanha 50+50 a 60 s (parede +55.452 / +37.387 ms) fica noutra tabela.
-Sem marcos de progresso, sem serie WS/CPU por PID, sem arvore pai/filho
-util (child_count sob Pin nao e processo-filho).
+What exists: four attempts (MAL_03, MAL_07, MAL_10, BEN_06) on
+NAT / TMW0 / -do, 60 s. new_files=0, empty stdout, check in the PE not
+located. Table case_attempt documents that. They are not case studies.
 
-Correcao editorial na v4: a carta v3 dizia "-87% / -38% WS". Isso mistura
-working set (~87% / 74%) com CPU (~38% / 29%). A carta v4 separa
-as duas grandezas. Nao cria marcos novos.
+What is missing for full addressing is exactly the requested chain:
+check identified in the code -> diverting branch -> countermeasure
+acting -> extra verifiable artifact, on the same executable and input.
+That requires a guest, traces and (very likely) another build. Plan B.
+v4 does not invent that result.
 
 ------------------------------------------------
-3. Cobertura funcional -- Major 4
-Estado: parcial. Rotinas nao exercitadas ja estao marcadas NOT_EXERCISED.
+2. Resource differences -- Major 2
+Status: partial.
 
-O que existe:
+What exists: Table 9 labeled 10 s / 31 PE; percentages are not a gain;
+50+50 campaign at 60 s (wall +55,452 / +37,387 ms) stays in another table.
+No progress milestones, no WS/CPU series per PID, no useful parent/child
+tree (child_count under Pin is not a child process).
+
+Editorial correction in v4: the v3 letter said "-87% / -38% WS". That mixes
+working set (~87% / 74%) with CPU (~38% / 29%). The v4 letter separates
+the two quantities. It does not create new milestones.
+
+------------------------------------------------
+3. Functional coverage -- Major 4
+Status: partial. Unexercised routines are already marked NOT_EXERCISED.
+
+What exists:
 - memcmp, _memicmp, RtlCompareMemory: PASS vs MASKED
 - RtlEqualMemory, wmemcmp: NOT_EXERCISED
-- fixture Module32 (dummy pinvm = copia de version.dll)
+- Module32 fixture (dummy pinvm = copy of version.dll)
 - ProcessEnum pin.exe 0 / 3 / 0 / 0
-- -da smoke 5/5 (nao e campanha 3.100)
+- -da smoke 5/5 (not a 3,100 campaign)
 
-O que falta: o conjunto anunciado (ANSI/Unicode, pass-through vs mascara
-em cada export, retornos/parametros, termino e entradas nao relacionadas
-em todas as interfaces). Completar isso e oraculo novo. Plano B.
+What is missing: the advertised set (ANSI/Unicode, pass-through vs mask
+on each export, returns/parameters, termination and unrelated entries
+on all interfaces). Completing that is a new oracle. Plan B.
 
 ------------------------------------------------
-4. Validacao temporal -- Major 1
-Estado: M1.1 atendido; M1.2/M1.3 atendidos com limitacao declarada.
+4. Timing validation -- Major 1
+Status: M1.1 addressed; M1.2/M1.3 addressed with a declared limitation.
 
-O que existe: N=30 carga mantida (TMW0 / GO / GO_DO); waits N=5 com
-Sleep seq e sobrepostos (ainda se intersectam); TickCount dum par;
-WaitOne nativo ~46 ms; timeout -go = SimulateOverhead, nao crash.
+What exists: N=30 load kept (TMW0 / GO / GO_DO); waits N=5 with
+seq and overlapping Sleep (they still overlap); TickCount of one pair;
+native WaitOne ~46 ms; timeout -go = SimulateOverhead, not a crash.
 
-O que falta do pedido integral:
-- leituras repetidas durante atualizacao do offset
-- chamada alertavel efectivamente identificada (WaitOne nao e SleepEx
-  nem NtDelayExecution)
-- prova de dupla contabilizacao / regressao artificial do
+What is missing from the full request:
+- repeated readings during offset update
+- an alertable call actually identified (WaitOne is not SleepEx
+  nor NtDelayExecution)
+- proof of double counting / artificial regression of
   AccumulateSkewTicks
 
-Se o SkewMask mudar, o N=30 deixa de valer e tem de se repetir no
-build final. Por isso o Plano A nao altera o SkewMask.
+If SkewMask changes, N=30 ceases to hold and must be repeated on
+the final build. That is why Plan A does not change SkewMask.
 
 ------------------------------------------------
-5. Versao reproduzivel -- Minor 1
-Estado: parcial; da para montar sem VM nova, mas ainda nao esta no artigo.
+5. Reproducible version -- Minor 1
+Status: partial; can be assembled without a new VM, but is not yet in the article.
 
-Ja temos: Pin 3.28.98749; prefixo DLL 4BBC6270; snapshot tomware_go;
-corpus.csv + exclusions.csv; BUILD.md do pacote de evidencia.
-Ainda falta no envio: commit/release etiquetado, SHA-256 completo da
-DLL da campanha (nao so o prefixo), e o catalogo dos 31 PE do JCVHT
-(17+14) com origem e criterio -- distinto do corpus 50+50 da outra
-campanha. Nao usar o hash git 3040df7.
-
-------------------------------------------------
-6. Aplicar e conferir no artigo completo
-Estado: bloqueado no Overleaf, nao no agente.
-
-A v4 entrega o .tex de insercao e a carta com (c) = localizacao.
-Nao entrega o .tex/.PDF Springer ja compilado: isso e o amigo aplicar
-08_INSERCOES_REVISOR.tex, devolver o PDF, e nos conferirmos numeracao
-e diagramacao. Instrucoes internas ("Required manuscript change") ja
-sairam. CPU vs WS na carta fica corrigido na v4.
+Already have: Pin 3.28.98749; DLL prefix 4BBC6270; snapshot tomware_go;
+corpus.csv + exclusions.csv; BUILD.md of the evidence pack.
+Still missing in the submission: labeled commit/release, full SHA-256 of
+the campaign DLL (not only the prefix), and the catalog of the 31 JCVHT PE
+(17+14) with origin and criterion -- distinct from the other campaign's
+50+50 corpus. Do not use git hash 3040df7.
 
 ------------------------------------------------
-O que o agente pode entregar agora, sem fingir atendimento integral
+6. Apply and check on the full article
+Status: blocked on Overleaf, not on the agent.
 
-- Resposta ponto a ponto honesta (esta).
-- Carta com CPU e working set separados.
-- Pacote v4 (Overleaf + cartas + estas respostas) para o amigo aplicar.
+v4 delivers the insertion .tex and the letter with (c) = location.
+It does not deliver the already compiled Springer .tex/.PDF: that is the
+friend applying 08_INSERCOES_REVISOR.tex, returning the PDF, and us
+checking numbering and layout. Internal instructions ("Required manuscript
+change") are already gone. CPU vs WS in the letter is corrected in v4.
 
-O que o agente nao pode entregar sem Plano B (guest + possivel build)
+------------------------------------------------
+What the agent can deliver now, without pretending full addressing
 
-- O caso positivo do Major 3.
-- Marcos / arvore / WS-CPU por processo do Major 2.
-- Oraculos em falta do Major 4 e do resto do Major 1.
-- O artigo Springer ja aplicado e diagramado (isso e o Overleaf).
+- Honest point-by-point reply (this one).
+- Letter with CPU and working set separated.
+- v4 pack (Overleaf + letters + these replies) for the friend to apply.
 
-Atendimento integral e outro objectivo, nao o da v4. Se for esse o
-alvo, o caminho e: amigo aplica o 08; Plano B na VM ate 02/11; so
-depois se o SkewMask mudar e que se repete o N=30.
+What the agent cannot deliver without Plan B (guest + possible build)
+
+- The positive Major 3 case.
+- Major 2 milestones / tree / WS-CPU per process.
+- Missing oracles of Major 4 and of the rest of Major 1.
+- The already applied and laid-out Springer article (that is Overleaf).
+
+Full addressing is another objective, not that of v4. If that is the
+target, the path is: friend applies 08; Plan B on the VM until 02/11; only
+then, if SkewMask changes, is N=30 repeated.

@@ -1,117 +1,117 @@
-# Protocolo Experimental da TOMWare.M
+# TOMWare.M experimental protocol
 
-**Documento Normativo do Experimento**  
-**Artigo:** IEEE Access (Access-2026-38745)  
-**Projeto:** TOMWare.M — Avaliação Experimental Rigorosa e Auditável
+**Normative experiment document**  
+**Article:** IEEE Access (Access-2026-38745)  
+**Project:** TOMWare.M — rigorous, auditable experimental evaluation
 
-> **Âmbito:** este documento é o protocolo da campanha **100 PE / 9 000 execuções**.
-> O pacote JCVHT 17+14 / 10 s e os oráculos N=30 são outra campanha (mesma DLL
-> `4BBC6270`). Identidade e hashes: README da raiz, secção Reproduce. Não misturar células.
-
----
-
-## 1. Objetivos Científicos e Questões de Pesquisa
-
-O desenho experimental foi formulado para responder de forma desacoplada e independente às seguintes questões:
-
-1. **Q1 — Custo do Intel Pin:** Qual o overhead da execução sob o motor Pin em relação à execução nativa (`PIN - NAT`)?
-2. **Q2 — Custo de carregar uma Pintool:** Qual o custo marginal de instanciar uma ferramenta de análise nula (`EMPTY - PIN` ou `EMPTY - NAT`)?
-3. **Q3 — Custo da infraestrutura defensiva:** Qual o custo da TOMWare.M carregada com todas as contramedidas desativadas (`TMW0 - EMPTY`)?
-4. **Q4 — Custo incremental por contramedida:** Qual o overhead específico adicionado por cada módulo isolado (`TMW_DD - TMW0`, `TMW_DP - TMW0`, `TMW_DE - TMW0`, `TMW_DM - TMW0`, `TMW_DO - TMW0`)?
-5. **Q5 — Custo da ativação conjunta:** Qual o impacto da ativação simultânea dos cinco módulos (`TMW_ALL - TMW0`)?
-6. **Q6 — Acionamento efetivo dos módulos:** Cada contramedida é efetivamente acionada durante a execução ou permanece passiva (contadores internos)?
-7. **Q7 — Modificação comportamental:** A ativação da contramedida preserva a fidelidade operacional da aplicação (processos, APIs, I/O, saída)?
-8. **Q8 — Sobrevivência e conclusão:** A aplicação encerra naturalmente ou permanece observável sem falhas operacionais?
-9. **Q9 — Supressão nos oráculos funcionais:** Os indicadores exercidos por estímulos conhecidos são mascarados sob condições casadas (`-gdb` vs `-gdb -dd`; `-go` vs `-go -do`)?
-10. **Q10 — Auditabilidade e ausência de viés:** Todos os resultados brutos são preservados sem descarte baseado em resultado favorável/desfavorável?
+> **Scope:** this document is the protocol of the **100 PE / 9 000-run** campaign.
+> The JCVHT 17+14 / 10 s pack and the N=30 oracles are a different campaign (same DLL
+> `4BBC6270`). Identity and hashes: repository-root README, **Reproduce**. Do not mix cells.
 
 ---
 
-## 2. Condições Experimentais
+## 1. Scientific objectives and research questions
 
-As condições são configuradas via `conditions.csv`:
+The experimental design answers the following questions independently:
 
-| Código | Intel Pin | Ferramenta | Parâmetros | Finalidade |
+1. **Q1 — Intel Pin cost:** What is the overhead of running under the Pin engine versus native execution (`PIN - NAT`)?
+2. **Q2 — Cost of loading a Pintool:** What is the marginal cost of instantiating a null analysis tool (`EMPTY - PIN` or `EMPTY - NAT`)?
+3. **Q3 — Defensive-infrastructure cost:** What is the cost of TOMWare.M loaded with every countermeasure disabled (`TMW0 - EMPTY`)?
+4. **Q4 — Incremental cost per countermeasure:** What overhead does each isolated module add (`TMW_DD - TMW0`, `TMW_DP - TMW0`, `TMW_DE - TMW0`, `TMW_DM - TMW0`, `TMW_DO - TMW0`)?
+5. **Q5 — Joint-activation cost:** What is the impact of enabling all five modules at once (`TMW_ALL - TMW0`)?
+6. **Q6 — Effective module firing:** Is each countermeasure actually invoked during the run, or does it remain passive (internal counters)?
+7. **Q7 — Behavioral modification:** Does enabling the countermeasure preserve the application's operational fidelity (processes, APIs, I/O, output)?
+8. **Q8 — Survival and completion:** Does the application terminate naturally, or remain observable without operational failure?
+9. **Q9 — Suppression on functional oracles:** Are indicators exercised by known stimuli masked under matched conditions (`-gdb` vs `-gdb -dd`; `-go` vs `-go -do`)?
+10. **Q10 — Auditability and absence of bias:** Are all raw results kept, with no discard based on a favorable or unfavorable outcome?
+
+---
+
+## 2. Experimental conditions
+
+Conditions are configured via `conditions.csv`:
+
+| Code | Intel Pin | Tool | Parameters | Purpose |
 |---|---|---|---|---|
-| `NAT` | Não | Nenhuma | *(nenhum)* | Linha de base da aplicação sem instrumentação |
-| `PIN` | Sim | Nenhuma | *(sem -t)* | Custo puro do motor Pin (validado por probe) |
-| `EMPTY` | Sim | `EmptyPinTool.dll` | *(nenhum)* | Custo mínimo de carregar uma Pintool passiva |
-| `TMW0` | Sim | `TOMWare.dll` | `-q` | Infraestrutura TOMWare.M com defesas desligadas |
-| `TMW_DD` | Sim | `TOMWare.dll` | `-dd -q` | Efeito isolado do AntiDebug |
-| `TMW_DP` | Sim | `TOMWare.dll` | `-dp -q` | Efeito isolado do ProcessEnum |
-| `TMW_DE` | Sim | `TOMWare.dll` | `-de -q` | Efeito isolado do SanitizePinEnvVars |
-| `TMW_DM` | Sim | `TOMWare.dll` | `-dm -q` | Efeito isolado do InstMemcmpMask |
-| `TMW_DO` | Sim | `TOMWare.dll` | `-do -q` | Efeito isolado do SkewMask |
-| `TMW_ALL` | Sim | `TOMWare.dll` | `-da -q` | Efeito combinado de todos os 5 módulos |
+| `NAT` | No | None | *(none)* | Application baseline without instrumentation |
+| `PIN` | Yes | None | *(no -t)* | Pure Pin-engine cost (validated by probe) |
+| `EMPTY` | Yes | `EmptyPinTool.dll` | *(none)* | Minimum cost of loading a passive Pintool |
+| `TMW0` | Yes | `TOMWare.dll` | `-q` | TOMWare.M infrastructure with defenses off |
+| `TMW_DD` | Yes | `TOMWare.dll` | `-dd -q` | Isolated AntiDebug effect |
+| `TMW_DP` | Yes | `TOMWare.dll` | `-dp -q` | Isolated ProcessEnum effect |
+| `TMW_DE` | Yes | `TOMWare.dll` | `-de -q` | Isolated SanitizePinEnvVars effect |
+| `TMW_DM` | Yes | `TOMWare.dll` | `-dm -q` | Isolated InstMemcmpMask effect |
+| `TMW_DO` | Yes | `TOMWare.dll` | `-do -q` | Isolated SkewMask effect |
+| `TMW_ALL` | Yes | `TOMWare.dll` | `-da -q` | Combined effect of all five modules |
 
-*Nota sobre a condição PIN:* O Intel Pin por padrão requer uma ferramenta (`-t`) para carregar o executável em modo JIT. O probe experimental testa `pin.exe -- app.exe`. Caso `pin.exe` recuse a execução sem `-t`, a condição `PIN` é documentada no manifesto como tecnicamente não-suportada, e `EMPTY` passa a ser a linha de base mínima do Pin (9 condições operacionais).
-
----
-
-## 3. Desenho Amostral e Randomização em Blocos
-
-Para evitar confundimento entre condição experimental e ordem/momento de execução:
-
-1. **Blocos Amostrais:** Cada bloco corresponde a um par `(sample_id, repetition)`.
-2. **Ordem Randomizada:** Dentro de cada bloco, todas as condições válidas são executadas exatamente uma vez, em ordem pseudoaleatória gerada a partir de uma semente registrada.
-3. **Semente Gravada:** A semente é armazenada em `randomization_seeds.csv` e no cabeçalho de cada execução, permitindo reprodução determinística da sequência.
-4. **Execução Estrita:** A ordem gerada no plano nunca é alterada por causa de um resultado inesperado. Falhas e timeouts são gravados exatamente na posição em que ocorreram.
+*Note on the PIN condition:* Intel Pin by default requires a tool (`-t`) to load the executable in JIT mode. The experimental probe tests `pin.exe -- app.exe`. If `pin.exe` refuses to run without `-t`, condition `PIN` is recorded in the manifest as technically unsupported, and `EMPTY` becomes the minimum Pin baseline (9 operational conditions).
 
 ---
 
-## 4. Unidade de Isolamento e Restauração de Ambiente
+## 3. Sampling design and block randomization
 
-Para evitar contaminação cumulativa entre execuções:
+To avoid confounding experimental condition with run order or time of day:
 
-- **Unidade de Restauração:** Snapshot limpo revertido a cada **bloco** (amostra + repetição).
-- **Justificativa Técnica:** Reverter o snapshot por bloco (10 condições) equilibra rigor de contenção e viabilidade temporal, garantindo que cada amostra inicia sua rodada a partir do mesmo estado idêntico do sistema operacional.
-- **Rede:** Interface de rede desativada ou restrita a host-only sem rota externa.
-- **Checagem de Resíduos:** O runner executa uma varredura de processos residuais antes de iniciar cada bloco e após cada execução (`taskkill /F /T` para instâncias remanescentes).
-- **Identificação:** O `snapshot_id` e o status de conclusão da restauração são registrados em cada JSON individual.
-
----
-
-## 5. Perfis Temporais e Janelas de Observação
-
-1. **Aplicações de Curta Duração (`short_lived`):**
-   - Aguardam conclusão natural.
-   - Timeout fixado em 120 segundos.
-   - Registram se concluíram naturalmente, se sofreram timeout ou se houve exceção/crash.
-   - Preservam hashes SHA-256 de stdout e stderr.
-
-2. **Aplicações Persistentes (`persistent`):**
-   - Janela de observação padronizada em 60 segundos.
-   - Coleta contínua de série temporal de recursos (intervalo de 200 ms).
-   - Ao término da janela, encerramento controlado pelo runner (`controlled_termination`).
-   - Não se atribui equivalência funcional ao simples fato de o processo permanecer ativo.
+1. **Sample blocks:** Each block is a pair `(sample_id, repetition)`.
+2. **Randomized order:** Inside each block, every valid condition runs exactly once, in a pseudorandom order generated from a recorded seed.
+3. **Recorded seed:** The seed is stored in `randomization_seeds.csv` and in each run header, so the sequence is deterministically reproducible.
+4. **Strict execution:** The planned order is never changed because of an unexpected result. Failures and timeouts are recorded exactly where they occurred.
 
 ---
 
-## 6. Oráculos Funcionais
+## 4. Isolation unit and environment restore
 
-Campanha independente realizada sobre `Resultados/Apps-Teste/`:
+To avoid cumulative contamination across runs:
 
-- **AntiDebug:** Comparação casada sob mesmo estímulo:
+- **Restore unit:** Clean snapshot reverted every **block** (sample + repetition).
+- **Technical rationale:** Reverting per block (10 conditions) balances containment rigor and wall-clock feasibility, so each sample starts its round from the same OS state.
+- **Network:** Interface disabled or restricted to host-only with no external route.
+- **Residue check:** The runner scans for leftover processes before each block and after each run (`taskkill /F /T` for remaining instances).
+- **Identity:** `snapshot_id` and restore-completion status are recorded in each individual JSON.
+
+---
+
+## 5. Temporal profiles and observation windows
+
+1. **Short-lived applications (`short_lived`):**
+   - Wait for natural completion.
+   - Timeout fixed at 120 seconds.
+   - Record whether they completed naturally, timed out, or hit an exception/crash.
+   - Preserve SHA-256 hashes of stdout and stderr.
+
+2. **Persistent applications (`persistent`):**
+   - Standardized observation window of 60 seconds.
+   - Continuous resource time series (200 ms interval).
+   - At the end of the window, controlled termination by the runner (`controlled_termination`).
+   - Remaining alive is **not** treated as functional equivalence.
+
+---
+
+## 6. Functional oracles
+
+Independent campaign on `Resultados/Apps-Teste/`:
+
+- **AntiDebug:** Matched comparison under the same stimulus:
   - Baseline: `pin.exe -t TOMWare.dll -gdb -q -- TestAntiDebug.exe`
-  - Tratamento: `pin.exe -t TOMWare.dll -gdb -dd -q -- TestAntiDebug.exe`
-  - Controle negativo: Pin-only sem `-gdb`.
-- **SkewMask:** Comparação casada com protocolo fixo $N=30$ sem descarte de amostras:
+  - Treatment: `pin.exe -t TOMWare.dll -gdb -dd -q -- TestAntiDebug.exe`
+  - Negative control: Pin-only without `-gdb`.
+- **SkewMask:** Matched comparison with a frozen $N=30$ protocol and no sample discard:
   - Baseline: `pin.exe -t TOMWare.dll -go -q -- TestOverhead.exe`
-  - Tratamento: `pin.exe -t TOMWare.dll -go -do -q -- TestOverhead.exe`
-  - Relato da taxa de compensação (% de ticks abaixo do limiar 3000), mediana, IQR e IC de 95%.
-- **ProcessEnum:** `TestProcessEnum.exe` com Tool Help (`pin.exe` filtrado).
-- **SanitizePinEnvVars:** `TestGetEnvironments.exe` (variáveis `PIN_*` renomeadas para `ZZZ_*`).
-- **InstMemcmpMask:** `TestMemoryScan.exe` (interceptação de `memcmp`).
+  - Treatment: `pin.exe -t TOMWare.dll -go -do -q -- TestOverhead.exe`
+  - Report the compensation rate (% of ticks below the 3000 threshold), median, IQR, and 95% CI.
+- **ProcessEnum:** `TestProcessEnum.exe` with Tool Help (`pin.exe` filtered).
+- **SanitizePinEnvVars:** `TestGetEnvironments.exe` (`PIN_*` variables renamed to `ZZZ_*`).
+- **InstMemcmpMask:** `TestMemoryScan.exe` (`memcmp` interception).
 
 ---
 
-## 7. Análise Estatística no Nível do Binário
+## 7. Statistical analysis at the binary level
 
-As repetições estão aninhadas no executável. O procedimento estatístico obrigatório consiste em:
+Repetitions are nested in the executable. The mandatory statistical procedure is:
 
-1. **Nível da Execução:** Cálculo das métricas brutas (tempo monotônico, CPU usuário/kernel, pico WS, pico private).
-2. **Nível do Binário:** Cálculo da mediana das repetições válidas para cada par `(binário, condição)`.
-3. **Contrastes Pareados:** Diferenças calculadas dentro do mesmo binário ($TMW_X - TMW0$, etc.).
-4. **Agregação por Estrato:** Mediana, IQR e intervalo de confiança bootstrap de 95% no nível dos binários.
-5. **Proporções:** Taxas de conclusão e supressão acompanhadas de intervalo de confiança Wilson de 95%.
-6. **Não-Dependência de Percentuais Instáveis:** Quando a linha de base for próxima de zero, a diferença absoluta é reportada obrigatoriamente.
+1. **Run level:** Raw metrics (monotonic time, user/kernel CPU, peak WS, peak private).
+2. **Binary level:** Median of valid repetitions for each pair `(binary, condition)`.
+3. **Paired contrasts:** Differences computed inside the same binary ($TMW_X - TMW0$, etc.).
+4. **Stratum aggregation:** Median, IQR, and 95% bootstrap confidence interval at the binary level.
+5. **Proportions:** Completion and suppression rates with a 95% Wilson confidence interval.
+6. **No reliance on unstable percentages:** When the baseline is near zero, the absolute difference is reported as mandatory.

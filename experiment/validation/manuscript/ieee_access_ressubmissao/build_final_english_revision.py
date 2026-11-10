@@ -355,6 +355,7 @@ def addendum_story(st):
             ]
         )
     )
+    # Captured TestAntiDebug.exe stdout (Portuguese oracle labels; do not rewrite).
     stdout_block = (
         "Ocorrências:\n"
         "Resumo de ocorrências:\n"

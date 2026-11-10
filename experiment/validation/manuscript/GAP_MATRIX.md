@@ -7,7 +7,7 @@ Current manuscript PDF still reports the **old** 31-binary / 3,100-launch / 10 s
 |---|--------------|--------------------------|--------------------|------------|
 | R1.1 / R2.1 / R3 / R4.1 / R5.1 / R6 | Matched AntiDebug `-gdb` vs `-gdb -dd` | Yes (3+3 reps, Fig. 2, Table 4) | Oracle, not corpus | Optional: more than 3 reps |
 | R1.2 / R2.2 / R3 / R4.2 / R6 | SkewMask fixed-N, keep all timing attempts | **No** — still 9/31 re-exec | Does **not** replace TestOverhead | Must run `Run-MatchedOracles.ps1` N=30 (clone or host after reboot) |
-| R1.3 / R2.5 / R3 / R6 | Compare Arancino / COBAI / Peekaboo | Architectural Table (p. ~5–6) | No bake-off | **Etapa 8 bloqueio**; future work = 32-bit + shared-protocol bake-off (`09_values/FUTURE_WORK.md`) |
+| R1.3 / R2.5 / R3 / R6 | Compare Arancino / COBAI / Peekaboo | Architectural Table (p. ~5–6) | No bake-off | **Stage 8 block**; future work = 32-bit + shared-protocol bake-off (`09_values/FUTURE_WORK.md`) |
 | R1.4 / R2.4 / R4(e) | Documented / larger corpus | Still 14+17 | **Yes**: 50+50, SHA-256, source, family, profile in `corpus.csv` | Paste table into paper |
 | R1.5 / R3 / R6 | CIs / not only medians | Says “descriptive, no CI” | **Yes**: Wilson + bootstrap | Paste Table 7/8 replacements |
 | R1.5 / R4.3 / R5.3 | 87.2% WS = state change, not gain | Mentions “may reflect state” but keeps −87.2 | **Yes**: new 60 s window; SkewMask **lengthens** wall clock | **Must delete −87.2 / −38.5 as performance** |

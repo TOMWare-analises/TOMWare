@@ -1,5 +1,5 @@
 #Requires -Version 5.1
-# IEEE Access Etapa 4: oracles on the VM. Does NOT rerun timing N=30.
+# IEEE Access Stage 4: oracles on the VM. Does NOT rerun timing N=30.
 # No malware corpus. Save CSV after every row.
 param(
     [string]$RepoRoot = "C:\TOMWare",
@@ -282,6 +282,6 @@ $n30 = [PSCustomObject]@{
 }
 Save-Rows @($n30) "timing_n30_provenance.csv"
 
-Write-Host "`nEtapa 4 done. Copy the folder back to the host:"
+Write-Host "`nStage 4 done. Copy the folder back to the host:"
 Write-Host "  $OutDir"
 Write-Host "Files: preflight.csv pin_probe.csv antidebug_n3.csv da_oracles.csv module32_waits.csv module_counters_smoke.csv timing_n30_provenance.csv"

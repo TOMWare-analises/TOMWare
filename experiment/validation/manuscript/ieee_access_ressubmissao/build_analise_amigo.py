@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Monta o zip do colaborador Access. Nao envia a IEEE. Sem malware.
+"""Build the Access collaborator zip. Does not send to IEEE. No malware.
 
-Retira CURRENT 5CBC, matrizes antigas, e cartas com Same as R1.1.
-Inclui o PDF ingles CFD80 + addendum Tables 21-27 + carta final.
+Removes CURRENT 5CBC, old matrices, and letters with Same as R1.1.
+Includes the English CFD80 PDF + addendum Tables 21-27 + final letter.
 """
 from __future__ import annotations
 

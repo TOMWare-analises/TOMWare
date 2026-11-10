@@ -1,58 +1,58 @@
-# Etapa 4 � relatorio dos oraculos (VM, 22/10/2026)
+# Stage 4 — oracle report (VM, 22/10/2026)
 
-Fonte: `Downloads\etapa4_oracles` copiada para `04_oracles/from_vm/`.
-Timeout declarado: 90 s (probe Pin: 30 s). Coletor v2.1: `exit_code` preenchido (0 nos runs que terminaram).
-Timing N=30: **nao repetido**. Proveniencia no CSV `timing_n30_provenance.csv`.
+Source: `Downloads\etapa4_oracles` copied to `04_oracles/from_vm/`.
+Declared timeout: 90 s (Pin probe: 30 s). Collector v2.1: `exit_code` filled (0 on runs that finished).
+Timing N=30: **not repeated**. Provenance in CSV `timing_n30_provenance.csv`.
 
-## AntiDebug N=3 (pareado)
+## AntiDebug N=3 (matched)
 
-| Braco | knobs | 3/3 | Indicadores PEB / IsDebuggerPresent |
+| Arm | knobs | 3/3 | PEB / IsDebuggerPresent indicators |
 |---|---|---|---|
-| AD_NAT | nativo | OK, exit 0 | todos 0 |
-| AD_TMW0 | `-q` | OK, exit 0 | todos 0 (Pin sozinho nao arma o PEB) |
-| AD_GDB | `-gdb -q` | 3/3 alerta | BeingDebugged=1, NtGlobalFlag=1, IsDebuggerPresent=1 |
-| AD_GDB_DD | `-gdb -dd -q` | 3/3 OK | todos 0 |
+| AD_NAT | native | OK, exit 0 | all 0 |
+| AD_TMW0 | `-q` | OK, exit 0 | all 0 (Pin alone does not arm the PEB) |
+| AD_GDB | `-gdb -q` | 3/3 alert | BeingDebugged=1, NtGlobalFlag=1, IsDebuggerPresent=1 |
+| AD_GDB_DD | `-gdb -dd -q` | 3/3 OK | all 0 |
 
-CheckRemoteDebuggerPresent, ProcessDebugPort e ProcessDebugObjectHandle ficaram 0 em todos os bracos (fora do `-gdb` e do modulo).
+CheckRemoteDebuggerPresent, ProcessDebugPort and ProcessDebugObjectHandle stayed 0 on every arm (outside `-gdb` and the module).
 
-Isto fecha o 3+3 do manuscrito: baseline `-gdb -q` positivo; tratamento `-gdb -dd -q` suprime. NAT e TMW0 sem `-gdb` sao controlos negativos.
+This closes the manuscript 3+3: baseline `-gdb -q` positive; treatment `-gdb -dd -q` suppresses. NAT and TMW0 without `-gdb` are negative controls.
 
-## `-da` nos 5 oraculos
+## `-da` on the 5 oracles
 
-Todos exit 0, sem timeout.
+All exit 0, no timeout.
 
-| Oraculo | knobs | Resultado |
+| Oracle | knobs | Result |
 |---|---|---|
 | TestAntiDebug | `-gdb -da -q` | PEB/IsDebuggerPresent = 0, OK |
 | TestProcessEnum | `-da -q` | pin.exe / pinvm / pinipc / TOMWare = 0, OK |
 | TestGetEnvironments | `-da -q` | PIN_* = 0, OK |
 | TestMemoryScan | `-da -q` | PIN_ / pin.exe / pinvm / pinipc = 0 |
-| TestOverhead | `-da -q` | 2040,7 < 3000, OK |
+| TestOverhead | `-da -q` | 2040.7 < 3000, OK |
 
-## Probe Pin sem `-t`
+## Pin probe without `-t`
 
-`pin.exe -- TestAntiDebug.exe` terminou com **exit 0**, stdout do oraculo, stderr vazio.
-Nesta corrida isolada o Pin sem pintool **funcionou**. O `campaign.json` da campanha 9000 tem `pin_condition_valid=false` (probe antigo, possivelmente com outro Pin a correr ou IPC). Nao afirmar que Pin sem `-t` e sempre invalido. Afirmar: a campanha omitiu a condicao PIN porque o probe daquele dia falhou; um probe isolado em 22/10 completou.
+`pin.exe -- TestAntiDebug.exe` finished with **exit 0**, oracle stdout, empty stderr.
+On this isolated run Pin without a pintool **worked**. The 9000-campaign `campaign.json` has `pin_condition_valid=false` (old probe, possibly with another Pin running or IPC). Do not claim that Pin without `-t` is always invalid. Claim: the campaign omitted the PIN condition because that day's probe failed; an isolated probe on 22/10 completed.
 
-## Module32 e waits (controlo positivo)
+## Module32 and waits (positive control)
 
-Timeout 90 s declarado.
+Declared timeout 90 s.
 
-| Run | Resultado |
+| Run | Result |
 |---|---|
 | M32 NAT / EMPTY / TMW0 / `-dp` | exit 0, PASS_MASK_OR_CLEAN, pinish=0 |
 | WAIT NAT | WAIT_MODEL_OK, alertable 46 ms |
-| WAIT EMPTY / TMW0 | WAIT_MODEL_CHECK (alertable ~400 ms): Pin atrasa waits; o processo termina |
-| WAIT `-go` e `-go -do` | timeout 90 s, exit -2 (codigo do runner). Igual a corrida anterior |
+| WAIT EMPTY / TMW0 | WAIT_MODEL_CHECK (alertable ~400 ms): Pin delays waits; the process finishes |
+| WAIT `-go` and `-go -do` | timeout 90 s, exit -2 (runner code). Same as the previous run |
 
-Module32 com pinish=0 mesmo sem `-dp` nao prova esconder `pinvm.dll`; o oraculo certo para `pin.exe` continua a ser o TestProcessEnum.
+Module32 with pinish=0 even without `-dp` does not prove hiding `pinvm.dll`; the right oracle for `pin.exe` remains TestProcessEnum.
 
-## Fumaca `-mc` � DLL do snapshot tem contadores
+## `-mc` smoke — snapshot DLL has counters
 
-`module_events_smoke.json` gravado (999 bytes). Com `-dp`:
+`module_events_smoke.json` written (999 bytes). With `-dp`:
 `calls_intercepted=140`, `processes_examined=142`, `processes_filtered=3`.
-Outros modulos a 0 (so `-dp` estava ligado). **Etapa 5 pode usar `-mc` sem recompilar.**
+Other modules at 0 (only `-dp` was on). **Stage 5 can use `-mc` without rebuilding.**
 
-## Timing N=30 (reutilizado)
+## Timing N=30 (reused)
 
-90 runs, hash `76208218�`. Medianas convencionais: TMW0 2433,285; GO 3083,210 (11/30 abaixo); GO_DO 2104,770 (30/30).
+90 runs, hash `76208218...`. Conventional medians: TMW0 2433.285; GO 3083.210 (11/30 below); GO_DO 2104.770 (30/30).
